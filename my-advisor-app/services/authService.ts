@@ -1,0 +1,42 @@
+// services/authService.ts
+import axios from 'axios';
+import jwtDecode from '../utils/jwtDecode';
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+
+axios.defaults.baseURL = API_URL;
+
+export const login = async (email: string, password: string) => {
+  try {
+
+    const response = await axios.post('/auth/login', { email, password });
+
+    const token = response.data.token;
+    localStorage.setItem('token', token);
+    return jwtDecode(token);
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response) {
+        
+      throw new Error(error.response.data.message || 'Login failed');
+    } else {
+      throw new Error('Login failed due to an unexpected error');
+    }
+  }
+};
+
+export const register = async (email: string, password: string) => {
+  try {
+    await axios.post('/auth/register', { email, password });
+    return login(email, password);
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response) {
+      throw new Error(error.response.data.message || 'Registration failed');
+    } else {
+      throw new Error('Registration failed due to an unexpected error');
+    }
+  }
+};
+
+export const logout = () => {
+  localStorage.removeItem('token');
+};
