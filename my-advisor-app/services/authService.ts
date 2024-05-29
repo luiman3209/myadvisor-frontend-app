@@ -9,7 +9,7 @@ axios.defaults.baseURL = API_URL;
 export const login = async (email: string, password: string) => {
   try {
 
-    const response = await axios.post('/auth/login', { email, password });
+    const response = await axios.post('/api/auth/login', { email, password });
 
     const token = response.data.token;
     localStorage.setItem('token', token);
@@ -26,7 +26,7 @@ export const login = async (email: string, password: string) => {
 
 export const register = async (email: string, password: string) => {
   try {
-    await axios.post('/auth/register', { email, password });
+    await axios.post('/api/auth/register', { email, password });
     return login(email, password);
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {
