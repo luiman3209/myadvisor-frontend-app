@@ -2,13 +2,15 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useRouter } from 'next/router';
 import { login, register, logout } from '../services/authService';
+import { createOrUpdateAdvisor } from '../services/advisorService'; // Import advisor service
+import { createOrUpdateInvestor } from '../services/investorService'; // Import investor service
 import jwtDecode from '../utils/jwtDecode';
 
 interface AuthContextType {
   user: any;
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
-  register: (email: string, password: string) => Promise<void>;
+  register: (email: string, password: string, profileData: any, isAdvisor?: boolean) => Promise<void>; // Update register function signature
   error: string | null;
   loading: boolean;
 }
@@ -59,12 +61,26 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     router.push('/auth/login');
   };
 
-  const handleRegister = async (email: string, password: string) => {
+  const handleRegister = async (email: string, password: string, profileData: any, isAdvisor: boolean = true) => {
     setError(null);
     setLoading(true);
     try {
       const decodedUser = await register(email, password);
+
+      if(decodedUser === null) {
+        throw new Error('Registration failed');
+      
+      }
       setUser(decodedUser);
+
+      // Create or update profile based on user type
+      if (isAdvisor) {
+        await createOrUpdateAdvisor({ ...profileData });
+      } else {
+        await createOrUpdateInvestor({ ...profileData });
+      }
+
+      router.push('/');
     } catch (err: any) {
       setError(err.message);
     } finally {

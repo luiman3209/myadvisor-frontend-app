@@ -1,15 +1,20 @@
-// pages/auth/register.tsx
+// pages/auth/register-investor.tsx
 import { useAuth } from '@/contexts/AuthContext';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 
-export default function Register() {
+export default function RegisterInvestor() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [address, setAddress] = useState('');
+  const [netWorth, setNetWorth] = useState('');
+  const [incomeRange, setIncomeRange] = useState('');
+  const [financialGoals, setFinancialGoals] = useState('');
+  const [geoPreferences, setGeoPreferences] = useState('');
+
   const { user, register, error } = useAuth();
   const router = useRouter();
 
@@ -26,12 +31,16 @@ export default function Register() {
       last_name: lastName,
       phone_number: phoneNumber,
       address,
-    });
+      net_worth: netWorth,
+      income_range: incomeRange,
+      financial_goals: financialGoals,
+      geo_preferences: geoPreferences,
+    }, false);
   };
 
   return (
     <div>
-      <h1>Register</h1>
+      <h1>Register as Investor</h1>
       <form onSubmit={handleSubmit}>
         <input
           type="email"
@@ -68,6 +77,30 @@ export default function Register() {
           placeholder="Address"
           value={address}
           onChange={(e) => setAddress(e.target.value)}
+        />
+        <input
+          type="text"
+          placeholder="Net Worth"
+          value={netWorth}
+          onChange={(e) => setNetWorth(e.target.value)}
+        />
+        <input
+          type="text"
+          placeholder="Income Range"
+          value={incomeRange}
+          onChange={(e) => setIncomeRange(e.target.value)}
+        />
+        <input
+          type="text"
+          placeholder="Financial Goals"
+          value={financialGoals}
+          onChange={(e) => setFinancialGoals(e.target.value)}
+        />
+        <input
+          type="text"
+          placeholder="Geographical Preferences"
+          value={geoPreferences}
+          onChange={(e) => setGeoPreferences(e.target.value)}
         />
         <button type="submit">Register</button>
       </form>
