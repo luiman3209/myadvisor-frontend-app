@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { getServiceTypes } from '@/services/serviceTypesService';
 
+
 export default function RegisterAdvisor() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -17,6 +18,7 @@ export default function RegisterAdvisor() {
   const [endShift1, setEndShift1] = useState('');
   const [startShift2, setStartShift2] = useState('');
   const [endShift2, setEndShift2] = useState('');
+  const [operatingCountryCode, setOperatingCountryCode] = useState('');
   const [serviceTypes, setServiceTypes] = useState<any[]>([]);
   const [selectedServiceTypes, setSelectedServiceTypes] = useState<number[]>([]);
 
@@ -67,8 +69,11 @@ export default function RegisterAdvisor() {
       start_shift_2: startShift2,
       end_shift_2: endShift2,
       selected_service_types: selectedServiceTypes,
+      operating_country_code: operatingCountryCode,
     }, true);
   };
+
+  const countryCodes = ['US', 'CA', 'GB', 'AU', 'IN']; // Limited list of country codes
 
   return (
     <div>
@@ -157,6 +162,12 @@ export default function RegisterAdvisor() {
             <option key={type.service_id} value={type.service_id}>
               {type.service_type_name}
             </option>
+          ))}
+        </select>
+        <select value={operatingCountryCode} onChange={(e) => setOperatingCountryCode(e.target.value)}>
+          <option value="" disabled>Select Country Code</option>
+          {countryCodes.map(code => (
+            <option key={code} value={code}>{code}</option>
           ))}
         </select>
         <button type="submit">Register</button>
