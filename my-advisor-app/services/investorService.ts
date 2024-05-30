@@ -23,3 +23,16 @@ export const createOrUpdateInvestor = async (profileData: any) => {
     }
   }
 };
+
+export const getInvestorProfile = async () => {
+  try {
+    const response = await axios.get('/api/investor', headers());
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response) {
+      throw new Error(error.response.data.message || 'Failed to fetch investor profile');
+    } else {
+      throw new Error('Failed to fetch investor profile due to an unexpected error');
+    }
+  }
+};

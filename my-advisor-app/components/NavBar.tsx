@@ -53,6 +53,9 @@ const Navbar: React.FC = () => {
           {!user && (
             <button style={{ marginLeft: '15px' }}>Are you a financial advisor?</button>
           )}
+          {user && (
+            <Link href="/profile" style={{ marginLeft: '15px' }}>Profile</Link>
+          )}
         </div>
       </div>
     </nav>

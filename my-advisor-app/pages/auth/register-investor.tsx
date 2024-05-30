@@ -1,7 +1,7 @@
-// pages/auth/register-investor.tsx
 import { useAuth } from '@/contexts/AuthContext';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
+import { getServiceTypes } from '@/services/serviceTypesService';
 
 export default function RegisterInvestor() {
   const [email, setEmail] = useState('');
@@ -12,8 +12,9 @@ export default function RegisterInvestor() {
   const [address, setAddress] = useState('');
   const [netWorth, setNetWorth] = useState('');
   const [incomeRange, setIncomeRange] = useState('');
-  const [financialGoals, setFinancialGoals] = useState('');
   const [geoPreferences, setGeoPreferences] = useState('');
+  const [serviceTypes, setServiceTypes] = useState<any[]>([]);
+  const [selectedServiceTypes, setSelectedServiceTypes] = useState<number[]>([]);
 
   const { user, register, error } = useAuth();
   const router = useRouter();
@@ -22,7 +23,30 @@ export default function RegisterInvestor() {
     if (user) {
       router.push('/');
     }
+
+    // Fetch service types
+    const fetchServiceTypes = async () => {
+      try {
+        const types = await getServiceTypes();
+        setServiceTypes(types);
+      } catch (error) {
+        console.error('Failed to fetch service types', error);
+      }
+    };
+
+    fetchServiceTypes();
   }, [user, router]);
+
+  const handleServiceTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const options = Array.from(e.target.options);
+    const selected: number[] = [];
+    options.forEach(option => {
+      if (option.selected) {
+        selected.push(Number(option.value));
+      }
+    });
+    setSelectedServiceTypes(selected);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,8 +57,8 @@ export default function RegisterInvestor() {
       address,
       net_worth: netWorth,
       income_range: incomeRange,
-      financial_goals: financialGoals,
       geo_preferences: geoPreferences,
+      selected_service_types: selectedServiceTypes,
     }, false);
   };
 
@@ -92,16 +116,17 @@ export default function RegisterInvestor() {
         />
         <input
           type="text"
-          placeholder="Financial Goals"
-          value={financialGoals}
-          onChange={(e) => setFinancialGoals(e.target.value)}
-        />
-        <input
-          type="text"
           placeholder="Geographical Preferences"
           value={geoPreferences}
           onChange={(e) => setGeoPreferences(e.target.value)}
         />
+        <select multiple onChange={handleServiceTypeChange}>
+          {serviceTypes.map((type) => (
+            <option key={type.service_id} value={type.service_id}>
+              {type.service_type_name}
+            </option>
+          ))}
+        </select>
         <button type="submit">Register</button>
       </form>
       {error && <p style={{ color: 'red' }}>{error}</p>}

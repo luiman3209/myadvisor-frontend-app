@@ -23,3 +23,16 @@ export const createOrUpdateAdvisor = async (profileData: any) => {
     }
   }
 };
+
+export const getAdvisorProfile = async () => {
+  try {
+    const response = await axios.get('/api/advisor', headers());
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response) {
+      throw new Error(error.response.data.message || 'Failed to fetch advisor profile');
+    } else {
+      throw new Error('Failed to fetch advisor profile due to an unexpected error');
+    }
+  }
+};

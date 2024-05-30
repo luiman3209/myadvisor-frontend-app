@@ -1,7 +1,7 @@
-// pages/auth/register-advisor.tsx
 import { useAuth } from '@/contexts/AuthContext';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
+import { getServiceTypes } from '@/services/serviceTypesService';
 
 export default function RegisterAdvisor() {
   const [email, setEmail] = useState('');
@@ -12,12 +12,13 @@ export default function RegisterAdvisor() {
   const [address, setAddress] = useState('');
   const [qualifications, setQualifications] = useState('');
   const [expertise, setExpertise] = useState('');
-  const [servicesOffered, setServicesOffered] = useState('');
   const [contactInformation, setContactInformation] = useState('');
   const [startShift1, setStartShift1] = useState('');
   const [endShift1, setEndShift1] = useState('');
   const [startShift2, setStartShift2] = useState('');
   const [endShift2, setEndShift2] = useState('');
+  const [serviceTypes, setServiceTypes] = useState<any[]>([]);
+  const [selectedServiceTypes, setSelectedServiceTypes] = useState<number[]>([]);
 
   const { user, register, error } = useAuth();
   const router = useRouter();
@@ -26,7 +27,30 @@ export default function RegisterAdvisor() {
     if (user) {
       router.push('/');
     }
+
+    // Fetch service types
+    const fetchServiceTypes = async () => {
+      try {
+        const types = await getServiceTypes();
+        setServiceTypes(types);
+      } catch (error) {
+        console.error('Failed to fetch service types', error);
+      }
+    };
+
+    fetchServiceTypes();
   }, [user, router]);
+
+  const handleServiceTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const options = Array.from(e.target.options);
+    const selected: number[] = [];
+    options.forEach(option => {
+      if (option.selected) {
+        selected.push(Number(option.value));
+      }
+    });
+    setSelectedServiceTypes(selected);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,12 +61,12 @@ export default function RegisterAdvisor() {
       address,
       qualifications,
       expertise,
-      services_offered: servicesOffered,
       contact_information: contactInformation,
       start_shift_1: startShift1,
       end_shift_1: endShift1,
       start_shift_2: startShift2,
       end_shift_2: endShift2,
+      selected_service_types: selectedServiceTypes,
     }, true);
   };
 
@@ -100,12 +124,6 @@ export default function RegisterAdvisor() {
         />
         <input
           type="text"
-          placeholder="Services Offered"
-          value={servicesOffered}
-          onChange={(e) => setServicesOffered(e.target.value)}
-        />
-        <input
-          type="text"
           placeholder="Contact Information"
           value={contactInformation}
           onChange={(e) => setContactInformation(e.target.value)}
@@ -134,6 +152,13 @@ export default function RegisterAdvisor() {
           value={endShift2}
           onChange={(e) => setEndShift2(e.target.value)}
         />
+        <select multiple onChange={handleServiceTypeChange}>
+          {serviceTypes.map((type) => (
+            <option key={type.service_id} value={type.service_id}>
+              {type.service_type_name}
+            </option>
+          ))}
+        </select>
         <button type="submit">Register</button>
       </form>
       {error && <p style={{ color: 'red' }}>{error}</p>}
