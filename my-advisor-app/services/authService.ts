@@ -24,9 +24,9 @@ export const login = async (email: string, password: string) => {
   }
 };
 
-export const register = async (email: string, password: string) => {
+export const register = async (email: string, password: string, role: string) => {
   try {
-    await axios.post('/api/auth/register', { email, password });
+    await axios.post('/api/auth/register', { email, password, role });
     return login(email, password);
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {

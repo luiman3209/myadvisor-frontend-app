@@ -5,6 +5,7 @@ import { login, register, logout } from '../services/authService';
 import { createOrUpdateAdvisor } from '../services/advisorService'; // Import advisor service
 import { createOrUpdateInvestor } from '../services/investorService'; // Import investor service
 import jwtDecode from '../utils/jwtDecode';
+import { updateProfile } from '@/services/profileService';
 
 interface AuthContextType {
   user: any;
@@ -58,20 +59,32 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const handleLogout = () => {
     logout();
     setUser(null);
-    router.push('/auth/login');
+    router.push('/');
   };
 
   const handleRegister = async (email: string, password: string, profileData: any, isAdvisor: boolean = true) => {
     setError(null);
     setLoading(true);
     try {
-      const decodedUser = await register(email, password);
+
+      let role;
+      if (isAdvisor) {
+        role = 'advisor';
+      } else {
+        role = 'investor';
+      }
+
+      const decodedUser = await register(email, password, role);
 
       if(decodedUser === null) {
         throw new Error('Registration failed');
-      
+
       }
+
+
       setUser(decodedUser);
+
+      await updateProfile({ ...profileData });
 
       // Create or update profile based on user type
       if (isAdvisor) {
