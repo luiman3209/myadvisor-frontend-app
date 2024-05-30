@@ -3,6 +3,7 @@ import Navbar from '@/components/NavBar';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { searchAdvisors } from '@/services/searchService';
+import Link from 'next/link';
 
 const AdvisorExplorer: React.FC = () => {
   const router = useRouter();
@@ -52,8 +53,16 @@ const AdvisorExplorer: React.FC = () => {
           <h2>Search Results</h2>
           <ul>
             {advisors.map((advisor) => (
-              <li key={advisor.advisor_id}>
-                {advisor.qualifications} - {advisor.expertise} ({advisor.operating_country_code})
+              <li key={advisor.advisor_id} style={{ marginBottom: '20px', borderBottom: '1px solid #ddd', paddingBottom: '10px' }}>
+                <Link href={`/advisor-profile?advisorId=${advisor.advisor_id}`}>
+                  <h3 style={{ color: '#0070f3', textDecoration: 'underline', cursor: 'pointer' }}>{advisor.profile.first_name} {advisor.profile.last_name} - {advisor.expertise}</h3>
+                </Link>
+                <p>
+                  <strong>Contact information:</strong> {advisor.contact_information} <br />
+                  <strong>Office Address:</strong> {advisor.office_address} <br />
+                  <strong>Operating City Code:</strong> {advisor.operating_city_code} <br />
+                  <strong>Operating Country Code:</strong> {advisor.operating_country_code}
+                </p>
               </li>
             ))}
           </ul>

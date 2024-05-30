@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { getServiceTypes } from '@/services/serviceTypesService';
 
-
 export default function RegisterAdvisor() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -19,6 +18,8 @@ export default function RegisterAdvisor() {
   const [startShift2, setStartShift2] = useState('');
   const [endShift2, setEndShift2] = useState('');
   const [operatingCountryCode, setOperatingCountryCode] = useState('');
+  const [operatingCityCode, setOperatingCityCode] = useState('');
+  const [officeAddress, setOfficeAddress] = useState('');
   const [serviceTypes, setServiceTypes] = useState<any[]>([]);
   const [selectedServiceTypes, setSelectedServiceTypes] = useState<number[]>([]);
 
@@ -70,6 +71,8 @@ export default function RegisterAdvisor() {
       end_shift_2: endShift2,
       selected_service_types: selectedServiceTypes,
       operating_country_code: operatingCountryCode,
+      operating_city_code: operatingCityCode,
+      office_address: officeAddress,
     }, true);
   };
 
@@ -156,6 +159,18 @@ export default function RegisterAdvisor() {
           placeholder="End Shift 2"
           value={endShift2}
           onChange={(e) => setEndShift2(e.target.value)}
+        />
+        <input
+          type="text"
+          placeholder="Office Address"
+          value={officeAddress}
+          onChange={(e) => setOfficeAddress(e.target.value)}
+        />
+        <input
+          type="text"
+          placeholder="Operating City Code"
+          value={operatingCityCode}
+          onChange={(e) => setOperatingCityCode(e.target.value)}
         />
         <select multiple onChange={handleServiceTypeChange}>
           {serviceTypes.map((type) => (
