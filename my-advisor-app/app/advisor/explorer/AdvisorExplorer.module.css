@@ -1,0 +1,53 @@
+/* app/advisor-explorer/AdvisorExplorer.module.css */
+.container {
+    background-color: #189ab4;
+  }
+  
+  .header {
+    background-color: transparent;
+  }
+  
+  .headerContent {
+    padding: 50px;
+    color: white;
+    background-color: transparent;
+  }
+  
+  .headerText {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 50px;
+    text-align: left;
+    margin-right: 20px;
+  }
+  
+  .resultsContainer {
+    padding: 50px;
+    background-color: #f5f5f5;
+  }
+  
+  .results {
+    max-width: 1200px;
+    margin: 0 auto;
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+  }
+  
+  .advisor {
+    margin-bottom: 20px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+  }
+  
+  .advisorName {
+    color: #0070f3;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+  
+  .error {
+    color: red;
+  }
+  

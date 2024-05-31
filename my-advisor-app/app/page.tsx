@@ -1,10 +1,13 @@
-import Footer from '@/components/Footer';
-import Navbar from '@/components/NavBar';
-import { useAuth } from '@/contexts/AuthContext';
+// app/page.tsx
+"use client";
 
+import Footer from '@/components/footer/Footer';
+
+import { useAuth } from '@/contexts/AuthContext';
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import { getServiceTypes } from '@/services/serviceTypesService';
+import Navbar from '@/components/navbar/NavBar';
 
 export default function Home() {
   const { user } = useAuth();
@@ -32,7 +35,7 @@ export default function Home() {
     const query = new URLSearchParams();
     if (operatingCountryCode) query.append('operating_country_code', operatingCountryCode);
     if (selectedServiceType) query.append('service_id', selectedServiceType.toString());
-    router.push(`/advisor-explorer?${query.toString()}`);
+    router.push(`/advisor/explorer?${query.toString()}`);
   };
 
   return (

@@ -1,9 +1,12 @@
+// app/profile/page.tsx
+"use client";
+
 import { useEffect, useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { getProfile } from '@/services/profileService';
 import { getInvestorProfile } from '@/services/investorService';
 import { getAdvisorProfile } from '@/services/advisorService';
-import ProtectedRoute from '@/components/ProtextedRoutes';
+import ProtectedRoute from '@/components/auth/ProtectedRoutes';
 
 const Profile: React.FC = () => {
   const { user } = useAuth();
@@ -23,10 +26,10 @@ const Profile: React.FC = () => {
         const profileData = await getProfile();
         setProfile(profileData);
 
-        if (user.role === 'investor') {
+        if (user?.role === 'investor') {
           const investorData = await getInvestorProfile();
           setInvestorProfile(investorData);
-        } else if (user.role === 'advisor') {
+        } else if (user?.role === 'advisor') {
           const advisorData = await getAdvisorProfile();
           setAdvisorProfile(advisorData);
         }
@@ -51,12 +54,12 @@ const Profile: React.FC = () => {
         <h1>Your Profile</h1>
         {profile && (
           <div>
-            <p>Email: {user.email}</p>
+            <p>Email: {user?.email}</p>
             <p>Joined: {new Date(profile.created_at).toLocaleDateString()}</p>
             {/* Add more common profile fields here */}
           </div>
         )}
-        {user.role === 'investor' && investorProfile && (
+        {user?.role === 'investor' && investorProfile && (
           <div>
             <h2>Investor Profile</h2>
             <p>Net Worth: {investorProfile.investor.net_worth}</p>
@@ -71,7 +74,7 @@ const Profile: React.FC = () => {
             {/* Add more investor-specific fields here */}
           </div>
         )}
-        {user.role === 'advisor' && advisorProfile && (
+        {user?.role === 'advisor' && advisorProfile && (
           <div>
             <h2>Advisor Profile</h2>
             <p>Qualifications: {advisorProfile.advisor.qualifications}</p>

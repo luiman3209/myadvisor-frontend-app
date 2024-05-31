@@ -1,7 +1,24 @@
+// app/auth/register/advisor/page.tsx
+"use client";
+
 import { useAuth } from '@/contexts/AuthContext';
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import { getServiceTypes } from '@/services/serviceTypesService';
+import { ServiceType, ProfileData, CommonProfileData, AdvisorProfileData } from '@/types/auth';
+import TimeSelect from '@/components/select/TimeSelect';
+
+const allTimes = [
+  '0000', '0030', '0100', '0130', '0200', '0230', '0300', '0330', '0400', '0430', '0500', '0530', '0600', '0630', '0700', '0730', '0800', '0830', '0900', '0930', '1000', '1030', '1100', '1130',
+  '1200', '1230', '1300', '1330', '1400', '1430', '1500', '1530', '1600', '1630', '1700', '1730', '1800', '1830', '1900', '1930', '2000', '2030', '2100', '2130', '2200', '2230', '2300', '2330'
+];
+
+const calculateEndTimes = (start: string) => {
+  const startIndex = allTimes.indexOf(start);
+  if (startIndex === -1) return [];
+  const maxEndIndex = Math.min(startIndex + 16, allTimes.length); // 16 half-hour increments = 8 hours
+  return allTimes.slice(startIndex + 1, maxEndIndex + 1);
+};
 
 export default function RegisterAdvisor() {
   const [email, setEmail] = useState('');
@@ -20,8 +37,10 @@ export default function RegisterAdvisor() {
   const [operatingCountryCode, setOperatingCountryCode] = useState('');
   const [operatingCityCode, setOperatingCityCode] = useState('');
   const [officeAddress, setOfficeAddress] = useState('');
-  const [serviceTypes, setServiceTypes] = useState<any[]>([]);
+  const [serviceTypes, setServiceTypes] = useState<ServiceType[]>([]);
   const [selectedServiceTypes, setSelectedServiceTypes] = useState<number[]>([]);
+  const [endShift1Options, setEndShift1Options] = useState<string[]>(allTimes);
+  const [endShift2Options, setEndShift2Options] = useState<string[]>(allTimes);
 
   const { user, register, error } = useAuth();
   const router = useRouter();
@@ -44,6 +63,16 @@ export default function RegisterAdvisor() {
     fetchServiceTypes();
   }, [user, router]);
 
+  useEffect(() => {
+    setEndShift1Options(calculateEndTimes(startShift1));
+    setEndShift1(''); // Reset end shift when start shift changes
+  }, [startShift1]);
+
+  useEffect(() => {
+    setEndShift2Options(calculateEndTimes(startShift2));
+    setEndShift2(''); // Reset end shift when start shift changes
+  }, [startShift2]);
+
   const handleServiceTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const options = Array.from(e.target.options);
     const selected: number[] = [];
@@ -57,11 +86,15 @@ export default function RegisterAdvisor() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await register(email, password, {
+
+    const commonData: CommonProfileData = {
       first_name: firstName,
       last_name: lastName,
       phone_number: phoneNumber,
       address,
+    };
+
+    const advisorData: AdvisorProfileData = {
       qualifications,
       expertise,
       contact_information: contactInformation,
@@ -69,11 +102,18 @@ export default function RegisterAdvisor() {
       end_shift_1: endShift1,
       start_shift_2: startShift2,
       end_shift_2: endShift2,
-      selected_service_types: selectedServiceTypes,
       operating_country_code: operatingCountryCode,
       operating_city_code: operatingCityCode,
       office_address: officeAddress,
-    }, true);
+      serviceTypes: serviceTypes.filter(service => selectedServiceTypes.includes(service.service_id)),
+    };
+
+    const profileData: ProfileData = {
+      common_data: commonData,
+      advisor_data: advisorData,
+    };
+
+    await register(email, password, profileData, true);
   };
 
   const countryCodes = ['US', 'CA', 'GB', 'AU', 'IN']; // Limited list of country codes
@@ -136,30 +176,12 @@ export default function RegisterAdvisor() {
           value={contactInformation}
           onChange={(e) => setContactInformation(e.target.value)}
         />
-        <input
-          type="datetime-local"
-          placeholder="Start Shift 1"
-          value={startShift1}
-          onChange={(e) => setStartShift1(e.target.value)}
-        />
-        <input
-          type="datetime-local"
-          placeholder="End Shift 1"
-          value={endShift1}
-          onChange={(e) => setEndShift1(e.target.value)}
-        />
-        <input
-          type="datetime-local"
-          placeholder="Start Shift 2"
-          value={startShift2}
-          onChange={(e) => setStartShift2(e.target.value)}
-        />
-        <input
-          type="datetime-local"
-          placeholder="End Shift 2"
-          value={endShift2}
-          onChange={(e) => setEndShift2(e.target.value)}
-        />
+        
+        <TimeSelect value={startShift1} onChange={setStartShift1} options={allTimes} label="Start Shift 1" />
+        <TimeSelect value={endShift1} onChange={setEndShift1} options={endShift1Options} label="End Shift 1" />
+        <TimeSelect value={startShift2} onChange={setStartShift2} options={allTimes} label="Start Shift 2" />
+        <TimeSelect value={endShift2} onChange={setEndShift2} options={endShift2Options} label="End Shift 2" />
+
         <input
           type="text"
           placeholder="Office Address"

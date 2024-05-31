@@ -1,4 +1,5 @@
 // services/profileService.ts
+import { CommonProfileData } from '@/types/auth';
 import axios from 'axios';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
@@ -24,7 +25,7 @@ export const getProfile = async () => {
   }
 };
 
-export const updateProfile = async (profileData: any) => {
+export const updateProfile = async (profileData: CommonProfileData) => {
   try {
     const response = await axios.put('/api/profile', profileData, headers());
     return response.data;

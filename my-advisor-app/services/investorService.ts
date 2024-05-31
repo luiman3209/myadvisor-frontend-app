@@ -1,4 +1,5 @@
 // services/investorService.ts
+import { InvestorProfileData } from '@/types/auth';
 import axios from 'axios';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
@@ -11,7 +12,7 @@ const headers = () => ({
   },
 });
 
-export const createOrUpdateInvestor = async (profileData: any) => {
+export const createOrUpdateInvestor = async (profileData: InvestorProfileData) => {
   try {
     const response = await axios.put('/api/investor', profileData, headers());
     return response.data;

@@ -1,7 +1,11 @@
+// app/auth/register/investor/page.tsx
+"use client";
+
 import { useAuth } from '@/contexts/AuthContext';
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import { getServiceTypes } from '@/services/serviceTypesService';
+import { ServiceType, ProfileData, CommonProfileData, InvestorProfileData } from '@/types/auth';
 
 export default function RegisterInvestor() {
   const [email, setEmail] = useState('');
@@ -13,7 +17,7 @@ export default function RegisterInvestor() {
   const [netWorth, setNetWorth] = useState('');
   const [incomeRange, setIncomeRange] = useState('');
   const [geoPreferences, setGeoPreferences] = useState('');
-  const [serviceTypes, setServiceTypes] = useState<any[]>([]);
+  const [serviceTypes, setServiceTypes] = useState<ServiceType[]>([]);
   const [selectedServiceTypes, setSelectedServiceTypes] = useState<number[]>([]);
 
   const { user, register, error } = useAuth();
@@ -50,16 +54,27 @@ export default function RegisterInvestor() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await register(email, password, {
+
+    const commonData: CommonProfileData = {
       first_name: firstName,
       last_name: lastName,
       phone_number: phoneNumber,
       address,
+    };
+
+    const investorData: InvestorProfileData = {
       net_worth: netWorth,
       income_range: incomeRange,
       geo_preferences: geoPreferences,
-      selected_service_types: selectedServiceTypes,
-    }, false);
+      serviceTypes: serviceTypes.filter(service => selectedServiceTypes.includes(service.service_id)),
+    };
+
+    const profileData: ProfileData = {
+      common_data: commonData,
+      investor_data: investorData,
+    };
+
+    await register(email, password, profileData, false);
   };
 
   return (

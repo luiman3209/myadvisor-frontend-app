@@ -1,7 +1,9 @@
-// pages/auth/login.tsx
+// app/auth/login/page.tsx
+"use client";
+
 import { useAuth } from '@/contexts/AuthContext';
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 
 export default function Login() {
   const [email, setEmail] = useState('');

@@ -1,3 +1,4 @@
+import { AdvisorProfileData } from '@/types/auth';
 import axios from 'axios';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
@@ -10,7 +11,7 @@ const headers = () => ({
   },
 });
 
-export const createOrUpdateAdvisor = async (profileData: any) => {
+export const createOrUpdateAdvisor = async (profileData: AdvisorProfileData) => {
   try {
     const response = await axios.put('/api/advisor', profileData, headers());
     return response.data;

@@ -1,0 +1,50 @@
+/* SelectStyles.css */
+.SelectTrigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: white;
+    cursor: pointer;
+  }
+  
+  .SelectContent {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: white;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .SelectItem {
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+  }
+  
+  .SelectItem:hover {
+    background-color: #f0f0f0;
+  }
+  
+  .SelectItemIndicator {
+    margin-left: auto;
+  }
+  
+  .shift-time-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .shift-time-field {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .shift-time-label {
+    margin-bottom: 8px;
+    font-weight: bold;
+  }
+  

@@ -1,0 +1,105 @@
+/* BookAppointmentStyles.css */
+.book-appointment-panel {
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: white;
+}
+
+.panel-title {
+  margin-bottom: 20px;
+  font-size: 24px;
+  text-align: left;
+}
+
+.form-field {
+  margin-bottom: 20px;
+}
+
+.form-field label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
+.select-trigger {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.select-content {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: white;
+}
+
+.select-item {
+  padding: 8px;
+  cursor: pointer;
+}
+
+.select-item:hover {
+  background-color: #f0f0f0;
+}
+
+.select-item-indicator {
+  margin-left: auto;
+}
+
+.time-picker-table {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.table-header, .table-row {
+  display: flex;
+}
+
+.table-cell {
+  flex: 1;
+  padding: 8px;
+  border-right: 1px solid #ccc;
+  text-align: center;
+}
+
+.table-cell:last-child {
+  border-right: none;
+}
+
+.next-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+}
+
+.time-slot-button {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: white;
+  cursor: pointer;
+}
+
+.time-slot-button:hover {
+  background-color: #f0f0f0;
+}
+
+.time-slot-button.selected {
+  background-color: #0070f3;
+  color: white;
+}
+
+.time-slot-button.disabled {
+  background-color: #e0e0e0;
+  color: #a0a0a0;
+  cursor: not-allowed;
+}
