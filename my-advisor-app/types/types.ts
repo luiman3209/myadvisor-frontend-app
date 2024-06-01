@@ -11,7 +11,11 @@ export interface SearchParams {
   }
 
   export interface AdvisorSearchParams {
-    advisorId?: string;
+    advisorId: number;
+    selectedOffice?: string;
+    selectedService?: string;
+    selectedDay?: string;
+    selectedTime?: string;
   }
   
   export interface AdvisorPublicProfileProps {
@@ -21,4 +25,8 @@ export interface SearchParams {
     offices: string[];
     initialDays: string[];
     initialAvailableTimes: { [key: string]: string[] };
+    selectedOffice?: string;
+    selectedService?: string;
+    selectedDay?: string;
+    selectedTime?: string;
   }

@@ -1,7 +1,11 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import * as Select from '@radix-ui/react-select';
 import { CheckIcon, ChevronDownIcon, ChevronRightIcon, ChevronLeftIcon } from 'lucide-react';
 import './BookAppointmentStyles.css';
+
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/contexts/AuthContext';
+import { bookAppointment } from '@/services/appointmentService';
 
 interface BookAppointmentProps {
   advisorId: number;
@@ -10,6 +14,10 @@ interface BookAppointmentProps {
   days: string[];
   availableTimes: { [key: string]: string[] };
   onNavigateDays: (direction: 'next' | 'prev') => void;
+  selectedOffice?: string;
+  selectedService?: string;
+  selectedDay?: string;
+  selectedTime?: string;
 }
 
 const BookAppointment: React.FC<BookAppointmentProps> = ({
@@ -18,16 +26,69 @@ const BookAppointment: React.FC<BookAppointmentProps> = ({
   services,
   days,
   availableTimes,
-  onNavigateDays
+  onNavigateDays,
+  selectedOffice: initialSelectedOffice,
+  selectedService: initialSelectedService,
+  selectedDay: initialSelectedDay,
+  selectedTime: initialSelectedTime,
 }) => {
-  const [selectedOffice, setSelectedOffice] = useState<string | undefined>();
-  const [selectedService, setSelectedService] = useState<string | undefined>();
-  const [selectedDay, setSelectedDay] = useState<string | null>(null);
-  const [selectedTime, setSelectedTime] = useState<string | null>(null);
+  const { user, login, error: authError, loading: authLoading } = useAuth();
+  const router = useRouter();
+  const [selectedOffice, setSelectedOffice] = useState<string | undefined>(initialSelectedOffice);
+  const [selectedService, setSelectedService] = useState<string | undefined>(initialSelectedService);
+  const [selectedDay, setSelectedDay] = useState<string | null>(initialSelectedDay || null);
+  const [selectedTime, setSelectedTime] = useState<string | null>(initialSelectedTime || null);
+  const [bookingError, setBookingError] = useState<string | null>(null);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showLoginBox, setShowLoginBox] = useState<boolean>(false);
 
   const handleTimeSlotClick = (day: string, time: string) => {
     setSelectedDay(day);
     setSelectedTime(time);
+  };
+
+  const confirmBooking = async () => {
+    if (!user) {
+      setShowLoginBox(true);
+      return;
+    }
+
+    if (selectedDay && selectedTime) {
+      try {
+        setBookingError(null);
+        const startTime = `${selectedDay}T${selectedTime}:00`;
+        const endTime = `${selectedDay}T${parseInt(selectedTime.split(':')[0]) + 1}:00`;
+        await bookAppointment(advisorId, startTime, endTime);
+        alert('Appointment successfully booked');
+      } catch (error: any) {
+        setBookingError(error.message);
+      }
+    }
+  };
+
+  const handleLogin = async () => {
+    const query = new URLSearchParams({
+      advisorId: advisorId.toString(),
+      selectedOffice: selectedOffice || '',
+      selectedService: selectedService || '',
+      selectedDay: selectedDay || '',
+      selectedTime: selectedTime || ''
+    }).toString();
+    await login(email, password, `/advisor/profile?${query}`);
+    setShowLoginBox(false);
+    confirmBooking();
+  };
+
+  const handleRegisterRedirect = () => {
+    const query = new URLSearchParams({
+      advisorId: advisorId.toString(),
+      selectedOffice: selectedOffice || '',
+      selectedService: selectedService || '',
+      selectedDay: selectedDay || '',
+      selectedTime: selectedTime || ''
+    }).toString();
+    router.push(`/auth/register/investor?${query}`);
   };
 
   return (
@@ -115,6 +176,42 @@ const BookAppointment: React.FC<BookAppointmentProps> = ({
           </div>
         </div>
       </div>
+
+      {selectedDay && selectedTime && (
+        <div className="confirm-booking">
+          <button className="confirm-button" onClick={confirmBooking}>
+            Confirm book
+          </button>
+          {bookingError && <div className="error-message">{bookingError}</div>}
+        </div>
+      )}
+
+      {showLoginBox && (
+        <div className="login-box">
+          <h3>Login</h3>
+          {authError && <p className="error-message">{authError}</p>}
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            disabled={authLoading}
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            disabled={authLoading}
+          />
+          <button onClick={handleLogin} disabled={authLoading}>
+            {authLoading ? 'Logging in...' : 'Login'}
+          </button>
+          <p>
+            Don&apos;t have an account? <a onClick={handleRegisterRedirect} style={{ cursor: 'pointer', color: 'blue' }}>Register</a>
+          </p>
+        </div>
+      )}
     </div>
   );
 };

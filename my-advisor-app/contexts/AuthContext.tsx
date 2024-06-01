@@ -12,9 +12,9 @@ import { User, ProfileData } from '@/types/auth';
 
 interface AuthContextType {
   user: User | null;
-  login: (email: string, password: string) => Promise<void>;
+  login: (email: string, password: string, redirectUrl?: string) => Promise<void>;
   logout: () => void;
-  register: (email: string, password: string, profileData: ProfileData, isAdvisor?: boolean) => Promise<void>;
+  register: (email: string, password: string, profileData: ProfileData, isAdvisor?: boolean, redirectUrl?: string) => Promise<void>;
   error: string | null;
   loading: boolean;
 }
@@ -47,13 +47,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setLoading(false);
   }, []);
 
-  const handleLogin = useCallback(async (email: string, password: string) => {
+  const handleLogin = useCallback(async (email: string, password: string, redirectUrl?: string) => {
     setError(null);
     setLoading(true);
     try {
       const decodedUser = await login(email, password);
       setUser(decodedUser);
-      router.push('/');
+      router.push(redirectUrl || '/');
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -67,7 +67,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     router.push('/');
   }, [router]);
 
-  const handleRegister = useCallback(async (email: string, password: string, profileData: ProfileData, isAdvisor: boolean = true) => {
+  const handleRegister = useCallback(async (email: string, password: string, profileData: ProfileData, isAdvisor: boolean = true, redirectUrl?: string) => {
     setError(null);
     setLoading(true);
     try {
@@ -87,7 +87,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         await createOrUpdateInvestor(profileData.investor_data);
       }
 
-      router.push('/');
+      router.push(redirectUrl || '/');
     } catch (err: any) {
       setError(err.message);
     } finally {

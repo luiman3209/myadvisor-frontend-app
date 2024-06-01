@@ -22,7 +22,7 @@ const Profile: React.FC = () => {
       setError(null);
 
       try {
-        console.log('user', user);
+
         const profileData = await getProfile();
         setProfile(profileData);
 

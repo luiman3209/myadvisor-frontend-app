@@ -3,14 +3,14 @@
 import AdvisorPublicProfileClient from '@/components/clients/AdvisorPublicProfileClient';
 import { getPublicAdvisorProfile } from '@/services/advisorService';
 import { getFreeWindows } from '@/services/appointmentService';
-import { SearchParams, AdvisorPublicProfileProps, AdvisorSearchParams } from '@/types/types';
+import { AdvisorSearchParams, AdvisorPublicProfileProps } from '@/types/types';
 
 export default async function AdvisorPublicProfilePage({
   searchParams,
 }: {
   searchParams: AdvisorSearchParams;
 }) {
-  const { advisorId } = searchParams;
+  const { advisorId, selectedOffice, selectedService, selectedDay, selectedTime } = searchParams;
 
   let advisor = null;
   let profileReviews = [];
@@ -40,6 +40,10 @@ export default async function AdvisorPublicProfilePage({
       offices={offices}
       initialDays={days}
       initialAvailableTimes={availableTimes}
+      selectedOffice={selectedOffice}
+      selectedService={selectedService}
+      selectedDay={selectedDay}
+      selectedTime={selectedTime}
     />
   );
 }

@@ -1,9 +1,8 @@
-// app/auth/register/investor/page.tsx
 "use client";
 
 import { useAuth } from '@/contexts/AuthContext';
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { getServiceTypes } from '@/services/serviceTypesService';
 import { ServiceType, ProfileData, CommonProfileData, InvestorProfileData } from '@/types/auth';
 
@@ -22,13 +21,30 @@ export default function RegisterInvestor() {
 
   const { user, register, error } = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   useEffect(() => {
     if (user) {
-      router.push('/');
+      const advisorId = searchParams.get('advisorId');
+      const selectedOffice = searchParams.get('selectedOffice');
+      const selectedService = searchParams.get('selectedService');
+      const selectedDay = searchParams.get('selectedDay');
+      const selectedTime = searchParams.get('selectedTime');
+
+      if (advisorId && selectedOffice && selectedService && selectedDay && selectedTime) {
+        const query = new URLSearchParams({
+          advisorId,
+          selectedOffice,
+          selectedService,
+          selectedDay,
+          selectedTime
+        }).toString();
+        router.push(`/advisor/profile?${query}`);
+      } else {
+        router.push('/');
+      }
     }
 
-    // Fetch service types
     const fetchServiceTypes = async () => {
       try {
         const types = await getServiceTypes();
@@ -39,7 +55,7 @@ export default function RegisterInvestor() {
     };
 
     fetchServiceTypes();
-  }, [user, router]);
+  }, [user, router, searchParams]);
 
   const handleServiceTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const options = Array.from(e.target.options);
@@ -74,7 +90,15 @@ export default function RegisterInvestor() {
       investor_data: investorData,
     };
 
-    await register(email, password, profileData, false);
+    const query = new URLSearchParams({
+      advisorId: searchParams.get('advisorId') || '',
+      selectedOffice: searchParams.get('selectedOffice') || '',
+      selectedService: searchParams.get('selectedService') || '',
+      selectedDay: searchParams.get('selectedDay') || '',
+      selectedTime: searchParams.get('selectedTime') || ''
+    }).toString();
+
+    await register(email, password, profileData, false, `/advisor/profile?${query}`);
   };
 
   return (

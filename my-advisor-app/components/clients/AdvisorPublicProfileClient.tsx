@@ -1,4 +1,4 @@
-// components/AdvisorPublicProfileClient.tsx
+// components/clients/AdvisorPublicProfileClient.tsx
 "use client";
 
 import { useState, useCallback } from 'react';
@@ -17,17 +17,20 @@ const AdvisorPublicProfileClient: React.FC<AdvisorPublicProfileProps> = ({
   offices,
   initialDays,
   initialAvailableTimes,
+  selectedOffice,
+  selectedService,
+  selectedDay,
+  selectedTime,
 }) => {
   const [days, setDays] = useState<string[]>(initialDays);
   const [availableTimes, setAvailableTimes] = useState<{ [key: string]: string[] }>(initialAvailableTimes);
-  const [showBookAppointment, setShowBookAppointment] = useState<boolean>(false);
+  const [showBookAppointment, setShowBookAppointment] = useState<boolean>(selectedDay ? true  : false);
 
   const fetchAvailableTimes = useCallback(async (newDays: string[]) => {
     try {
       const startDate = newDays[0];
       const endDate = newDays[newDays.length - 1];
       const times = await getFreeWindows(advisor.advisor_id, startDate, endDate);
-      console.log('Available times:', times);
       setAvailableTimes(times);
     } catch (error) {
       console.error('Failed to fetch available times:', error);
@@ -95,6 +98,10 @@ const AdvisorPublicProfileClient: React.FC<AdvisorPublicProfileProps> = ({
                 days={days}
                 availableTimes={availableTimes}
                 onNavigateDays={updateDaysAndFetch}
+                selectedOffice={selectedOffice}
+                selectedService={selectedService}
+                selectedDay={selectedDay}
+                selectedTime={selectedTime}
               />
             </div>
           )}
