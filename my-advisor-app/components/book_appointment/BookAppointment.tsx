@@ -1,46 +1,29 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import * as Select from '@radix-ui/react-select';
-import { CheckIcon, ChevronDownIcon, ChevronRightIcon } from 'lucide-react';
+import { CheckIcon, ChevronDownIcon, ChevronRightIcon, ChevronLeftIcon } from 'lucide-react';
 import './BookAppointmentStyles.css';
 
-const offices = ['Office 1', 'Office 2', 'Office 3'];
-const services = ['Service 1', 'Service 2', 'Service 3'];
+interface BookAppointmentProps {
+  advisorId: number;
+  offices: string[];
+  services: string[];
+  days: string[];
+  availableTimes: { [key: string]: string[] };
+  onNavigateDays: (direction: 'next' | 'prev') => void;
+}
 
-const getNextDays = (days: number) => {
-  const result = [];
-  for (let i = 0; i < days; i++) {
-    const date = new Date();
-    date.setDate(date.getDate() + i);
-    result.push(date.toISOString().split('T')[0]);
-  }
-  return result;
-};
-
-const availableTimes: { [key: string]: string[] } = {
-  "2024-02-20": ["09:00", "09:30", "10:00"],
-  "2024-02-21": ["11:00", "13:30"],
-  "2024-02-22": ["09:00", "10:00", "11:00", "14:00"],
-  "2024-02-23": ["09:00", "10:00", "11:00", "12:00"],
-  "2024-02-24": ["13:00", "14:30", "15:00", "16:00"]
-};
-
-const BookAppointment: React.FC = () => {
+const BookAppointment: React.FC<BookAppointmentProps> = ({
+  advisorId,
+  offices,
+  services,
+  days,
+  availableTimes,
+  onNavigateDays
+}) => {
   const [selectedOffice, setSelectedOffice] = useState<string | undefined>();
   const [selectedService, setSelectedService] = useState<string | undefined>();
-  const [days, setDays] = useState<string[]>(getNextDays(5));
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
-
-  const handleNextDays = () => {
-    const lastDay = new Date(days[days.length - 1]);
-    const newDays = [];
-    for (let i = 1; i <= 5; i++) {
-      const nextDay = new Date(lastDay);
-      nextDay.setDate(lastDay.getDate() + i);
-      newDays.push(nextDay.toISOString().split('T')[0]);
-    }
-    setDays(newDays);
-  };
 
   const handleTimeSlotClick = (day: string, time: string) => {
     setSelectedDay(day);
@@ -101,34 +84,34 @@ const BookAppointment: React.FC = () => {
 
       <div className="form-field">
         <label>Appointment date</label>
-        <div className="time-picker-table">
-          <div className="table-header">
-            {days.map((day) => (
-              <div key={day} className="table-cell">
-                {new Date(day).toLocaleDateString()}
-              </div>
-            ))}
-            <button className="next-button" onClick={handleNextDays}>
+        <div className="time-picker-list">
+          <div className="list-navigation">
+            <button className="prev-button" onClick={() => onNavigateDays('prev')}>
+              <ChevronLeftIcon />
+            </button>
+            <div className="days-list">
+              {days.map((day) => (
+                <div key={day} className="time-picker-day">
+                  <span className="day-label">{new Date(day).toLocaleDateString()}</span>
+                  <div className="time-buttons">
+                    {availableTimes[day] ? availableTimes[day].map((time) => (
+                      <button
+                        key={day + time}
+                        className={`time-slot-button ${selectedDay === day && selectedTime === time ? 'selected' : ''}`}
+                        onClick={() => handleTimeSlotClick(day, time)}
+                      >
+                        {time}
+                      </button>
+                    )) : (
+                      <span className="no-slots">No slots</span>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+            <button className="next-button" onClick={() => onNavigateDays('next')}>
               <ChevronRightIcon />
             </button>
-          </div>
-          <div className="table-body">
-            {days.map((day) => (
-              <div key={day} className="table-row">
-                {availableTimes[day] ? availableTimes[day].map((time) => (
-                  <div key={day + time} className="table-cell">
-                    <button
-                      className={`time-slot-button ${selectedDay === day && selectedTime === time ? 'selected' : ''}`}
-                      onClick={() => handleTimeSlotClick(day, time)}
-                    >
-                      {time}
-                    </button>
-                  </div>
-                )) : (
-                  <div className="table-cell">No slots</div>
-                )}
-              </div>
-            ))}
           </div>
         </div>
       </div>

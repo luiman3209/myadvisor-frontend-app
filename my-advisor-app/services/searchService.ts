@@ -4,11 +4,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
 
 axios.defaults.baseURL = API_URL;
 
-const headers = () => ({
-  headers: {
-    Authorization: `Bearer ${localStorage.getItem('token')}`,
-  },
-});
+
 
 export const searchAdvisors = async (operating_country_code?: string, service_id?: number) => {
   try {
@@ -20,7 +16,7 @@ export const searchAdvisors = async (operating_country_code?: string, service_id
       params.service_id = service_id;
     }
 
-    const response = await axios.get('/api/search/advisors', { params, ...headers() });
+    const response = await axios.get('/api/search/advisors', { params });
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {

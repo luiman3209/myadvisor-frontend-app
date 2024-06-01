@@ -11,14 +11,20 @@ const headers = () => ({
   },
 });
 
+
 export const getServiceTypes = async () => {
   try {
-    const response = await axios.get('/api/services', headers());
+    const response = await axios.get(`/api/services`, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {
       throw new Error(error.response.data.message || 'Failed to fetch service types');
     } else {
+      console.log(error);
       throw new Error('Failed to fetch service types due to an unexpected error');
     }
   }

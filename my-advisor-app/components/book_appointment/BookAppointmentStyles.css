@@ -52,27 +52,18 @@
   margin-left: auto;
 }
 
-.time-picker-table {
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  overflow: hidden;
-}
-
-.table-header, .table-row {
+.time-picker-list {
   display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
-.table-cell {
-  flex: 1;
-  padding: 8px;
-  border-right: 1px solid #ccc;
-  text-align: center;
+.list-navigation {
+  display: flex;
+  align-items: center;
 }
 
-.table-cell:last-child {
-  border-right: none;
-}
-
+.prev-button,
 .next-button {
   background: none;
   border: none;
@@ -80,17 +71,28 @@
   padding: 8px;
 }
 
+.time-picker-day {
+  display: flex;
+  align-items: center;
+}
+
+.day-label {
+  width: 120px;
+  font-weight: bold;
+}
+
+.time-buttons {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
 .time-slot-button {
-  width: 100%;
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 4px;
   background-color: white;
   cursor: pointer;
-}
-
-.time-slot-button:hover {
-  background-color: #f0f0f0;
 }
 
 .time-slot-button.selected {
@@ -102,4 +104,8 @@
   background-color: #e0e0e0;
   color: #a0a0a0;
   cursor: not-allowed;
+}
+
+.no-slots {
+  color: #a0a0a0;
 }

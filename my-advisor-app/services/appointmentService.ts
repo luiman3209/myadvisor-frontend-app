@@ -27,9 +27,11 @@ export const bookAppointment = async (advisor_id: number, start_time: string, en
   }
 };
 
-export const getFreeWindows = async (advisorId: number) => {
+export const getFreeWindows = async (advisorId: number | null, startDate: string, endDate: string) => {
+  if (!advisorId || !startDate || !endDate) return;
+  console.log('Fetching free windows for advisor:', advisorId, 'from', startDate, 'to', endDate);
   try {
-    const response = await axios.get(`/api/appointment/free-windows/${advisorId}`);
+    const response = await axios.post(`/api/appointment/free-windows/${advisorId}`, { startDate, endDate });
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {

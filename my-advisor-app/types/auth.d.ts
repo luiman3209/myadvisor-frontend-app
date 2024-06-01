@@ -8,14 +8,14 @@ export interface ServiceType {
     service_id: number;
     service_type_name: string;
     service_type_code: string;
-  }
+}
 
 export interface CommonProfileData {
     first_name: string;
     last_name: string;
     phone_number: string;
     address: string;
-  
+
 }
 
 export interface InvestorProfileData {
@@ -31,8 +31,8 @@ export interface AdvisorProfileData {
     contact_information: string;
     start_shift_1: string;
     end_shift_1: string;
-    start_shift_2: string;
-    end_shift_2: string;
+    start_shift_2: string?;
+    end_shift_2: string?;
     operating_country_code: string;
     operating_city_code: string;
     office_address: string;

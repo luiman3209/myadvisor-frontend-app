@@ -100,8 +100,8 @@ export default function RegisterAdvisor() {
       contact_information: contactInformation,
       start_shift_1: startShift1,
       end_shift_1: endShift1,
-      start_shift_2: startShift2,
-      end_shift_2: endShift2,
+      start_shift_2: startShift2.length > 0 ? startShift2 : null,
+      end_shift_2: endShift2.length > 0 ? endShift2 : null,
       operating_country_code: operatingCountryCode,
       operating_city_code: operatingCityCode,
       office_address: officeAddress,
@@ -176,7 +176,7 @@ export default function RegisterAdvisor() {
           value={contactInformation}
           onChange={(e) => setContactInformation(e.target.value)}
         />
-        
+
         <TimeSelect value={startShift1} onChange={setStartShift1} options={allTimes} label="Start Shift 1" />
         <TimeSelect value={endShift1} onChange={setEndShift1} options={endShift1Options} label="End Shift 1" />
         <TimeSelect value={startShift2} onChange={setStartShift2} options={allTimes} label="Start Shift 2" />
