@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Navbar from '@/components/navbar/NavBar';
 import Footer from '@/components/footer/Footer';
+import { Button } from './ui/button';
 
 interface HomeClientProps {
   serviceTypes: any[];
@@ -24,43 +25,43 @@ const HomeClient: React.FC<HomeClientProps> = ({ serviceTypes }) => {
   };
 
   return (
-    <div className='flex flex-col flex-grow bg-cyan-500'>
+    <div className='flex flex-col min-h-screen bg-cyan-500'>
+      <Navbar />
+      <main className="flex-grow">
+        <div className="p-12 bg-transparent">
+          <div className="flex flex-col md:flex-row justify-center items-center mb-12">
+            <div className="text-left md:mr-5 mb-8 md:mb-0 text-white">
+              <h1 className="text-3xl font-semibold mb-4">Book your appointment online!</h1>
+              <p className="mb-6 text-xl font-base">Search among thousands of Financial Advisors.</p>
+              <form onSubmit={handleSearch} className="mt-5">
+                <input
+                  type="text"
+                  placeholder="Country Code"
+                  value={operatingCountryCode}
+                  onChange={(e) => setOperatingCountryCode(e.target.value)}
+                  className="p-2 mb-4 md:mb-0 md:mr-4 border border-gray-300 rounded"
+                />
+                <select
+                  value={selectedServiceType || ''}
+                  onChange={(e) => setSelectedServiceType(Number(e.target.value) || undefined)}
+                  className="p-2 mb-4 md:mb-0 md:mr-4 border border-gray-300 rounded"
+                >
+                  <option value="" disabled>Select Service Type</option>
+                  {serviceTypes.map((type) => (
+                    <option key={type.service_id} value={type.service_id}>
+                      {type.service_type_name}
+                    </option>
+                  ))}
+                </select>
+                <Button className="p-2 bg-white hover:bg-cyan text-black rounded ">Search</Button>
 
-        <Navbar />
-    <main className="flex-grow">
-      <div style={{ padding: '50px', backgroundColor: 'transparent' }}>
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '50px' }}>
-          <div style={{ textAlign: 'left', marginRight: '20px' }}>
-            <h1>Book your appointment online!</h1>
-            <p>Search among thousands of Financial Advisors.</p>
-            <form onSubmit={handleSearch} style={{ marginTop: '20px' }}>
-              <input
-                type="text"
-                placeholder="Country Code"
-                value={operatingCountryCode}
-                onChange={(e) => setOperatingCountryCode(e.target.value)}
-                style={{ padding: '10px', marginRight: '10px' }}
-              />
-              <select
-                value={selectedServiceType || ''}
-                onChange={(e) => setSelectedServiceType(Number(e.target.value) || undefined)}
-                style={{ padding: '10px', marginRight: '10px' }}
-              >
-                <option value="" disabled>Select Service Type</option>
-                {serviceTypes.map((type) => (
-                  <option key={type.service_id} value={type.service_id}>
-                    {type.service_type_name}
-                  </option>
-                ))}
-              </select>
-              <button type="submit" style={{ padding: '10px 20px' }}>Search</button>
-            </form>
-          </div>
-          <div>
-            <img src="/images/subjects.png" alt="Subjects" style={{ width: '400px', height: 'auto' }} />
+              </form>
+            </div>
+            <div>
+              <img src="/images/subjects.png" alt="Subjects" className="w-80 h-auto" />
+            </div>
           </div>
         </div>
-      </div>
       </main>
       <Footer />
     </div>
