@@ -26,7 +26,7 @@ export default async function AdvisorPublicProfilePage({
       profileReviews = data.profileReviews;
       serviceTypes = data.serviceTypes.map((service: any) => service.service_type_name);
       offices = data.offices.map((office: any) => office.office_name);
-      availableTimes = await getFreeWindows(Number(advisorId), days[0], days[days.length - 1]);
+      availableTimes = await getFreeWindows(Number(advisorId), days[0], days[days.length - 1].concat('T23:59:59Z'));
     }
   } catch (error) {
     console.error('Failed to fetch advisor profile', error);

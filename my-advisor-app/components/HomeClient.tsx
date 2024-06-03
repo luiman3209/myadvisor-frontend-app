@@ -28,7 +28,7 @@ const HomeClient: React.FC<HomeClientProps> = ({ serviceTypes }) => {
       <div style={{ backgroundColor: 'transparent' }}>
         <Navbar />
       </div>
-      <div style={{ padding: '50px', color: 'white', backgroundColor: 'transparent' }}>
+      <div style={{ padding: '50px', backgroundColor: 'transparent' }}>
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '50px' }}>
           <div style={{ textAlign: 'left', marginRight: '20px' }}>
             <h1>Book your appointment online!</h1>

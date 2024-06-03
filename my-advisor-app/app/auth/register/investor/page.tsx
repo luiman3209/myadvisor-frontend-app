@@ -98,7 +98,7 @@ export default function RegisterInvestor() {
       selectedTime: searchParams.get('selectedTime') || ''
     }).toString();
 
-    await register(email, password, profileData, false, `/advisor/profile?${query}`);
+    await register(email, password, profileData, false);
   };
 
   return (

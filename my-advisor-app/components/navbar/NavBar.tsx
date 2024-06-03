@@ -22,7 +22,10 @@ const Navbar: React.FC = () => {
     <nav className={styles.nav}>
       <div className={styles.container}>
         <div>
-          <img src="/images/myadvisor-logo.png" alt="Logo" className={styles.logo} />
+          <Link href="/">
+            <img className={styles.logo} src="/images/myadvisor-logo.png" alt="Logo" className={styles.logo} />
+            <span className={styles.link}>MyAdvisor</span>
+          </Link>
         </div>
         <div className={styles.links}>
           {user && user.role === 'investor' && (
@@ -32,10 +35,14 @@ const Navbar: React.FC = () => {
           )}
           {user ? (
             <>
-              <button onClick={logout} className={styles.button}>Logout</button>
+              
+              <Link href="/dashboard">
+                <span className={styles.link}>Dashboard</span>
+              </Link>
               <Link href="/profile">
                 <span className={styles.link}>Profile</span>
               </Link>
+              <button onClick={logout} className={styles.button}>Logout</button>
             </>
           ) : (
             <>

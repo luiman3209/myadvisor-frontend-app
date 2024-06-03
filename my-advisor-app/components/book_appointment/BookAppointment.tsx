@@ -13,7 +13,7 @@ interface BookAppointmentProps {
   services: string[];
   days: string[];
   availableTimes: { [key: string]: string[] };
-  onNavigateDays: (direction: 'next' | 'prev') => void;
+  onNavigateDays: (direction: 'next' | 'prev' | 'none') => void;
   selectedOffice?: string;
   selectedService?: string;
   selectedDay?: string;
@@ -57,10 +57,25 @@ const BookAppointment: React.FC<BookAppointmentProps> = ({
     if (selectedDay && selectedTime) {
       try {
         setBookingError(null);
-        const startTime = `${selectedDay}T${selectedTime}:00`;
-        const endTime = `${selectedDay}T${parseInt(selectedTime.split(':')[0]) + 1}:00`;
+        // Combine date and time with timezone (UTC)
+      const startTime = `${selectedDay}T${selectedTime}:00Z`;
+
+      // Parse the time and increment the hour for the end time
+      const [hour, minute] = selectedTime.split(':').map(Number);
+      let endHour = hour + 1;
+
+      // Format the end hour to ensure it has leading zeros if needed
+      const endHourStr = endHour.toString().padStart(2, '0');
+
+      // Build the end time string with timezone (UTC)
+      const endTime = `${selectedDay}T${endHourStr}:${minute.toString().padStart(2, '0')}:00Z`;
+
+
         await bookAppointment(advisorId, startTime, endTime);
-        alert('Appointment successfully booked');
+        setSelectedDay(null);
+        setSelectedTime(null);
+        alert('Appointment successfully booked on ' + new Date(selectedDay).toLocaleDateString() + ' at ' + selectedTime);
+        onNavigateDays('none');
       } catch (error: any) {
         setBookingError(error.message);
       }

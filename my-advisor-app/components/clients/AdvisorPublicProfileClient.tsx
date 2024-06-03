@@ -29,7 +29,7 @@ const AdvisorPublicProfileClient: React.FC<AdvisorPublicProfileProps> = ({
   const fetchAvailableTimes = useCallback(async (newDays: string[]) => {
     try {
       const startDate = newDays[0];
-      const endDate = newDays[newDays.length - 1];
+      const endDate = newDays[newDays.length - 1].concat('T23:59:59Z');
       const times = await getFreeWindows(advisor.advisor_id, startDate, endDate);
       setAvailableTimes(times);
     } catch (error) {
@@ -37,9 +37,15 @@ const AdvisorPublicProfileClient: React.FC<AdvisorPublicProfileProps> = ({
     }
   }, [advisor.advisor_id]);
 
-  const updateDaysAndFetch = useCallback((direction: 'next' | 'prev') => {
+  const updateDaysAndFetch = useCallback((direction: 'next' | 'prev' | 'none') => {
     const currentStartDate = new Date(days[0]);
     const newStartDate = new Date(currentStartDate);
+
+    if(direction === 'none') {
+      fetchAvailableTimes(days);
+      return;
+    }
+
     if (direction === 'next') {
       newStartDate.setDate(currentStartDate.getDate() + 5);
     } else {
