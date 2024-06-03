@@ -1,24 +1,23 @@
 // components/Footer.tsx
 import Link from 'next/link';
-import styles from './Footer.module.css';
 
 const Footer: React.FC = () => {
   return (
-    <footer className={styles.footer}>
-      <div className={styles.footerContent}>
+    <footer className="bg-gray-800 text-gray-200 py-8">
+      <div className="container mx-auto flex flex-col md:flex-row justify-between">
         {[
           { title: 'Company', links: ['About Us', 'Careers', 'Press', 'Blog'] },
           { title: 'Support', links: ['Contact Us', 'Help Center', 'Privacy Policy', 'Terms of Service'] },
           { title: 'Community', links: ['Forums', 'Events', 'Partners', 'Affiliates'] },
           { title: 'More', links: ['Investors', 'Sitemap', 'Newsletter', 'FAQs'] },
         ].map((section) => (
-          <div key={section.title} className={styles.footerSection}>
-            <h3>{section.title}</h3>
-            <ul className={styles.footerLinks}>
+          <div key={section.title} className="mb-8 md:mb-0">
+            <h3 className="text-xl font-semibold mb-4">{section.title}</h3>
+            <ul>
               {section.links.map((link) => (
-                <li key={link}>
-                  <Link href={`/${link.toLowerCase().replace(/ /g, '-')}`}>
-                    <span className={styles.footerLink}>{link}</span>
+                <li key={link} className="mb-2">
+                  <Link href={`/${link.toLowerCase().replace(/ /g, '-')}`} className="text-gray-400 hover:text-white">
+                    {link}
                   </Link>
                 </li>
               ))}
@@ -26,8 +25,8 @@ const Footer: React.FC = () => {
           </div>
         ))}
       </div>
-      <hr className={styles.footerDivider} />
-      <div className={styles.footerBottom}>
+      <hr className="border-gray-700 my-8" />
+      <div className="text-center">
         www.myadvisor.com © 2024
       </div>
     </footer>

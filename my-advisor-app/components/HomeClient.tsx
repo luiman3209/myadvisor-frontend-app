@@ -24,10 +24,10 @@ const HomeClient: React.FC<HomeClientProps> = ({ serviceTypes }) => {
   };
 
   return (
-    <div style={{ backgroundColor: '#189AB4' }}>
-      <div style={{ backgroundColor: 'transparent' }}>
+    <div className='flex flex-col flex-grow bg-cyan-500'>
+
         <Navbar />
-      </div>
+    <main className="flex-grow">
       <div style={{ padding: '50px', backgroundColor: 'transparent' }}>
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '50px' }}>
           <div style={{ textAlign: 'left', marginRight: '20px' }}>
@@ -61,6 +61,7 @@ const HomeClient: React.FC<HomeClientProps> = ({ serviceTypes }) => {
           </div>
         </div>
       </div>
+      </main>
       <Footer />
     </div>
   );
