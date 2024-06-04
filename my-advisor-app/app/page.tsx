@@ -1,16 +1,18 @@
 // app/page.tsx
 import HomeClient from '@/components/HomeClient';
+import { getLastReviews } from '@/services/reviewService';
 import { getServiceTypes } from '@/services/serviceTypesService';
+import { ReviewEntity } from '@/types/types';
 
 // This is a server component by default
 export default async function Home() {
   // Fetch service types on the server side
   let serviceTypes = [];
-  try {
-    serviceTypes = await getServiceTypes();
-  } catch (error) {
-    console.error('Failed to fetch service types', error);
-  }
+  let latestReviews: ReviewEntity[] = [];
 
-  return <HomeClient serviceTypes={serviceTypes} />;
+  serviceTypes = await getServiceTypes();
+  latestReviews = await getLastReviews(6);
+
+
+  return <HomeClient serviceTypes={serviceTypes} latestReviews={latestReviews} />;
 }

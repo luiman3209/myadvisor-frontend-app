@@ -7,18 +7,18 @@ import Navbar from '@/components/navbar/NavBar';
 import Footer from '@/components/footer/Footer';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from './ui/dropdown-menu';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from './ui/select';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
-import { Label } from './ui/label';
 import { Bell, CalendarCheck, CalendarPlus, MessagesSquare, Search } from 'lucide-react';
 import { Separator } from './ui/separator';
+import { ReviewEntity } from '@/types/types';
 
 interface HomeClientProps {
   serviceTypes: any[];
+  latestReviews: ReviewEntity[];
 }
 
-const HomeClient: React.FC<HomeClientProps> = ({ serviceTypes }) => {
+const HomeClient: React.FC<HomeClientProps> = ({ serviceTypes, latestReviews }) => {
   const [operatingCountryCode, setOperatingCountryCode] = useState('');
   const [selectedServiceName, setSelectedServiceName] = useState<string | undefined>(undefined);
   const router = useRouter();
@@ -120,7 +120,7 @@ const HomeClient: React.FC<HomeClientProps> = ({ serviceTypes }) => {
                 <span>Book a meeting: it's easy and free!</span>
               </div>
               <div className='home-cta-card-body'>
-                <p className='home-cta-card-body'>
+                <p>
                   Choose the date you prefer, enter your details, and confirm… the appointment is booked! There are no additional costs</p>
 
               </div>
@@ -132,7 +132,7 @@ const HomeClient: React.FC<HomeClientProps> = ({ serviceTypes }) => {
                 <span>Find an advisor near you</span>
               </div>
               <div className='home-cta-card-body'>
-                <p className='home-cta-card-body'>
+                <p>
                   Choose from over 200,000 financial advisors and specialists. Read reviews from other clients.
                 </p>
 
@@ -145,7 +145,7 @@ const HomeClient: React.FC<HomeClientProps> = ({ serviceTypes }) => {
                 <span>Request consultation</span>
               </div>
               <div className='home-cta-card-body'>
-                <p className='home-cta-card-body'>
+                <p>
                   Get personalized financial guidance tailored to your needs. Request a consultation with a top-rated financial advisor today and take the first step towards a secure financial future.</p>
 
               </div>
@@ -176,17 +176,18 @@ const HomeClient: React.FC<HomeClientProps> = ({ serviceTypes }) => {
             </CardHeader>
 
             <div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
-              <Card className="home-cta-card">
+              <Card className="home-review-card">
 
-                <div className="home-cta-card-header">
+                <div className="home-review-card-header">
                   <CalendarCheck className="text-cyan-500 mr-1" />
                   <span>Email reminders</span>
                 </div>
                 <div className='home-cta-card-body'>
-                  <p className='home-cta-card-body'>
+                  <p className='home-review-card-header'>
                     Stay on track with timely email reminders. Never miss an important consultation or update with your financial advisor, ensuring you always stay informed and prepared.</p>
                 </div>
               </Card>
+
 
 
             </div>

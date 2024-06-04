@@ -1,0 +1,28 @@
+import axios from 'axios';
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+
+axios.defaults.baseURL = API_URL;
+
+export const getLastReviews = async (limit = 10) => {
+    try {
+        const params = { limit };
+        const response = await axios.get('/api/reviews/latest-reviews', { params });
+        return response.data.reviews.map((review: any) => ({
+            review_id: review.review_id,
+            user_id: review.user_id,
+            advisor_id: review.advisor_id,
+            appointment_id: review.appointment_id,
+            rating: review.rating,
+            review: review.comment,
+            created_at: new Date(review.created_at),
+            updated_at: new Date(review.updated_at),
+        }));
+    } catch (error) {
+        if (axios.isAxiosError(error) && error.response) {
+            throw new Error(error.response.data.message || 'Failed to retrieve reviews');
+        } else {
+            throw new Error('Failed to retrieve reviews due to an unexpected error');
+        }
+    }
+};
