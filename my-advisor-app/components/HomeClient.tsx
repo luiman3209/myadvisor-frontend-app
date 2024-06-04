@@ -11,7 +11,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from './ui/select';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { Label } from './ui/label';
-import { CalendarCheck } from 'lucide-react';
+import { Bell, CalendarCheck, CalendarPlus, MessagesSquare, Search } from 'lucide-react';
 import { Separator } from './ui/separator';
 
 interface HomeClientProps {
@@ -44,6 +44,8 @@ const HomeClient: React.FC<HomeClientProps> = ({ serviceTypes }) => {
     <div className='flex flex-col min-h-screen bg-cyan-500'>
       <Navbar />
       <main className="flex-grow flex-col">
+
+        {/* ********************** Main area ********************** */}
 
         <div className="p-12 bg-transparent relative">
           <div className="flex flex-col items-center md:mb-24">
@@ -86,38 +88,112 @@ const HomeClient: React.FC<HomeClientProps> = ({ serviceTypes }) => {
             </div>
           </div>
         </div>
-        <div className=''>
-          <div className="flex flex-col mx-8 md:mx-2 my-2 md:my-4 md:px-96 bg-white">
-            <CardHeader>
-              <CardTitle>Available services by certified advisors</CardTitle>
-              <CardDescription>Pick the service based on your needs.</CardDescription>
-            </CardHeader>
-            <CardContent className=' space-x-1 md:space-x-2 space-y-0 md:space-y-1'>
-              {serviceTypes.map((type) => (
-                <Button variant="outline" key={'button'.concat(type.service_id)}>
-                  {type.service_type_name}
-                </Button>
-              ))}
 
 
-            </CardContent>
+        {/* ********************** White section ********************** */}
 
-            <Separator className="my-4" />
+        <div className="flex flex-col md:px-96 bg-white">
 
-            <div className="flex flex-col md:flex-row">
-              <div className="flex flex-row space-x-2">
-                <CalendarCheck />
-                <span>Accept terms and conditions</span>
+          {/* ********************** Available services ********************** */}
+
+          <CardHeader>
+            <CardTitle>Available services by certified advisors</CardTitle>
+            <CardDescription>Pick the service based on your needs.</CardDescription>
+          </CardHeader>
+          <CardContent className=' space-x-1 md:space-x-2 space-y-2'>
+            {serviceTypes.map((type) => (
+              <Button variant="outline" key={'button'.concat(type.service_id)}>
+                {type.service_type_name}
+              </Button>
+            ))}
+          </CardContent>
+
+          <Separator className="my-4" />
+
+          {/* ***************** CTAs ********************** */}
+
+          <div className="flex flex-col md:flex-row my-6">
+            <Card className="home-cta-card">
+
+              <div className="home-cta-card-header">
+                <CalendarPlus className="text-cyan-500 mr-1 w-8" />
+                <span>Book a meeting: it's easy and free!</span>
               </div>
-            </div>
+              <div className='home-cta-card-body'>
+                <p className='home-cta-card-body'>
+                  Choose the date you prefer, enter your details, and confirm… the appointment is booked! There are no additional costs</p>
+
+              </div>
+            </Card>
+            <Card className="home-cta-card">
+
+              <div className="home-cta-card-header">
+                <Search className="text-cyan-500 mr-1" />
+                <span>Find an advisor near you</span>
+              </div>
+              <div className='home-cta-card-body'>
+                <p className='home-cta-card-body'>
+                  Choose from over 200,000 financial advisors and specialists. Read reviews from other clients.
+                </p>
+
+              </div>
+            </Card>
+            <Card className="home-cta-card">
+
+              <div className="home-cta-card-header">
+                <MessagesSquare className="text-cyan-500 mr-1" />
+                <span>Request consultation</span>
+              </div>
+              <div className='home-cta-card-body'>
+                <p className='home-cta-card-body'>
+                  Get personalized financial guidance tailored to your needs. Request a consultation with a top-rated financial advisor today and take the first step towards a secure financial future.</p>
+
+              </div>
+            </Card>
+            <Card className="home-cta-card">
+
+              <div className="home-cta-card-header">
+                <Bell className="text-cyan-500 mr-1" />
+                <span>Email reminders</span>
+              </div>
+              <div className='home-cta-card-body'>
+                <p className='home-cta-card-body'>
+                  Stay on track with timely email reminders. Never miss an important consultation or update with your financial advisor, ensuring you always stay informed and prepared.</p>
+              </div>
+            </Card>
+
 
           </div>
 
 
+          <Separator className="my-4" />
+
+          {/* ********************** Reviews ********************** */}
+          <div>
+            <CardHeader>
+              <CardTitle>Latest reviews</CardTitle>
+              <CardDescription>Discover the latest feedback from our clients. See how our financial advisors are making a difference.</CardDescription>
+            </CardHeader>
+
+            <div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
+              <Card className="home-cta-card">
+
+                <div className="home-cta-card-header">
+                  <CalendarCheck className="text-cyan-500 mr-1" />
+                  <span>Email reminders</span>
+                </div>
+                <div className='home-cta-card-body'>
+                  <p className='home-cta-card-body'>
+                    Stay on track with timely email reminders. Never miss an important consultation or update with your financial advisor, ensuring you always stay informed and prepared.</p>
+                </div>
+              </Card>
+
+
+            </div>
+          </div>
+
+
         </div>
-
-
-
 
       </main>
       <Footer />

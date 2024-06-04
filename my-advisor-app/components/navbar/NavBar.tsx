@@ -35,26 +35,26 @@ const Navbar: React.FC = () => {
   };
 
   return (
-    <nav className="bg-cyan-400 shadow-md">
+    <nav className="bg-cyan-500">
       <div className="container mx-auto flex justify-between items-center p-4">
         {/* Logo */}
         <div className="flex items-center space-x-2">
-          <Image 
-            src="/images/myadvisor-logo.png" 
-            alt="Picture of the author" 
-            width={50} 
-            height={50} 
-            className="flex-shrink-0" 
+          <Image
+            src="/images/myadvisor-logo.png"
+            alt="Picture of the author"
+            width={50}
+            height={50}
+            className="flex-shrink-0"
           />
           <span className="text-white text-xl font-medium">MyAdvisor</span>
         </div>
-        
+
         {/* Desktop Menu */}
-        
+
         <div className="hidden lg:flex space-x-1 items-center">
-        <Link href="/data-processing-policy" className="nav-link">
-              Data processing policy
-            </Link>
+          <Link href="/data-processing-policy" className="nav-link">
+            Data processing policy
+          </Link>
           {!user || user.role === 'investor' && (
             <Link href="/ask-an-advisor" className="nav-link">
               Ask an Advisor
@@ -74,10 +74,10 @@ const Navbar: React.FC = () => {
             <>
               <DropdownMenu>
                 <DropdownMenuTrigger className="nav-link">Register for free</DropdownMenuTrigger>
-                  <DropdownMenuContent>
-                    <DropdownMenuItem className="nav-menu"><User className="mr-2 h-4 w-4" /><span>I'm an investor</span></DropdownMenuItem>
-                    <DropdownMenuItem className="nav-menu"><UserCog className="mr-2 h-4 w-4" /><span>I'm an advisor</span></DropdownMenuItem>
-                  </DropdownMenuContent>
+                <DropdownMenuContent>
+                  <DropdownMenuItem className="nav-menu"><User className="mr-2 h-4 w-4" /><span>I'm an investor</span></DropdownMenuItem>
+                  <DropdownMenuItem className="nav-menu"><UserCog className="mr-2 h-4 w-4" /><span>I'm an advisor</span></DropdownMenuItem>
+                </DropdownMenuContent>
               </DropdownMenu>
               <Link href="/auth/login" className="nav-link">
                 Login
@@ -102,7 +102,7 @@ const Navbar: React.FC = () => {
       {/* Mobile Menu */}
       {isMenuOpen && (
         <div className="lg:hidden">
-          <div className="flex flex-col items-center space-y-4 p-4 bg-cyan-400 shadow-md">
+          <div className="flex flex-col items-center space-y-4 p-4 bg-cyan-500">
             <Link href="/data-processing-policy" className="nav-link">
               Data processing policy
             </Link>
