@@ -6,10 +6,10 @@ const Footer: React.FC = () => {
     <footer className="bg-gray-800 text-gray-200 py-8">
       <div className="container mx-auto flex flex-col md:flex-row justify-between">
         {[
-          { title: 'Company', links: ['About Us', 'Careers', 'Press', 'Blog'] },
-          { title: 'Support', links: ['Contact Us', 'Help Center', 'Privacy Policy', 'Terms of Service'] },
-          { title: 'Community', links: ['Forums', 'Events', 'Partners', 'Affiliates'] },
-          { title: 'More', links: ['Investors', 'Sitemap', 'Newsletter', 'FAQs'] },
+          { title: 'Services', links: ['Privacy and cookies', 'Terms of Service'] },
+          { title: 'For investors', links: ['Advisors', 'Financial advisory firms', 'Offices', 'Ask an advisor'] },
+          { title: 'For advisors and organizations', links: ['Prices', 'Help Center', 'Free resources'] },
+
         ].map((section) => (
           <div key={section.title} className="mb-8 md:mb-0">
             <h3 className="text-xl font-semibold mb-4">{section.title}</h3>

@@ -1,4 +1,3 @@
-// app/auth/register/advisor/page.tsx
 "use client";
 
 import { useAuth } from '@/contexts/AuthContext';
@@ -6,7 +5,13 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { getServiceTypes } from '@/services/serviceTypesService';
 import { ServiceType, ProfileData, CommonProfileData, AdvisorProfileData } from '@/types/auth';
-import TimeSelect from '@/components/select/TimeSelect';
+
+import { Input } from '@/components/ui/input';
+import { ChevronRight } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import Link from 'next/link';
+import Image from 'next/image';
+import Slider from '@/components/Slider';
 
 const allTimes = [
   '0000', '0030', '0100', '0130', '0200', '0230', '0300', '0330', '0400', '0430', '0500', '0530', '0600', '0630', '0700', '0730', '0800', '0830', '0900', '0930', '1000', '1030', '1100', '1130',
@@ -41,6 +46,7 @@ export default function RegisterAdvisor() {
   const [selectedServiceTypes, setSelectedServiceTypes] = useState<number[]>([]);
   const [endShift1Options, setEndShift1Options] = useState<string[]>(allTimes);
   const [endShift2Options, setEndShift2Options] = useState<string[]>(allTimes);
+  const [isSliderOpen, setIsSliderOpen] = useState(false);
 
   const { user, register, error } = useAuth();
   const router = useRouter();
@@ -119,97 +125,93 @@ export default function RegisterAdvisor() {
   const countryCodes = ['US', 'CA', 'GB', 'AU', 'IN']; // Limited list of country codes
 
   return (
-    <div>
-      <h1>Register as Advisor</h1>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <input
-          type="text"
-          placeholder="First Name"
-          value={firstName}
-          onChange={(e) => setFirstName(e.target.value)}
-        />
-        <input
-          type="text"
-          placeholder="Last Name"
-          value={lastName}
-          onChange={(e) => setLastName(e.target.value)}
-        />
-        <input
-          type="text"
-          placeholder="Phone Number"
-          value={phoneNumber}
-          onChange={(e) => setPhoneNumber(e.target.value)}
-        />
-        <input
-          type="text"
-          placeholder="Address"
-          value={address}
-          onChange={(e) => setAddress(e.target.value)}
-        />
-        <input
-          type="text"
-          placeholder="Qualifications"
-          value={qualifications}
-          onChange={(e) => setQualifications(e.target.value)}
-        />
-        <input
-          type="text"
-          placeholder="Expertise"
-          value={expertise}
-          onChange={(e) => setExpertise(e.target.value)}
-        />
-        <input
-          type="text"
-          placeholder="Contact Information"
-          value={contactInformation}
-          onChange={(e) => setContactInformation(e.target.value)}
-        />
+    <main>
+      <div className="flex justify-between p-5 bg-cyan-500">
+        <Link href="/">
+          <div className="flex items-center space-x-2">
+            <Image
+              src="/images/myadvisor-logo.png"
+              alt="Picture of the author"
+              width={50}
+              height={50}
+              className="flex-shrink-0"
+            />
+            <span className="text-2xl font-medium text-white">MyAdvisor</span>
+          </div>
+        </Link>
+        <div className="flex items-center">
+          <span className="mr-3 text-white">Already registered?</span>
+          <Button className='bg-cyan-600'>Login</Button>
+        </div>
+      </div>
 
-        <TimeSelect value={startShift1} onChange={setStartShift1} options={allTimes} label="Start Shift 1" />
-        <TimeSelect value={endShift1} onChange={setEndShift1} options={endShift1Options} label="End Shift 1" />
-        <TimeSelect value={startShift2} onChange={setStartShift2} options={allTimes} label="Start Shift 2" />
-        <TimeSelect value={endShift2} onChange={setEndShift2} options={endShift2Options} label="End Shift 2" />
+      <div className='flex items-center justify-center'>
+        <div className="relative text-center py-20 px-5 w-full md:w-1/2 space-y-8">
+          <h1 className="text-3xl font-bold mb-5">Register as Advisor</h1>
+          <p>Will take just a minute</p>
+          <div className="relative w-full">
+            {!isSliderOpen && (
+              <div className="flex flex-col items-center space-y-6">
+                <Input type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} />
+                <Input type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} />
+                <Input type="password" placeholder="Confirm password" />
+                <Button variant="outline" size="icon" onClick={() => setIsSliderOpen(true)}>
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
+              </div>
+            )}
+            <Slider isOpen={isSliderOpen}>
+              <div className="flex flex-col items-center space-y-6">
+                <div className="flex justify-end w-full">
+                  <Button variant="outline" size="icon" onClick={() => setIsSliderOpen(false)}>
+                    Close
+                  </Button>
+                </div>
+                <form onSubmit={handleSubmit} className="w-full">
+                  <div className="space-y-4">
+                    <Input type="text" placeholder="First Name" value={firstName} onChange={e => setFirstName(e.target.value)} />
+                    <Input type="text" placeholder="Last Name" value={lastName} onChange={e => setLastName(e.target.value)} />
+                    <Input type="text" placeholder="Phone Number" value={phoneNumber} onChange={e => setPhoneNumber(e.target.value)} />
+                    <Input type="text" placeholder="Address" value={address} onChange={e => setAddress(e.target.value)} />
+                    <Input type="text" placeholder="Qualifications" value={qualifications} onChange={e => setQualifications(e.target.value)} />
+                    <Input type="text" placeholder="Expertise" value={expertise} onChange={e => setExpertise(e.target.value)} />
+                    <Input type="text" placeholder="Contact Information" value={contactInformation} onChange={e => setContactInformation(e.target.value)} />
+                    <select value={startShift1} onChange={e => setStartShift1(e.target.value)}>
+                      {allTimes.map(time => (
+                        <option key={time} value={time}>{time}</option>
+                      ))}
+                    </select>
+                    <select value={endShift1} onChange={e => setEndShift1(e.target.value)}>
+                      {endShift1Options.map(time => (
+                        <option key={time} value={time}>{time}</option>
+                      ))}
+                    </select>
+                    <select value={startShift2} onChange={e => setStartShift2(e.target.value)}>
+                      {allTimes.map(time => (
+                        <option key={time} value={time}>{time}</option>
+                      ))}
+                    </select>
+                    <select value={endShift2} onChange={e => setEndShift2(e.target.value)}>
+                      {endShift2Options.map(time => (
+                        <option key={time} value={time}>{time}</option>
+                      ))}
+                    </select>
+                    <select value={operatingCountryCode} onChange={e => setOperatingCountryCode(e.target.value)}>
+                      {countryCodes.map(code => (
+                        <option key={code} value={code}>{code}</option>
+                      ))}
+                    </select>
+                    <Input type="text" placeholder="Operating City Code" value={operatingCityCode} onChange={e => setOperatingCityCode(e.target.value)} />
+                    <Input type="text" placeholder="Office Address" value={officeAddress} onChange={e => setOfficeAddress(e.target.value)} />
 
-        <input
-          type="text"
-          placeholder="Office Address"
-          value={officeAddress}
-          onChange={(e) => setOfficeAddress(e.target.value)}
-        />
-        <input
-          type="text"
-          placeholder="Operating City Code"
-          value={operatingCityCode}
-          onChange={(e) => setOperatingCityCode(e.target.value)}
-        />
-        <select multiple onChange={handleServiceTypeChange}>
-          {serviceTypes.map((type) => (
-            <option key={type.service_id} value={type.service_id}>
-              {type.service_type_name}
-            </option>
-          ))}
-        </select>
-        <select value={operatingCountryCode} onChange={(e) => setOperatingCountryCode(e.target.value)}>
-          <option value="" disabled>Select Country Code</option>
-          {countryCodes.map(code => (
-            <option key={code} value={code}>{code}</option>
-          ))}
-        </select>
-        <button type="submit">Register</button>
-      </form>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-    </div>
+                  </div>
+                  <Button type="submit" className="mt-4">Register</Button>
+                </form>
+              </div>
+            </Slider>
+          </div>
+        </div>
+      </div>
+    </main>
   );
 }
