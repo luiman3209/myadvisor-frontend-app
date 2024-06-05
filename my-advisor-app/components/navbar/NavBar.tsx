@@ -16,6 +16,7 @@ import {
 
 import {
 
+  Building,
   User,
   UserCog,
 
@@ -38,16 +39,20 @@ const Navbar: React.FC = () => {
     <nav className="bg-cyan-500">
       <div className="container mx-auto flex justify-between items-center p-4">
         {/* Logo */}
-        <div className="flex items-center space-x-2">
-          <Image
-            src="/images/myadvisor-logo.png"
-            alt="Picture of the author"
-            width={50}
-            height={50}
-            className="flex-shrink-0"
-          />
-          <span className="text-white text-2xl font-medium">MyAdvisor</span>
-        </div>
+        <Link href="/">
+          <div className="flex items-center space-x-2">
+
+            <Image
+              src="/images/myadvisor-logo.png"
+              alt="Picture of the author"
+              width={50}
+              height={50}
+              className="flex-shrink-0"
+            />
+            <span className="text-white text-2xl font-medium">MyAdvisor</span>
+
+          </div>
+        </Link>
 
         {/* Desktop Menu */}
 
@@ -75,8 +80,9 @@ const Navbar: React.FC = () => {
               <DropdownMenu>
                 <DropdownMenuTrigger className="nav-link">Register for free</DropdownMenuTrigger>
                 <DropdownMenuContent>
-                  <DropdownMenuItem className="nav-menu"><User className="mr-2 h-4 w-4" /><span>I'm an investor</span></DropdownMenuItem>
-                  <DropdownMenuItem className="nav-menu"><UserCog className="mr-2 h-4 w-4" /><span>I'm an advisor</span></DropdownMenuItem>
+                  <DropdownMenuItem className="nav-menu"><div className='flex'><User className="mr-2 h-5 w-5" /><Link href="/auth/register/investor">I'm an investor</Link></div></DropdownMenuItem>
+                  <DropdownMenuItem className="nav-menu"><div className='flex'><UserCog className="mr-2 h-5 w-5" /><Link href="/auth/register/advisor">I'm an advisor</Link></div></DropdownMenuItem>
+                  <DropdownMenuItem className="nav-menu"><div className='flex'><Building className="mr-2 h-5 w-5" /><Link href="/auth/register/organization">Register as organization</Link></div></DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
               <Link href="/auth/login" className="nav-link">

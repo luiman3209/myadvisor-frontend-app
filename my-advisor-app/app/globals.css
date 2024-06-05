@@ -62,7 +62,7 @@
 }
 
 .nav-menu {
-  @apply text-slate-900 hover:text-black block px-2 py-2 font-medium text-base;
+  @apply text-slate-700 hover:text-black hover:bg-cyan-100 block px-2 py-2 font-medium text-base;
 }
 
 .home-cta-card {
