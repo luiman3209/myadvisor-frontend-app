@@ -37,7 +37,7 @@ export interface ServiceType {
   service_name: string;
 }
 
-export interface ReviewEntity {
+export interface HomeReviewDto {
   review_id: number;
   user_id: number;
   advisor_id: number;
@@ -46,4 +46,7 @@ export interface ReviewEntity {
   review: string;
   created_at: Date;
   updated_at: Date;
+  advisor_display_name: string;
+  advisor_img_url: string;
+  reviewer_first_name: string;
 }

@@ -8,6 +8,7 @@ export const getLastReviews = async (limit = 10) => {
     try {
         const params = { limit };
         const response = await axios.get('/api/reviews/latest-reviews', { params });
+
         return response.data.reviews.map((review: any) => ({
             review_id: review.review_id,
             user_id: review.user_id,
@@ -17,6 +18,9 @@ export const getLastReviews = async (limit = 10) => {
             review: review.comment,
             created_at: new Date(review.created_at),
             updated_at: new Date(review.updated_at),
+            advisor_display_name: review.advisor.advisor_display_name,
+            advisor_img_url: review.advisor.advisor_img_url,
+            reviewer_first_name: review.reviewer_first_name,
         }));
     } catch (error) {
         if (axios.isAxiosError(error) && error.response) {

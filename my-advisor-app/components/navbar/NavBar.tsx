@@ -46,7 +46,7 @@ const Navbar: React.FC = () => {
             height={50}
             className="flex-shrink-0"
           />
-          <span className="text-white text-xl font-medium">MyAdvisor</span>
+          <span className="text-white text-2xl font-medium">MyAdvisor</span>
         </div>
 
         {/* Desktop Menu */}
