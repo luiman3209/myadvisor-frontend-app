@@ -73,11 +73,11 @@ export default function RegisterAdvisor() {
   }, [user, router]);
 
 
-  const validateStep = () => {
+  const validateStep = async () => {
     const newErrors: { [key: string]: string } = {};
     if (formStep === 0) {
       if (!email) newErrors.email = "Email is required";
-      if (!checkEmailAvailability(email)) newErrors.email = "Email is already taken";
+      if (! await checkEmailAvailability(email)) newErrors.email = "Email is already taken";
       if (!password) newErrors.password = "Password is required";
       if (password.length < 6) newErrors.password = "Password must be at least 6 characters long";
       if (password !== confirmPassword) newErrors.password = "Passwords do not match";
@@ -88,7 +88,7 @@ export default function RegisterAdvisor() {
       if (lastName.length < 2) newErrors.lastName = "Last Name must be at least 2 characters long";
       if (!phoneNumber) newErrors.phoneNumber = "Phone Number is required";
       if (phoneNumber.length < 10) newErrors.phoneNumber = "Phone Number must be at least 10 characters long";
-      if (!checkPhoneAvailability(phoneNumber)) newErrors.phoneNumber = "Phone Number is already taken";
+      if (! await checkPhoneAvailability(phoneNumber)) newErrors.phoneNumber = "Phone Number is already taken";
       if (!address) newErrors.address = "Address is required";
     } else if (formStep === 2) {
 
@@ -184,8 +184,12 @@ export default function RegisterAdvisor() {
               lastName={lastName}
               phoneNumber={phoneNumber}
               address={address}
+              selectedOfficeAddress={officeAddress}
               selectedQualifications={selectedQualifications}
-
+              operatingCityCode={operatingCityCode}
+              operatingCountryCode={operatingCountryCode}
+              setOperatingCityCode={setOperatingCityCode}
+              setOperatingCountryCode={setOperatingCountryCode}
               contactInformation={contactInformation}
               startShift1={startShift1}
               endShift1={endShift1}
@@ -208,6 +212,7 @@ export default function RegisterAdvisor() {
               availableQualifications={availableQualifications}
               availableServiceTypes={serviceTypes}
               setSelectedQualifications={setSelectedQualifications}
+              setSelectedOfficeAddress={setOfficeAddress}
               setSelectedServiceTypes={setSelectedServiceTypes}
               selectedServiceTypes={selectedServiceTypes} />
             <div className="flex justify-between mt-6">

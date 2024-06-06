@@ -1,5 +1,6 @@
 import React, { useState, ChangeEvent } from 'react';
 import axios from 'axios';
+import { Input } from '../ui/input';
 
 // Define the structure of a suggestion
 interface Suggestion {
@@ -39,7 +40,7 @@ const AddressPicker: React.FC<AddressPickerProps> = ({ onAddressSelect }) => {
 
     return (
         <div>
-            <input
+            <Input
                 type="text"
                 value={query}
                 onChange={handleInputChange}

@@ -16,14 +16,13 @@ const AddressPickerPage: React.FC = () => {
 
     return (
         <div>
-            <h1>Select Address</h1>
-            <AddressPicker onAddressSelect={handleAddressSelect} />
-            {selectedAddress && (
+
+            {selectedAddress ?
                 <div>
                     <h2>Selected Address:</h2>
                     <p>{selectedAddress}</p>
                 </div>
-            )}
+                : <AddressPicker onAddressSelect={handleAddressSelect} />}
         </div>
     );
 };

@@ -11,6 +11,8 @@ import { Label } from '../ui/label';
 import { ServiceTypePicker } from './ServiceTypePicker';
 import { ServiceType } from '@/types/entity/service_type_entity';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '../ui/select';
+import AddressPicker from './AddressPicker';
+import { CountryPicker } from './CountryPicker';
 
 
 const allTimes = [
@@ -41,6 +43,9 @@ interface StepFormProps {
     lastName: string;
     phoneNumber: string;
     address: string;
+    operatingCountryCode: string;
+    operatingCityCode: string;
+    selectedOfficeAddress: string;
     selectedQualifications: QualificationEntity[];
     availableQualifications: QualificationEntity[];
     selectedServiceTypes: ServiceType[];
@@ -57,6 +62,9 @@ interface StepFormProps {
     setLastName: (value: string) => void;
     setPhoneNumber: (value: string) => void;
     setAddress: (value: string) => void;
+    setSelectedOfficeAddress: (value: string) => void;
+    setOperatingCountryCode: (value: string) => void;
+    setOperatingCityCode: (value: string) => void;
     setSelectedQualifications: (value: QualificationEntity[]) => void;
     setSelectedServiceTypes: (value: ServiceType[]) => void;
     setContactInformation: (value: string) => void;
@@ -69,9 +77,9 @@ interface StepFormProps {
 
 
 const StepForm: React.FC<StepFormProps> = ({
-    formStep, errors, email, password, confirmPassword, firstName, lastName, phoneNumber,
-    address, selectedQualifications, availableQualifications, selectedServiceTypes, availableServiceTypes, contactInformation, startShift1, endShift1,
-    setEmail, setPassword, setConfirmPassword, setFirstName, setLastName, setPhoneNumber, setAddress,
+    formStep, errors, email, password, confirmPassword, firstName, lastName, phoneNumber, operatingCountryCode, operatingCityCode, setOperatingCityCode, setOperatingCountryCode,
+    address, selectedOfficeAddress, selectedQualifications, availableQualifications, selectedServiceTypes, availableServiceTypes, contactInformation, startShift1, endShift1,
+    setEmail, setPassword, setConfirmPassword, setFirstName, setLastName, setPhoneNumber, setAddress, setSelectedOfficeAddress,
     setSelectedQualifications, setSelectedServiceTypes, setContactInformation, setStartShift1, setEndShift1, setStartShift2, setEndShift2,
 }) => {
 
@@ -130,6 +138,7 @@ const StepForm: React.FC<StepFormProps> = ({
                 )}
                 {formStep === 1 && (
                     <>
+                        <p>Personal profile informations</p>
                         <ShakeableInput
                             type="text"
                             placeholder="First Name"
@@ -164,7 +173,7 @@ const StepForm: React.FC<StepFormProps> = ({
                 {formStep === 2 && (
                     <>
 
-
+                        <p>Professional profile informations</p>
                         <div className='space-y-4 text-left'>
                             <Label> Qualifications</Label>
 
@@ -184,14 +193,30 @@ const StepForm: React.FC<StepFormProps> = ({
                     </>
                 )}
                 {formStep === 3 && (
-                    <>  <Label>Contact Information</Label>
+
+
+                    <>
+
+                        <p>Offices and booking informations</p>
+                        <Label>Contact Information</Label>
                         <ShakeableInput
                             type="text"
-                            placeholder="Where clients can reach you"
+                            placeholder="Work email "
                             value={contactInformation}
                             onChange={(e: ChangeEvent<HTMLInputElement>) => setContactInformation(e.target.value)}
                             error={errors.contactInformation}
                         />
+
+                        <CountryPicker countryCode={operatingCountryCode} setCountryCode={setOperatingCountryCode} />
+
+                        <Label>Office address</Label>
+                        {selectedOfficeAddress ?
+                            <div>
+
+                                <p>{selectedOfficeAddress}</p>
+                            </div>
+                            : <AddressPicker onAddressSelect={setSelectedOfficeAddress} />}
+
                         <div className='flex space-x-12'>
                             <div>
                                 <Label className="">Availability window start time</Label>
