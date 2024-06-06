@@ -1,4 +1,6 @@
 // services/serviceTypeService.ts
+
+import { ServiceType } from '@/types/entity/service_type_entity';
 import axios from 'axios';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
@@ -19,12 +21,14 @@ export const getServiceTypes = async () => {
         'Content-Type': 'application/json',
       },
     });
-    return response.data;
+    const serviceTypes = response.data as ServiceType[];
+
+    return serviceTypes;
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {
       throw new Error(error.response.data.message || 'Failed to fetch service types');
     } else {
-      console.log(error);
+
       throw new Error('Failed to fetch service types due to an unexpected error');
     }
   }

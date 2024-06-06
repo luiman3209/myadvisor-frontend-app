@@ -16,7 +16,7 @@ export const login = async (email: string, password: string) => {
     return jwtDecode(token);
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {
-        
+
       throw new Error(error.response.data.message || 'Login failed');
     } else {
       throw new Error('Login failed due to an unexpected error');
@@ -37,6 +37,41 @@ export const register = async (email: string, password: string, role: string) =>
   }
 };
 
+
 export const logout = () => {
   localStorage.removeItem('token');
+};
+
+export const checkEmailAvailability = async (email: string) => {
+  try {
+
+    const response = await axios.post('/api/auth/check-email', { email });
+
+    if (response.status === 200) { return true; } else { return false; }
+
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response) {
+
+      throw new Error(error.response.data.message || 'Login failed');
+    } else {
+      throw new Error('Login failed due to an unexpected error');
+    }
+  }
+};
+
+export const checkPhoneAvailability = async (phone_number: string) => {
+  try {
+
+    const response = await axios.post('/api/auth/check-phone', { phone_number });
+
+    if (response.status === 200) { return true; } else { return false; }
+
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response) {
+
+      throw new Error(error.response.data.message || 'Login failed');
+    } else {
+      throw new Error('Login failed due to an unexpected error');
+    }
+  }
 };

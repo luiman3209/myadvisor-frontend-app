@@ -32,10 +32,6 @@ export interface AdvisorPublicProfileProps {
 }
 
 
-export interface ServiceType {
-  service_id: number;
-  service_name: string;
-}
 
 export interface HomeReviewDto {
   review_id: number;

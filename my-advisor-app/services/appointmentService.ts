@@ -30,7 +30,7 @@ export const bookAppointment = async (advisor_id: number, start_time: string, en
 export const getFreeWindows = async (advisorId: number | null, startDate: string, endDate: string) => {
   if (!advisorId || !startDate || !endDate) return;
   try {
-    console.log('Getting free windows', advisorId, startDate, endDate);
+
     const response = await axios.post(`/api/appointment/free-windows/${advisorId}`, { startDate, endDate });
     return response.data;
   } catch (error) {

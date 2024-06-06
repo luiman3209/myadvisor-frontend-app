@@ -4,36 +4,30 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { getServiceTypes } from '@/services/serviceTypesService';
-import { ServiceType, ProfileData, CommonProfileData, AdvisorProfileData } from '@/types/auth';
+import { ProfileData, CommonProfileData, AdvisorProfileData } from '@/types/auth';
 
-import { Input } from '@/components/ui/input';
-import { ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import Image from 'next/image';
-import Slider from '@/components/Slider';
+import StepForm from '@/components/input/StepForm';
 
-const allTimes = [
-  '0000', '0030', '0100', '0130', '0200', '0230', '0300', '0330', '0400', '0430', '0500', '0530', '0600', '0630', '0700', '0730', '0800', '0830', '0900', '0930', '1000', '1030', '1100', '1130',
-  '1200', '1230', '1300', '1330', '1400', '1430', '1500', '1530', '1600', '1630', '1700', '1730', '1800', '1830', '1900', '1930', '2000', '2030', '2100', '2130', '2200', '2230', '2300', '2330'
-];
+import { getAvailableQualifications } from '@/services/qualificationService';
+import { QualificationEntity } from '@/types/entity/qualification_entity';
+import { ServiceType } from '@/types/entity/service_type_entity';
+import { checkEmailAvailability, checkPhoneAvailability } from '@/services/authService';
 
-const calculateEndTimes = (start: string) => {
-  const startIndex = allTimes.indexOf(start);
-  if (startIndex === -1) return [];
-  const maxEndIndex = Math.min(startIndex + 16, allTimes.length); // 16 half-hour increments = 8 hours
-  return allTimes.slice(startIndex + 1, maxEndIndex + 1);
-};
+
 
 export default function RegisterAdvisor() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [address, setAddress] = useState('');
-  const [qualifications, setQualifications] = useState('');
-  const [expertise, setExpertise] = useState('');
+  const [selectedQualifications, setSelectedQualifications] = useState<QualificationEntity[]>([]);
+  const [availableQualifications, setAvailableQualifications] = useState<QualificationEntity[]>([]);
   const [contactInformation, setContactInformation] = useState('');
   const [startShift1, setStartShift1] = useState('');
   const [endShift1, setEndShift1] = useState('');
@@ -43,10 +37,9 @@ export default function RegisterAdvisor() {
   const [operatingCityCode, setOperatingCityCode] = useState('');
   const [officeAddress, setOfficeAddress] = useState('');
   const [serviceTypes, setServiceTypes] = useState<ServiceType[]>([]);
-  const [selectedServiceTypes, setSelectedServiceTypes] = useState<number[]>([]);
-  const [endShift1Options, setEndShift1Options] = useState<string[]>(allTimes);
-  const [endShift2Options, setEndShift2Options] = useState<string[]>(allTimes);
-  const [isSliderOpen, setIsSliderOpen] = useState(false);
+  const [selectedServiceTypes, setSelectedServiceTypes] = useState<ServiceType[]>([]);
+  const [formStep, setFormStep] = useState(0);
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   const { user, register, error } = useAuth();
   const router = useRouter();
@@ -56,42 +49,76 @@ export default function RegisterAdvisor() {
       router.push('/');
     }
 
-    // Fetch service types
     const fetchServiceTypes = async () => {
       try {
         const types = await getServiceTypes();
+
         setServiceTypes(types);
       } catch (error) {
         console.error('Failed to fetch service types', error);
       }
     };
 
+    const fetchAvailableQualifications = async () => {
+      try {
+        const qualifications = await getAvailableQualifications();
+        setAvailableQualifications(qualifications);
+      } catch (error) {
+        console.error('Failed to fetch qualifications', error);
+      }
+    };
+
+    fetchAvailableQualifications();
     fetchServiceTypes();
   }, [user, router]);
 
-  useEffect(() => {
-    setEndShift1Options(calculateEndTimes(startShift1));
-    setEndShift1(''); // Reset end shift when start shift changes
-  }, [startShift1]);
 
-  useEffect(() => {
-    setEndShift2Options(calculateEndTimes(startShift2));
-    setEndShift2(''); // Reset end shift when start shift changes
-  }, [startShift2]);
+  const validateStep = () => {
+    const newErrors: { [key: string]: string } = {};
+    if (formStep === 0) {
+      if (!email) newErrors.email = "Email is required";
+      if (!checkEmailAvailability(email)) newErrors.email = "Email is already taken";
+      if (!password) newErrors.password = "Password is required";
+      if (password.length < 6) newErrors.password = "Password must be at least 6 characters long";
+      if (password !== confirmPassword) newErrors.password = "Passwords do not match";
+    } else if (formStep === 1) {
+      if (!firstName) newErrors.firstName = "First Name is required";
+      if (firstName.length < 2) newErrors.firstName = "First Name must be at least 2 characters long";
+      if (!lastName) newErrors.lastName = "Last Name is required";
+      if (lastName.length < 2) newErrors.lastName = "Last Name must be at least 2 characters long";
+      if (!phoneNumber) newErrors.phoneNumber = "Phone Number is required";
+      if (phoneNumber.length < 10) newErrors.phoneNumber = "Phone Number must be at least 10 characters long";
+      if (!checkPhoneAvailability(phoneNumber)) newErrors.phoneNumber = "Phone Number is already taken";
+      if (!address) newErrors.address = "Address is required";
+    } else if (formStep === 2) {
 
-  const handleServiceTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const options = Array.from(e.target.options);
-    const selected: number[] = [];
-    options.forEach(option => {
-      if (option.selected) {
-        selected.push(Number(option.value));
-      }
-    });
-    setSelectedServiceTypes(selected);
+      if (!selectedQualifications || selectedQualifications.length < 1) newErrors.qualifications = "Qualifications are required";
+      if (!selectedServiceTypes || selectedServiceTypes.length < 1) newErrors.expertise = "Expertise is required";
+    } else if (formStep === 3) {
+      if (!contactInformation) newErrors.contactInformation = "Contact Information is required";
+      if (!startShift1) newErrors.startShift1 = "Start Shift 1 is required";
+      if (!endShift1) newErrors.endShift1 = "End Shift 1 is required";
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const nextStep = () => {
+    if (validateStep()) {
+      setFormStep(prevStep => prevStep + 1);
+    }
+  };
+
+  const previousStep = () => {
+    setFormStep(prevStep => Math.max(prevStep - 1, 0));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!validateStep()) {
+      return;
+    }
 
     const commonData: CommonProfileData = {
       first_name: firstName,
@@ -101,8 +128,7 @@ export default function RegisterAdvisor() {
     };
 
     const advisorData: AdvisorProfileData = {
-      qualifications,
-      expertise,
+      qualifications: selectedQualifications.map(q => q.qualification_id),
       contact_information: contactInformation,
       start_shift_1: startShift1,
       end_shift_1: endShift1,
@@ -111,7 +137,7 @@ export default function RegisterAdvisor() {
       operating_country_code: operatingCountryCode,
       operating_city_code: operatingCityCode,
       office_address: officeAddress,
-      serviceTypes: serviceTypes.filter(service => selectedServiceTypes.includes(service.service_id)),
+      serviceTypes: selectedServiceTypes,
     };
 
     const profileData: ProfileData = {
@@ -121,8 +147,6 @@ export default function RegisterAdvisor() {
 
     await register(email, password, profileData, true);
   };
-
-  const countryCodes = ['US', 'CA', 'GB', 'AU', 'IN']; // Limited list of country codes
 
   return (
     <main>
@@ -150,65 +174,47 @@ export default function RegisterAdvisor() {
           <h1 className="text-3xl font-bold mb-5">Register as Advisor</h1>
           <p>Will take just a minute</p>
           <div className="relative w-full">
-            {!isSliderOpen && (
-              <div className="flex flex-col items-center space-y-6">
-                <Input type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} />
-                <Input type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} />
-                <Input type="password" placeholder="Confirm password" />
-                <Button variant="outline" size="icon" onClick={() => setIsSliderOpen(true)}>
-                  <ChevronRight className="h-4 w-4" />
-                </Button>
-              </div>
-            )}
-            <Slider isOpen={isSliderOpen}>
-              <div className="flex flex-col items-center space-y-6">
-                <div className="flex justify-end w-full">
-                  <Button variant="outline" size="icon" onClick={() => setIsSliderOpen(false)}>
-                    Close
-                  </Button>
-                </div>
-                <form onSubmit={handleSubmit} className="w-full">
-                  <div className="space-y-4">
-                    <Input type="text" placeholder="First Name" value={firstName} onChange={e => setFirstName(e.target.value)} />
-                    <Input type="text" placeholder="Last Name" value={lastName} onChange={e => setLastName(e.target.value)} />
-                    <Input type="text" placeholder="Phone Number" value={phoneNumber} onChange={e => setPhoneNumber(e.target.value)} />
-                    <Input type="text" placeholder="Address" value={address} onChange={e => setAddress(e.target.value)} />
-                    <Input type="text" placeholder="Qualifications" value={qualifications} onChange={e => setQualifications(e.target.value)} />
-                    <Input type="text" placeholder="Expertise" value={expertise} onChange={e => setExpertise(e.target.value)} />
-                    <Input type="text" placeholder="Contact Information" value={contactInformation} onChange={e => setContactInformation(e.target.value)} />
-                    <select value={startShift1} onChange={e => setStartShift1(e.target.value)}>
-                      {allTimes.map(time => (
-                        <option key={time} value={time}>{time}</option>
-                      ))}
-                    </select>
-                    <select value={endShift1} onChange={e => setEndShift1(e.target.value)}>
-                      {endShift1Options.map(time => (
-                        <option key={time} value={time}>{time}</option>
-                      ))}
-                    </select>
-                    <select value={startShift2} onChange={e => setStartShift2(e.target.value)}>
-                      {allTimes.map(time => (
-                        <option key={time} value={time}>{time}</option>
-                      ))}
-                    </select>
-                    <select value={endShift2} onChange={e => setEndShift2(e.target.value)}>
-                      {endShift2Options.map(time => (
-                        <option key={time} value={time}>{time}</option>
-                      ))}
-                    </select>
-                    <select value={operatingCountryCode} onChange={e => setOperatingCountryCode(e.target.value)}>
-                      {countryCodes.map(code => (
-                        <option key={code} value={code}>{code}</option>
-                      ))}
-                    </select>
-                    <Input type="text" placeholder="Operating City Code" value={operatingCityCode} onChange={e => setOperatingCityCode(e.target.value)} />
-                    <Input type="text" placeholder="Office Address" value={officeAddress} onChange={e => setOfficeAddress(e.target.value)} />
+            <StepForm
+              formStep={formStep}
+              errors={errors}
+              email={email}
+              password={password}
+              confirmPassword={confirmPassword}
+              firstName={firstName}
+              lastName={lastName}
+              phoneNumber={phoneNumber}
+              address={address}
+              selectedQualifications={selectedQualifications}
 
-                  </div>
-                  <Button type="submit" className="mt-4">Register</Button>
-                </form>
-              </div>
-            </Slider>
+              contactInformation={contactInformation}
+              startShift1={startShift1}
+              endShift1={endShift1}
+              startShift2={startShift2}
+              endShift2={endShift2}
+              setEmail={setEmail}
+              setPassword={setPassword}
+              setConfirmPassword={setConfirmPassword}
+              setFirstName={setFirstName}
+              setLastName={setLastName}
+              setPhoneNumber={setPhoneNumber}
+              setAddress={setAddress}
+
+
+              setContactInformation={setContactInformation}
+              setStartShift1={setStartShift1}
+              setEndShift1={setEndShift1}
+              setStartShift2={setStartShift1}
+              setEndShift2={setEndShift1}
+              availableQualifications={availableQualifications}
+              availableServiceTypes={serviceTypes}
+              setSelectedQualifications={setSelectedQualifications}
+              setSelectedServiceTypes={setSelectedServiceTypes}
+              selectedServiceTypes={selectedServiceTypes} />
+            <div className="flex justify-between mt-6">
+              {formStep > 0 && <Button onClick={previousStep}>Back</Button>}
+              {formStep < 3 && <Button onClick={nextStep} className="ml-auto bg-cyan-500">Next</Button>}
+              {formStep === 3 && <Button onClick={handleSubmit} className="ml-auto bg-cyan-500">Submit</Button>}
+            </div>
           </div>
         </div>
       </div>

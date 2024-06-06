@@ -4,11 +4,7 @@ export interface User {
     role: 'advisor' | 'investor';
 }
 
-export interface ServiceType {
-    service_id: number;
-    service_type_name: string;
-    service_type_code: string;
-}
+
 
 export interface CommonProfileData {
     first_name: string;
@@ -26,8 +22,7 @@ export interface InvestorProfileData {
 }
 
 export interface AdvisorProfileData {
-    qualifications: string;
-    expertise: string;
+    qualifications: number[];
     contact_information: string;
     start_shift_1: string;
     end_shift_1: string;

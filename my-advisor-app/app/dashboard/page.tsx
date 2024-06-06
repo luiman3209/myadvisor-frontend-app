@@ -19,12 +19,12 @@ const Dashboard: React.FC = () => {
       try {
         if (user?.role === 'investor') {
           const data = await getInvestorDashboard();
-          
+
           setDashboardData(data);
         } else if (user?.role === 'advisor') {
-          
+
           const data = await getAdvisorDashboard();
-          console.log(data);
+
           setDashboardData(data);
         }
       } catch (err: any) {
