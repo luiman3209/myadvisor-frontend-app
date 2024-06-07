@@ -15,12 +15,9 @@ import AddressPicker from '../input/AddressPicker';
 import { CountryPicker } from '../input/CountryPicker';
 import { Pencil } from 'lucide-react';
 import { Card } from '../ui/card';
+import { incomeRangeOptions, netWorthOptions } from '@/utils/constants';
 
 
-const netWorthOptions = ['<50000', '50000-99999', '100000-199999', '200000-499999', '500000-999999', '1000000-4999999', '5000000-9999999',
-    '10000000-49999999', '50000000-99999999', '100000000-499999999', '500000000-999999999', '>1000000000'];
-
-const incomeRangeOptions = ['<25000', '25000-49999', '50000-74999', '75000-99999', '100000-149999', '150000-199999', '>200000'];
 
 interface InvestorFormProps {
     formStep: number;

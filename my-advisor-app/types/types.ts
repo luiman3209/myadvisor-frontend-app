@@ -1,3 +1,9 @@
+import { AdvisorEntity } from "./entity/advisor_entity";
+import { ProfileEntity } from "./entity/profile_entity";
+import { QualificationEntity } from "./entity/qualification_entity";
+import { ReviewEntity } from "./entity/review_entity";
+import { ServiceType } from "./entity/service_type_entity";
+
 // types.ts
 export interface SearchParams {
   operating_country_code?: string;
@@ -31,7 +37,34 @@ export interface AdvisorPublicProfileProps {
   selectedTime?: string;
 }
 
+export interface InvestorProfileDto {
+  investor: InvestorDto;
+  userProfile: ProfileEntity;
+  serviceTypes: ServiceType[];
+}
 
+export interface AdvisorProfileDto {
+  advisor: AdvisorEntity;
+  serviceTypes: ServiceType[];
+  qualifications: QualificationEntity[];
+  profileReviews: ReviewEntity[];
+}
+
+export interface InvestorDto {
+  investor_id: number;
+  user_id: number;
+  net_worth: string;
+  income_range: string;
+  geo_preferences: string;
+  created_at: Date;
+  updated_at: Date;
+
+  user: {
+    email: string;
+    created_at: Date;
+  }
+
+}
 
 export interface HomeReviewDto {
   review_id: number;

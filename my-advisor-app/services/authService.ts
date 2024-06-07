@@ -75,3 +75,21 @@ export const checkPhoneAvailability = async (phone_number: string) => {
     }
   }
 };
+
+
+export const updateUser = async (email: string | undefined, password: string | undefined) => {
+  try {
+
+    const response = await axios.post('/api/auth/user/update', { email, password });
+
+    return response.data.available;
+
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response) {
+
+      throw new Error(error.response.data.message || 'Login failed');
+    } else {
+      throw new Error('Login failed due to an unexpected error');
+    }
+  }
+};

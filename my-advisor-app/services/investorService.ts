@@ -1,5 +1,6 @@
 // services/investorService.ts
 import { InvestorProfileData } from '@/types/auth';
+import { InvestorProfileDto } from '@/types/types';
 import axios from 'axios';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
@@ -25,10 +26,13 @@ export const createOrUpdateInvestor = async (profileData: InvestorProfileData) =
   }
 };
 
-export const getInvestorProfile = async () => {
+export const getInvestorProfile = async (): Promise<InvestorProfileDto> => {
   try {
     const response = await axios.get('/api/investor', headers());
-    return response.data;
+
+
+    return response.data as InvestorProfileDto;
+
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {
       throw new Error(error.response.data.message || 'Failed to fetch investor profile');
