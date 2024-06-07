@@ -159,7 +159,7 @@ export default function RegisterAdvisor() {
       <RegisterNavbar />
 
       <div className='flex items-center justify-center'>
-        <div className="relative text-center py-20 px-5 w-full md:w-1/4 space-y-8">
+        <div className="relative text-center py-20 px-5 w-full md:w-1/2 lg:w-1/4 space-y-8">
           <h1 className="text-3xl font-bold mb-5">Register as Advisor</h1>
           <p>Will take just a minute</p>
           <div className="relative w-full">
