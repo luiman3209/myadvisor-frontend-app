@@ -30,6 +30,7 @@ export interface AdvisorProfileData {
     end_shift_2: string?;
     operating_country_code: string;
     operating_city_code: string;
+    display_name: string;
     office_address: string;
     serviceTypes: ServiceType[];
 }

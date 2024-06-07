@@ -91,6 +91,7 @@ export function CountryPicker({ countryCode, setCountryCode }: CountryPickerProp
     const isDesktop = window.innerWidth > 768
 
     const handleSelectCountry = (country: string) => {
+        console.log(country);
         setCountryCode(country);
         setOpen(false)
     }
@@ -103,7 +104,7 @@ export function CountryPicker({ countryCode, setCountryCode }: CountryPickerProp
                 <Popover open={open} onOpenChange={setOpen}>
                     <PopoverTrigger asChild>
                         <Button variant="outline" className="w-[150px] justify-start space-x-2">
-                            <CirclePlus className="text-black" /> <span>Add Qualification</span>
+                            <span>{countryCode ? countryCode : 'State/Province'}</span>
                         </Button>
                     </PopoverTrigger>
                     <PopoverContent className="w-[200px] p-0" align="start">
@@ -126,7 +127,7 @@ export function CountryPicker({ countryCode, setCountryCode }: CountryPickerProp
             <Drawer open={open} onOpenChange={setOpen}>
                 <DrawerTrigger asChild>
                     <Button variant="outline" className="w-[150px] justify-start space-x-2">
-                        <CirclePlus /> <span>Add Qualification</span>
+                        <span>State/Province</span>
                     </Button>
                 </DrawerTrigger>
                 <DrawerContent>

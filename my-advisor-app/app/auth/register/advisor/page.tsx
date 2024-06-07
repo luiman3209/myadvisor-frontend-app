@@ -9,12 +9,14 @@ import { ProfileData, CommonProfileData, AdvisorProfileData } from '@/types/auth
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import Image from 'next/image';
-import StepForm from '@/components/input/StepForm';
+
 
 import { getAvailableQualifications } from '@/services/qualificationService';
 import { QualificationEntity } from '@/types/entity/qualification_entity';
 import { ServiceType } from '@/types/entity/service_type_entity';
 import { checkEmailAvailability, checkPhoneAvailability } from '@/services/authService';
+import RegisterNavbar from '@/components/navbar/RegisterNavbar';
+import AdvisorForm from '@/components/forms/AdvisorForm';
 
 
 
@@ -96,6 +98,9 @@ export default function RegisterAdvisor() {
       if (!selectedServiceTypes || selectedServiceTypes.length < 1) newErrors.expertise = "Expertise is required";
     } else if (formStep === 3) {
       if (!contactInformation) newErrors.contactInformation = "Contact Information is required";
+      if (officeAddress.length < 1) newErrors.officeAddress = "Office Address is required";
+      if (!operatingCountryCode) newErrors.operatingCountryCode = "Operating Country is required";
+      if (!operatingCityCode) newErrors.operatingCityCode = "Operating City is required";
       if (!startShift1) newErrors.startShift1 = "Start Shift 1 is required";
       if (!endShift1) newErrors.endShift1 = "End Shift 1 is required";
     }
@@ -103,8 +108,8 @@ export default function RegisterAdvisor() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const nextStep = () => {
-    if (validateStep()) {
+  const nextStep = async () => {
+    if (await validateStep()) {
       setFormStep(prevStep => prevStep + 1);
     }
   };
@@ -116,7 +121,7 @@ export default function RegisterAdvisor() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!validateStep()) {
+    if (! await validateStep()) {
       return;
     }
 
@@ -138,6 +143,7 @@ export default function RegisterAdvisor() {
       operating_city_code: operatingCityCode,
       office_address: officeAddress,
       serviceTypes: selectedServiceTypes,
+      display_name: `${firstName} ${lastName}`,
     };
 
     const profileData: ProfileData = {
@@ -150,31 +156,14 @@ export default function RegisterAdvisor() {
 
   return (
     <main>
-      <div className="flex justify-between p-5 bg-cyan-500">
-        <Link href="/">
-          <div className="flex items-center space-x-2">
-            <Image
-              src="/images/myadvisor-logo.png"
-              alt="Picture of the author"
-              width={50}
-              height={50}
-              className="flex-shrink-0"
-            />
-            <span className="text-2xl font-medium text-white">MyAdvisor</span>
-          </div>
-        </Link>
-        <div className="flex items-center">
-          <span className="mr-3 text-white">Already registered?</span>
-          <Button className='bg-cyan-600'>Login</Button>
-        </div>
-      </div>
+      <RegisterNavbar />
 
       <div className='flex items-center justify-center'>
-        <div className="relative text-center py-20 px-5 w-full md:w-1/2 space-y-8">
+        <div className="relative text-center py-20 px-5 w-full md:w-1/4 space-y-8">
           <h1 className="text-3xl font-bold mb-5">Register as Advisor</h1>
           <p>Will take just a minute</p>
           <div className="relative w-full">
-            <StepForm
+            <AdvisorForm
               formStep={formStep}
               errors={errors}
               email={email}

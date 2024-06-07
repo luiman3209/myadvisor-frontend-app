@@ -1,18 +1,20 @@
 import { motion } from 'framer-motion';
 
 import { ChangeEvent, useState } from 'react';
-import ShakeableInput from './ShakableInput';
+import ShakeableInput from '../input/ShakableInput';
 import { Input } from '../ui/input';
 
-import { QualificationPicker } from './QualificationPicker';
+import { QualificationPicker } from '../input/QualificationPicker';
 
 import { QualificationEntity } from '@/types/entity/qualification_entity';
 import { Label } from '../ui/label';
-import { ServiceTypePicker } from './ServiceTypePicker';
+import { ServiceTypePicker } from '../input/ServiceTypePicker';
 import { ServiceType } from '@/types/entity/service_type_entity';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '../ui/select';
-import AddressPicker from './AddressPicker';
-import { CountryPicker } from './CountryPicker';
+import AddressPicker from '../input/AddressPicker';
+import { CountryPicker } from '../input/CountryPicker';
+import { Pencil } from 'lucide-react';
+import { Card } from '../ui/card';
 
 
 const allTimes = [
@@ -33,7 +35,7 @@ function transformTime(value: string) {
 
 
 
-interface StepFormProps {
+interface AdvisorFormProps {
     formStep: number;
     errors: { [key: string]: string };
     email: string;
@@ -76,7 +78,7 @@ interface StepFormProps {
 
 
 
-const StepForm: React.FC<StepFormProps> = ({
+const AdvisorForm: React.FC<AdvisorFormProps> = ({
     formStep, errors, email, password, confirmPassword, firstName, lastName, phoneNumber, operatingCountryCode, operatingCityCode, setOperatingCityCode, setOperatingCountryCode,
     address, selectedOfficeAddress, selectedQualifications, availableQualifications, selectedServiceTypes, availableServiceTypes, contactInformation, startShift1, endShift1,
     setEmail, setPassword, setConfirmPassword, setFirstName, setLastName, setPhoneNumber, setAddress, setSelectedOfficeAddress,
@@ -103,8 +105,12 @@ const StepForm: React.FC<StepFormProps> = ({
         setAvailableEndTime2(calculateEndTimes(value));
     };
 
+    const resetOfficeAddress = () => {
+        setSelectedOfficeAddress('');
+    };
+
     return (
-        <div className="h-80">
+        <div className="text-left">
             <motion.div
                 initial="hidden"
                 animate="visible"
@@ -174,7 +180,7 @@ const StepForm: React.FC<StepFormProps> = ({
                     <>
 
                         <p>Professional profile informations</p>
-                        <div className='space-y-4 text-left'>
+                        <div className='space-y-4 '>
                             <Label> Qualifications</Label>
 
                             <QualificationPicker qualifications={availableQualifications}
@@ -207,14 +213,26 @@ const StepForm: React.FC<StepFormProps> = ({
                             error={errors.contactInformation}
                         />
 
-                        <CountryPicker countryCode={operatingCountryCode} setCountryCode={setOperatingCountryCode} />
+                        <div className='flex space-x-2'>
+                            <CountryPicker countryCode={operatingCountryCode} setCountryCode={setOperatingCountryCode} />
 
-                        <Label>Office address</Label>
+                            <ShakeableInput
+                                type="text"
+                                placeholder="ZIP CODE"
+                                value={operatingCityCode}
+                                onChange={(e: ChangeEvent<HTMLInputElement>) => setOperatingCityCode(e.target.value)}
+                                error={errors.operatingCityCode}
+                            />
+                        </div>
+
+
+
+                        <Label className=''>Office address</Label>
                         {selectedOfficeAddress ?
-                            <div>
+                            <Card className='flex flex-row space-x-2 p-2 items-center'>
 
-                                <p>{selectedOfficeAddress}</p>
-                            </div>
+                                <span>{selectedOfficeAddress}</span><Pencil onClick={resetOfficeAddress} className="w-4 h-4 text-black" />
+                            </Card>
                             : <AddressPicker onAddressSelect={setSelectedOfficeAddress} />}
 
                         <div className='flex space-x-12'>
@@ -265,4 +283,4 @@ const StepForm: React.FC<StepFormProps> = ({
     );
 };
 
-export default StepForm;
+export default AdvisorForm;

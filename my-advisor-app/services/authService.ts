@@ -47,7 +47,7 @@ export const checkEmailAvailability = async (email: string) => {
 
     const response = await axios.post('/api/auth/check-email', { email });
 
-    if (response.status === 200) { return true; } else { return false; }
+    return response.data.available;
 
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {
@@ -64,7 +64,7 @@ export const checkPhoneAvailability = async (phone_number: string) => {
 
     const response = await axios.post('/api/auth/check-phone', { phone_number });
 
-    if (response.status === 200) { return true; } else { return false; }
+    return response.data.available;
 
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {

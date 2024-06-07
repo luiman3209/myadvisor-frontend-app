@@ -82,7 +82,7 @@ const Navbar: React.FC = () => {
                 <DropdownMenuContent>
                   <DropdownMenuItem className="nav-menu"><div className='flex'><User className="mr-2 h-5 w-5" /><Link href="/auth/register/investor">I'm an investor</Link></div></DropdownMenuItem>
                   <DropdownMenuItem className="nav-menu"><div className='flex'><UserCog className="mr-2 h-5 w-5" /><Link href="/auth/register/advisor">I'm an advisor</Link></div></DropdownMenuItem>
-                  <DropdownMenuItem className="nav-menu"><div className='flex'><Building className="mr-2 h-5 w-5" /><Link href="/auth/register/organization">Register as organization</Link></div></DropdownMenuItem>
+
                 </DropdownMenuContent>
               </DropdownMenu>
               <Link href="/auth/login" className="nav-link">
