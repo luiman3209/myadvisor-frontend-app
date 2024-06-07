@@ -14,7 +14,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { AdvisorProfileDto, InvestorProfileDto } from '@/types/types';
 import ShakeableInput from "../input/ShakableInput";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, use, useEffect, useState } from "react";
 import { updateProfile } from "@/services/profileService";
 import { CommonProfileData, InvestorProfileData } from "@/types/auth";
 import { checkEmailAvailability, updateUser } from "@/services/authService";
@@ -41,12 +41,18 @@ const InvestorProfile: React.FC<InvestorProfileProps> = ({ investorProfile, avai
     const [netWorth, setNetWorth] = useState<string>(investorProfile.investor.net_worth);
     const [incomeRange, setIncomeRange] = useState<string>(investorProfile.investor.income_range);
     const [geoPreferences, setGeoPreferences] = useState<string>(investorProfile.investor.geo_preferences);
-    const [email, setEmail] = useState<string>(investorProfile.investor.user.email);
+    const [email, setEmail] = useState<string>(investorProfile.investor.user_config.email);
     const [password, setPassword] = useState<string | undefined>(undefined);
     const [confirmPassword, setConfirmPassword] = useState<string>('');
     const [selectedServiceTypes, setSelectedServiceTypes] = useState(investorProfile.serviceTypes);
 
     const [selectedTab, setSelectedTab] = useState<string>('general');
+
+    useEffect(() => {
+
+        console.log('investorProfile', investorProfile);
+    });
+
 
     const validateProfileData = async (data: CommonProfileData) => {
         const newErrors: { [key: string]: string } = {};
@@ -114,7 +120,7 @@ const InvestorProfile: React.FC<InvestorProfileProps> = ({ investorProfile, avai
             net_worth: netWorth,
             income_range: incomeRange,
             geo_preferences: geoPreferences,
-            serviceTypes: selectedServiceTypes,
+            selected_service_ids: selectedServiceTypes.map(s => s.service_id),
         };
 
         if (await validateInvestorInfo(investorData)) {
@@ -171,11 +177,11 @@ const InvestorProfile: React.FC<InvestorProfileProps> = ({ investorProfile, avai
                     <nav
                         className="grid gap-4 text-sm text-muted-foreground" x-chunk="dashboard-04-chunk-0"
                     >
-                        <Link href="#" className="font-semibold text-primary" onClick={() => setSelectedTab('general')}>
+                        <Link href="#" className={selectedTab === 'general' ? "font-semibold text-primary" : ""} onClick={() => setSelectedTab('general')}>
                             General
                         </Link>
-                        <Link href="#" onClick={() => setSelectedTab('investor')}>Investor info</Link>
-                        <Link href="#" onClick={() => setSelectedTab('security')}>Security</Link>
+                        <Link href="#" className={selectedTab === 'investor' ? "font-semibold text-primary" : ""} onClick={() => setSelectedTab('investor')}>Investor info</Link>
+                        <Link href="#" className={selectedTab === 'security' ? "font-semibold text-primary" : ""} onClick={() => setSelectedTab('security')}>Security</Link>
 
                     </nav>
                     <div className="grid gap-6">
@@ -239,7 +245,7 @@ const InvestorProfile: React.FC<InvestorProfileProps> = ({ investorProfile, avai
 
                                         <CountryPicker countryCode={geoPreferences} setCountryCode={setGeoPreferences} />
 
-                                        <Select onValueChange={setNetWorth}>
+                                        <Select onValueChange={setNetWorth} value={netWorth}>
                                             <SelectTrigger className="w-[180px]">
                                                 <SelectValue placeholder={netWorth ? undefined : '-'} defaultValue={netWorth ? netWorth : undefined} />
                                             </SelectTrigger>
@@ -257,7 +263,7 @@ const InvestorProfile: React.FC<InvestorProfileProps> = ({ investorProfile, avai
                                         </Select>
 
 
-                                        <Select onValueChange={setIncomeRange}>
+                                        <Select onValueChange={setIncomeRange} value={incomeRange}>
                                             <SelectTrigger className="w-[180px]">
                                                 <SelectValue placeholder={incomeRange ? undefined : '-'} defaultValue={incomeRange ? incomeRange : undefined} />
                                             </SelectTrigger>
@@ -292,9 +298,27 @@ const InvestorProfile: React.FC<InvestorProfileProps> = ({ investorProfile, avai
                                 </CardHeader>
                                 <CardContent>
                                     <form>
-                                        <Input placeholder="Email"
+                                        <ShakeableInput type="email"
+                                            placeholder="Email"
+                                            value={investorProfile.investor.user_config.email}
+                                            onChange={(e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
+                                            error={errors.email}
                                         />
-                                        <Input placeholder="Password" />
+
+                                        <ShakeableInput type={password ? "password" : "text"}
+                                            placeholder="Update password"
+                                            value={password ? password : ''}
+                                            onChange={(e: ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
+                                            error={errors.password}
+                                        />
+
+                                        {password && <ShakeableInput type="password"
+                                            placeholder="Confirm password"
+                                            value={confirmPassword}
+                                            onChange={(e: ChangeEvent<HTMLInputElement>) => setConfirmPassword(e.target.value)}
+                                            error={errors.password}
+                                        />}
+
 
 
                                     </form>

@@ -18,7 +18,7 @@ export interface InvestorProfileData {
     net_worth: string;
     income_range: string;
     geo_preferences: string;
-    serviceTypes: ServiceType[];
+    selected_service_ids: number[];
 }
 
 export interface AdvisorProfileData {
@@ -32,7 +32,7 @@ export interface AdvisorProfileData {
     operating_city_code: string;
     display_name: string;
     office_address: string;
-    serviceTypes: ServiceType[];
+    selected_service_ids: number[];
 }
 
 

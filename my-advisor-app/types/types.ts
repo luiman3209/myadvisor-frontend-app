@@ -59,7 +59,7 @@ export interface InvestorDto {
   created_at: Date;
   updated_at: Date;
 
-  user: {
+  user_config: {
     email: string;
     created_at: Date;
   }

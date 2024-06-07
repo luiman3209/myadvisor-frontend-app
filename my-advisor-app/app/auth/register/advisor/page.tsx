@@ -142,7 +142,7 @@ export default function RegisterAdvisor() {
       operating_country_code: operatingCountryCode,
       operating_city_code: operatingCityCode,
       office_address: officeAddress,
-      serviceTypes: selectedServiceTypes,
+      selected_service_ids: selectedServiceTypes.map(s => s.service_id),
       display_name: `${firstName} ${lastName}`,
     };
 

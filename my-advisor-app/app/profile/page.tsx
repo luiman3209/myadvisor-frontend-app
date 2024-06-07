@@ -11,6 +11,7 @@ import InvestorProfile from '@/components/profile/InvestorProfile';
 import { AdvisorProfileDto, InvestorProfileDto } from '@/types/types';
 import { ServiceType } from '@/types/entity/service_type_entity';
 import { getServiceTypes } from '@/services/serviceTypesService';
+import Navbar from '@/components/navbar/NavBar';
 
 const Profile: React.FC = () => {
   const { user } = useAuth();
@@ -33,6 +34,7 @@ const Profile: React.FC = () => {
 
         if (user?.role === 'investor') {
           const investorData: InvestorProfileDto = await getInvestorProfile();
+          console.log('investorData', investorData)
           setInvestorProfile(investorData);
         } else if (user?.role === 'advisor') {
           const advisorData: AdvisorProfileDto = await getAdvisorProfile();
@@ -66,6 +68,7 @@ const Profile: React.FC = () => {
 
   return (
     <ProtectedRoute>
+      <Navbar />
       {user?.role === 'investor' && investorProfile && <InvestorProfile investorProfile={investorProfile} availableServiceTypes={availableServiceTypes} />}
 
     </ProtectedRoute>

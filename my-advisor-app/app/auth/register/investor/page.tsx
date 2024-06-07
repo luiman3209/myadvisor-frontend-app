@@ -126,7 +126,7 @@ export default function RegisterInvestor() {
       net_worth: netWorth,
       income_range: incomeRange,
       geo_preferences: geoPreferences,
-      serviceTypes: selectedServiceTypes,
+      selected_service_ids: selectedServiceTypes.map((type) => type.service_id),
     };
 
     const profileData: ProfileData = {
@@ -141,6 +141,8 @@ export default function RegisterInvestor() {
       selectedDay: searchParams.get('selectedDay') || '',
       selectedTime: searchParams.get('selectedTime') || ''
     }).toString();
+
+    console.log('profileData', profileData);
 
     await register(email, password, profileData, false);
   };
