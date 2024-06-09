@@ -1,6 +1,7 @@
-import Link from "next/link"
+import React, { ChangeEvent, useEffect, useState } from "react";
+import Link from "next/link";
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
     Card,
     CardContent,
@@ -8,10 +9,9 @@ import {
     CardFooter,
     CardHeader,
     CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 
 import ShakeableInput from "../input/ShakableInput";
-import { ChangeEvent, use, useEffect, useState } from "react";
 import { updateProfile } from "@/services/profileService";
 import { CommonProfileData, AdvisorProfileData } from "@/types/auth";
 import { checkEmailAvailability, updateUser } from "@/services/authService";
@@ -63,7 +63,6 @@ const AdvisorProfile: React.FC<AdvisorProfileProps> = ({ advisorProfile, availab
 
     const [fieldsChanged, setFieldsChanged] = useState<boolean>(false);
 
-
     const [selectedServiceTypes, setSelectedServiceTypes] = useState<number[]>(advisorProfile.serviceTypes);
     const [selectedQualifications, setSelectedQualifications] = useState<number[]>(advisorProfile.qualifications);
 
@@ -74,6 +73,55 @@ const AdvisorProfile: React.FC<AdvisorProfileProps> = ({ advisorProfile, availab
     useEffect(() => {
         setAvailableEndTime1(calculateEndTimes(startShift1));
     }, [startShift1]);
+
+    const initialProfileState = {
+        firstName: advisorProfile.userProfile.first_name,
+        lastName: advisorProfile.userProfile.last_name,
+        phoneNumber: advisorProfile.userProfile.phone_number,
+        address: advisorProfile.userProfile.address,
+        email: advisorProfile.advisor.user_config.email,
+        displayName: advisorProfile.advisor.display_name,
+        contactInformation: advisorProfile.advisor.contact_information,
+        officeAddress: advisorProfile.advisor.office_address,
+        operatingZipCode: advisorProfile.advisor.operating_city_code,
+        operatingCountryCode: advisorProfile.advisor.operating_country_code,
+        startShift1: advisorProfile.advisor.start_shift_1,
+        endShift1: advisorProfile.advisor.end_shift_1,
+        startShift2: advisorProfile.advisor.start_shift_2,
+        endShift2: advisorProfile.advisor.end_shift_2,
+        selectedServiceTypes: advisorProfile.serviceTypes,
+        selectedQualifications: advisorProfile.qualifications
+    };
+
+    useEffect(() => {
+        const hasFieldChanged = () => {
+            return (
+                firstName !== initialProfileState.firstName ||
+                lastName !== initialProfileState.lastName ||
+                phoneNumber !== initialProfileState.phoneNumber ||
+                address !== initialProfileState.address ||
+                email !== initialProfileState.email ||
+                displayName !== initialProfileState.displayName ||
+                contactInformation !== initialProfileState.contactInformation ||
+                officeAddress !== initialProfileState.officeAddress ||
+                operatingZipCode !== initialProfileState.operatingZipCode ||
+                operatingCountryCode !== initialProfileState.operatingCountryCode ||
+                startShift1 !== initialProfileState.startShift1 ||
+                endShift1 !== initialProfileState.endShift1 ||
+                startShift2 !== initialProfileState.startShift2 ||
+                endShift2 !== initialProfileState.endShift2 ||
+                selectedServiceTypes.some((type) => !initialProfileState.selectedServiceTypes.includes(type)) ||
+                selectedQualifications.some((qual) => !initialProfileState.selectedQualifications.includes(qual))
+            );
+        };
+
+        setFieldsChanged(hasFieldChanged());
+    }, [
+        firstName, lastName, phoneNumber, address, email,
+        displayName, contactInformation, officeAddress,
+        operatingZipCode, operatingCountryCode, startShift1,
+        endShift1, startShift2, endShift2, selectedServiceTypes, selectedQualifications
+    ]);
 
     const changeTab = (tab: string) => {
         setFieldsChanged(false);
@@ -103,7 +151,6 @@ const AdvisorProfile: React.FC<AdvisorProfileProps> = ({ advisorProfile, availab
 
     const showError = (message: string) => {
         setErrorMessage(message);
-        // wait 5 seconds and clear the error message
         setTimeout(() => {
             setErrorMessage('');
         }, 5000);
@@ -111,7 +158,6 @@ const AdvisorProfile: React.FC<AdvisorProfileProps> = ({ advisorProfile, availab
 
     const showSuccess = (message: string) => {
         setUpdateMessage(message);
-        // wait 5 seconds and clear the error message
         setTimeout(() => {
             setUpdateMessage('');
         }, 5000);
@@ -141,7 +187,6 @@ const AdvisorProfile: React.FC<AdvisorProfileProps> = ({ advisorProfile, availab
             newErrors.address = 'Address is required';
         }
 
-
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     }
@@ -156,13 +201,12 @@ const AdvisorProfile: React.FC<AdvisorProfileProps> = ({ advisorProfile, availab
         try {
             if (await validateProfileData(profileData)) {
                 await updateProfile(profileData);
+                showSuccess('Profile updated successfully');
             }
-            showSuccess('Profile updated successfully');
         }
         catch (err) {
             showError('Something went wrong during update, refresh and try again');
         }
-
     }
 
     const validateAdvisorInfo = async (data: AdvisorProfileData) => {
@@ -197,8 +241,6 @@ const AdvisorProfile: React.FC<AdvisorProfileProps> = ({ advisorProfile, availab
     }
 
     const updateAdvisorInfo = async () => {
-
-
         const advisorData: AdvisorProfileData = {
             display_name: displayName,
             contact_information: contactInformation,
@@ -213,7 +255,6 @@ const AdvisorProfile: React.FC<AdvisorProfileProps> = ({ advisorProfile, availab
             qualifications: selectedQualifications
         };
 
-
         try {
             if (await validateAdvisorInfo(advisorData)) {
                 await createOrUpdateAdvisor(advisorData);
@@ -223,11 +264,9 @@ const AdvisorProfile: React.FC<AdvisorProfileProps> = ({ advisorProfile, availab
         catch (err) {
             showError('Something went wrong during update, refresh and try again');
         }
-
     }
 
     const validateUserData = async (email: string, password: string | undefined) => {
-
         const newErrors: { [key: string]: string } = {};
 
         if (email) {
@@ -235,7 +274,6 @@ const AdvisorProfile: React.FC<AdvisorProfileProps> = ({ advisorProfile, availab
                 newErrors.email = 'Email must be at least 6 characters';
             }
             if (! await checkEmailAvailability(email)) newErrors.email = "Email is already taken";
-
         }
 
         if (password) {
@@ -247,26 +285,20 @@ const AdvisorProfile: React.FC<AdvisorProfileProps> = ({ advisorProfile, availab
             }
         }
 
-
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
-
     }
 
     const updateUserData = async () => {
-
         try {
             if (await validateUserData(email, password)) {
                 await updateUser(email, password);
+                showSuccess('User data updated successfully');
             }
-            showSuccess('User data updated successfully');
         }
-
         catch (err) {
             showError('Something went wrong during update, refresh and try again');
         }
-
-
     }
 
     const resetOfficeAddress = () => {
@@ -281,7 +313,7 @@ const AdvisorProfile: React.FC<AdvisorProfileProps> = ({ advisorProfile, availab
     return (
         <div className="relative flex min-h-screen w-full flex-col">
 
-            <main className=" flex min-h-[calc(100vh_-_theme(spacing.16))] flex-1 flex-col gap-4 bg-muted/40 p-4 md:gap-8 md:p-10">
+            <main className="flex min-h-[calc(100vh_-_theme(spacing.16))] flex-1 flex-col gap-4 bg-muted/40 p-4 md:gap-8 md:p-10">
                 <div className="mx-auto grid w-full max-w-6xl gap-2">
                     <h1 className="text-3xl font-semibold">Profile</h1>
                 </div>
@@ -300,7 +332,7 @@ const AdvisorProfile: React.FC<AdvisorProfileProps> = ({ advisorProfile, availab
                 }
                 {/** Success alert */}
                 {
-                    updateMessage && <div className=" fixed bottom-0 right-0 mb-4 mr-4">
+                    updateMessage && <div className="fixed bottom-0 right-0 mb-4 mr-4">
                         <Alert>
                             <Info className="h-4 w-4" />
                             <AlertTitle>Profile Updated!</AlertTitle>
@@ -311,127 +343,110 @@ const AdvisorProfile: React.FC<AdvisorProfileProps> = ({ advisorProfile, availab
                     </div>
                 }
 
-
-                <div className=" mx-auto grid w-full max-w-6xl items-start gap-6 md:grid-cols-[180px_1fr] lg:grid-cols-[250px_1fr]">
-                    <nav
-                        className="grid gap-4 text-sm text-muted-foreground" x-chunk="dashboard-04-chunk-0"
-                    >
+                <div className="mx-auto grid w-full max-w-6xl items-start gap-6 md:grid-cols-[180px_1fr] lg:grid-cols-[250px_1fr]">
+                    <nav className="grid gap-4 text-sm text-muted-foreground">
                         <Link href="#" className={selectedTab === 'general' ? "font-semibold text-primary" : ""} onClick={() => changeTab('general')}>
                             General
                         </Link>
                         <Link href="#" className={selectedTab === 'advisor' ? "font-semibold text-primary" : ""} onClick={() => changeTab('advisor')}>Advisor info</Link>
                         <Link href="#" className={selectedTab === 'security' ? "font-semibold text-primary" : ""} onClick={() => changeTab('security')}>Security</Link>
-
                     </nav>
 
-                    <div className=" flex flex-col">
-
-
-                        <Card x-chunk="dashboard-04-chunk-1">
+                    <div className="flex flex-col">
+                        <Card>
                             <CardHeader>
-                                <CardTitle>{selectedTab === 'general' ? 'General' :
-                                    selectedTab === 'advisor' ? 'Advisor' : 'Security'
-
-                                }</CardTitle>
+                                <CardTitle>{selectedTab === 'general' ? 'General' : selectedTab === 'advisor' ? 'Advisor' : 'Security'}</CardTitle>
                                 <CardDescription>
-                                    {selectedTab === 'advisor' ? 'Advisor profile info' :
-                                        selectedTab === 'security' ? 'Account and security info' :
-
-
-                                            'General profile info'}
+                                    {selectedTab === 'advisor' ? 'Advisor profile info' : selectedTab === 'security' ? 'Account and security info' : 'General profile info'}
                                 </CardDescription>
                             </CardHeader>
-                            <CardContent >
+                            <CardContent>
                                 {selectedTab === 'general' ?
                                     <form className="flex flex-col space-y-4">
-
                                         <Label htmlFor="first_name">First name</Label>
-                                        <ShakeableInput type="text"
+                                        <ShakeableInput
+                                            type="text"
                                             placeholder="First name"
                                             value={firstName}
                                             onChange={(e: ChangeEvent<HTMLInputElement>) => setFirstName(e.target.value)}
                                             error={errors.first_name}
                                         />
                                         <Label htmlFor="last_name">Last name</Label>
-                                        <ShakeableInput type="text"
+                                        <ShakeableInput
+                                            type="text"
                                             placeholder="Last name"
                                             value={lastName}
                                             onChange={(e: ChangeEvent<HTMLInputElement>) => setLastName(e.target.value)}
                                             error={errors.last_name}
                                         />
                                         <Label htmlFor="phone_number">Phone number</Label>
-                                        <ShakeableInput type="text"
+                                        <ShakeableInput
+                                            type="text"
                                             placeholder="Phone number"
                                             value={phoneNumber}
                                             onChange={(e: ChangeEvent<HTMLInputElement>) => setPhoneNumber(e.target.value)}
                                             error={errors.phone_number}
                                         />
                                         <Label htmlFor="address">Address</Label>
-                                        <ShakeableInput type="text"
+                                        <ShakeableInput
+                                            type="text"
                                             placeholder="Address"
                                             value={address}
                                             onChange={(e: ChangeEvent<HTMLInputElement>) => setAddress(e.target.value)}
                                             error={errors.address}
                                         />
-
-
                                     </form>
-                                    :
-                                    selectedTab === 'advisor' ?
+                                    : selectedTab === 'advisor' ?
                                         <form className="flex flex-col space-y-4">
-
                                             <Label htmlFor="display_name">Display name</Label>
-                                            <ShakeableInput type="text"
+                                            <ShakeableInput
+                                                type="text"
                                                 placeholder="Display name"
                                                 value={displayName}
                                                 onChange={(e: ChangeEvent<HTMLInputElement>) => setDisplayName(e.target.value)}
                                                 error={errors.display_name}
                                             />
                                             <Label htmlFor="contact_information">Contact information</Label>
-                                            <ShakeableInput type="text"
+                                            <ShakeableInput
+                                                type="text"
                                                 placeholder="Contact information"
                                                 value={contactInformation}
                                                 onChange={(e: ChangeEvent<HTMLInputElement>) => setContactInformation(e.target.value)}
                                                 error={errors.contact_information}
                                             />
-
                                             <Label htmlFor="operating_country_code">Operating country</Label>
                                             <CountryPicker countryCode={operatingCountryCode} setCountryCode={setOperatingCountryCode} />
-
                                             <Label htmlFor="operating_city_code">Operating city zip code</Label>
-                                            <ShakeableInput type="text"
+                                            <ShakeableInput
+                                                type="text"
                                                 placeholder="City preference"
                                                 value={operatingZipCode}
                                                 onChange={(e: ChangeEvent<HTMLInputElement>) => setOperatingZipCode(e.target.value)}
                                                 error={errors.operating_city_code}
                                             />
-
                                             <Label htmlFor="office_address">Office address</Label>
                                             {officeAddress ?
                                                 <Card className='flex flex-row space-x-2 p-2 items-center'>
-
-                                                    <span>{officeAddress}</span><Pencil onClick={resetOfficeAddress} className="w-4 h-4 text-black" />
+                                                    <span>{officeAddress}</span>
+                                                    <Pencil onClick={resetOfficeAddress} className="w-4 h-4 text-black" />
                                                 </Card>
                                                 : <AddressPicker onAddressSelect={setOfficeAddress} />}
-
-
-
-                                            <div className='space-y-4 '>
+                                            <div className='space-y-4'>
                                                 <Label> Qualifications</Label>
-
-                                                <QualificationPicker qualifications={availableQualifications}
+                                                <QualificationPicker
+                                                    qualifications={availableQualifications}
                                                     selectedQualifications={availableQualifications.filter((q) => selectedQualifications.includes(q.qualification_id))}
-                                                    setSelectedQualifications={updateSelectedQualifications} />
+                                                    setSelectedQualifications={updateSelectedQualifications}
+                                                />
                                             </div>
-
                                             <div className='space-y-4 text-left'>
                                                 <Label> Expertise</Label>
-
-                                                <ServiceTypePicker serviceTypes={availableServiceTypes}
+                                                <ServiceTypePicker
+                                                    serviceTypes={availableServiceTypes}
                                                     selectedServiceTypes={availableServiceTypes.filter((q) => selectedServiceTypes.includes(q.service_id))}
-                                                    setSelectedServiceTypes={updateSelectedServiceTypes} />
+                                                    setSelectedServiceTypes={updateSelectedServiceTypes}
+                                                />
                                             </div>
-
                                             <div>
                                                 <Label className="">Availability window start time</Label>
                                                 <Select onValueChange={updateEndTimes1} value={startShift1}>
@@ -440,18 +455,13 @@ const AdvisorProfile: React.FC<AdvisorProfileProps> = ({ advisorProfile, availab
                                                     </SelectTrigger>
                                                     <SelectContent>
                                                         <SelectGroup>
-
-                                                            {allTimes.map((time) => {
-
-                                                                return <SelectItem key={time.concat('start1')} value={time}>{transformTime(time)}</SelectItem>
-
-                                                            })}
-
+                                                            {allTimes.map((time) => (
+                                                                <SelectItem key={time.concat('start1')} value={time}>{transformTime(time)}</SelectItem>
+                                                            ))}
                                                         </SelectGroup>
                                                     </SelectContent>
                                                 </Select>
                                             </div>
-
                                             <div>
                                                 <Label>Availability window end time</Label>
                                                 <Select onValueChange={setEndShift1} value={endShift1}>
@@ -460,64 +470,55 @@ const AdvisorProfile: React.FC<AdvisorProfileProps> = ({ advisorProfile, availab
                                                     </SelectTrigger>
                                                     <SelectContent>
                                                         <SelectGroup>
-                                                            {availableEndTime1.map((time) => {
-                                                                return <SelectItem key={time.concat('end1')} value={time}>{transformTime(time)}</SelectItem>
-                                                            })}
+                                                            {availableEndTime1.map((time) => (
+                                                                <SelectItem key={time.concat('end1')} value={time}>{transformTime(time)}</SelectItem>
+                                                            ))}
                                                         </SelectGroup>
                                                     </SelectContent>
                                                 </Select>
                                             </div>
-
-
-
                                         </form>
-                                        :
-
-                                        selectedTab === 'security' ?
+                                        : selectedTab === 'security' ?
                                             <form className="flex flex-col space-y-4">
                                                 <Label htmlFor="email">Email</Label>
-                                                <ShakeableInput type="email"
+                                                <ShakeableInput
+                                                    type="email"
                                                     placeholder="Email"
                                                     value={email}
                                                     onChange={(e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
                                                     error={errors.email}
                                                 />
                                                 <Label htmlFor="password">Password</Label>
-                                                <ShakeableInput type={password ? "password" : "text"}
+                                                <ShakeableInput
+                                                    type={password ? "password" : "text"}
                                                     placeholder="Update password"
                                                     value={password ? password : ''}
                                                     onChange={(e: ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
                                                     error={errors.password}
                                                 />
-
-                                                {password && <ShakeableInput type="password"
+                                                {password && <ShakeableInput
+                                                    type="password"
                                                     placeholder="Confirm password"
                                                     value={confirmPassword}
                                                     onChange={(e: ChangeEvent<HTMLInputElement>) => setConfirmPassword(e.target.value)}
                                                     error={errors.password}
                                                 />}
-
-
-
-                                            </form> : null}
-
-
+                                            </form>
+                                            : null}
                             </CardContent>
                             <CardFooter className="border-t px-6 py-4 space-x-2">
-
                                 <Button
                                     className={fieldsChanged ? "bg-cyan-500" : "bg-cyan-200"}
                                     disabled={!fieldsChanged}
                                     onClick={() => requestUpdate(selectedTab)}
                                 >Save</Button>
-
                             </CardFooter>
                         </Card>
-
                     </div>
                 </div>
             </main>
         </div>
-    )
+    );
 }
+
 export default AdvisorProfile;

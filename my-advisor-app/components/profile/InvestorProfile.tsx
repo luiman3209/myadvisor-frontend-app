@@ -1,6 +1,7 @@
-import Link from "next/link"
+import Link from "next/link";
+import React, { ChangeEvent, useEffect, useState } from "react";
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
     Card,
     CardContent,
@@ -8,12 +9,10 @@ import {
     CardFooter,
     CardHeader,
     CardTitle,
-} from "@/components/ui/card"
-
+} from "@/components/ui/card";
 
 import { InvestorProfileDto } from '@/types/types';
 import ShakeableInput from "../input/ShakableInput";
-import { ChangeEvent, use, useEffect, useState } from "react";
 import { updateProfile } from "@/services/profileService";
 import { CommonProfileData, InvestorProfileData } from "@/types/auth";
 import { checkEmailAvailability, updateUser } from "@/services/authService";
@@ -34,7 +33,6 @@ interface InvestorProfileProps {
 }
 
 const InvestorProfile: React.FC<InvestorProfileProps> = ({ investorProfile, availableServiceTypes }) => {
-
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
     const [firstName, setFirstName] = useState<string>(investorProfile.userProfile.first_name);
     const [lastName, setLastName] = useState<string>(investorProfile.userProfile.last_name);
@@ -51,22 +49,72 @@ const InvestorProfile: React.FC<InvestorProfileProps> = ({ investorProfile, avai
     const [selectedTab, setSelectedTab] = useState<string>('general');
     const [updateMessage, setUpdateMessage] = useState<string>('');
     const [errorMessage, setErrorMessage] = useState<string>('');
+    const [fieldsChanged, setFieldsChanged] = useState<boolean>(false);
+
+    const initialProfileState = {
+        firstName: investorProfile.userProfile.first_name,
+        lastName: investorProfile.userProfile.last_name,
+        phoneNumber: investorProfile.userProfile.phone_number,
+        address: investorProfile.userProfile.address,
+        netWorth: investorProfile.investor.net_worth,
+        incomeRange: investorProfile.investor.income_range,
+        geoPreferences: investorProfile.investor.geo_preferences,
+        email: investorProfile.investor.user_config.email,
+        selectedServiceTypes: investorProfile.serviceTypes
+    };
+
+    useEffect(() => {
+        const hasFieldChanged = () => {
+            return (
+                firstName !== initialProfileState.firstName ||
+                lastName !== initialProfileState.lastName ||
+                phoneNumber !== initialProfileState.phoneNumber ||
+                address !== initialProfileState.address ||
+                netWorth !== initialProfileState.netWorth ||
+                incomeRange !== initialProfileState.incomeRange ||
+                geoPreferences !== initialProfileState.geoPreferences ||
+                email !== initialProfileState.email ||
+                selectedServiceTypes.some((type) => !initialProfileState.selectedServiceTypes.map(s => s.service_id).includes(type.service_id))
+            );
+        };
+
+        setFieldsChanged(hasFieldChanged());
+    }, [
+        firstName, lastName, phoneNumber, address, netWorth,
+        incomeRange, geoPreferences, email, selectedServiceTypes
+    ]);
+
+    const changeTab = (tab: string) => {
+        setFieldsChanged(false);
+        setSelectedTab(tab);
+    };
+
+    const requestUpdate = (tab: string) => {
+        if (tab === 'general') {
+            updateProfileData();
+        }
+        else if (tab === 'investor') {
+            updateInvestorInfo();
+        }
+        else if (tab === 'security') {
+            updateUserData();
+        }
+        setFieldsChanged(false);
+    };
 
     const showError = (message: string) => {
         setErrorMessage(message);
-        // wait 5 seconds and clear the error message
         setTimeout(() => {
             setErrorMessage('');
         }, 5000);
-    }
+    };
 
     const showSuccess = (message: string) => {
         setUpdateMessage(message);
-        // wait 5 seconds and clear the error message
         setTimeout(() => {
             setUpdateMessage('');
         }, 5000);
-    }
+    };
 
     const validateProfileData = async (data: CommonProfileData) => {
         const newErrors: { [key: string]: string } = {};
@@ -92,10 +140,9 @@ const InvestorProfile: React.FC<InvestorProfileProps> = ({ investorProfile, avai
             newErrors.address = 'Address is required';
         }
 
-
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
-    }
+    };
 
     const updateProfileData = async () => {
         const profileData: CommonProfileData = {
@@ -107,14 +154,13 @@ const InvestorProfile: React.FC<InvestorProfileProps> = ({ investorProfile, avai
         try {
             if (await validateProfileData(profileData)) {
                 await updateProfile(profileData);
+                showSuccess('Profile updated successfully');
             }
-            showSuccess('Profile updated successfully');
         }
         catch (err) {
             showError('Something went wrong during update, refresh and try again');
         }
-
-    }
+    };
 
     const validateInvestorInfo = async (data: InvestorProfileData) => {
         const newErrors: { [key: string]: string } = {};
@@ -130,18 +176,15 @@ const InvestorProfile: React.FC<InvestorProfileProps> = ({ investorProfile, avai
 
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
-    }
+    };
 
     const updateInvestorInfo = async () => {
-
-
         const investorData: InvestorProfileData = {
             net_worth: netWorth,
             income_range: incomeRange,
             geo_preferences: geoPreferences,
             selected_service_ids: selectedServiceTypes.map(s => s.service_id),
         };
-
 
         try {
             if (await validateInvestorInfo(investorData)) {
@@ -152,11 +195,9 @@ const InvestorProfile: React.FC<InvestorProfileProps> = ({ investorProfile, avai
         catch (err) {
             showError('Something went wrong during update, refresh and try again');
         }
-
-    }
+    };
 
     const validateUserData = async (email: string, password: string | undefined) => {
-
         const newErrors: { [key: string]: string } = {};
 
         if (email) {
@@ -164,7 +205,6 @@ const InvestorProfile: React.FC<InvestorProfileProps> = ({ investorProfile, avai
                 newErrors.email = 'Email must be at least 6 characters';
             }
             if (! await checkEmailAvailability(email)) newErrors.email = "Email is already taken";
-
         }
 
         if (password) {
@@ -176,32 +216,25 @@ const InvestorProfile: React.FC<InvestorProfileProps> = ({ investorProfile, avai
             }
         }
 
-
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
-
-    }
+    };
 
     const updateUserData = async () => {
-
         try {
             if (await validateUserData(email, password)) {
                 await updateUser(email, password);
+                showSuccess('User data updated successfully');
             }
-            showSuccess('User data updated successfully');
         }
-
         catch (err) {
             showError('Something went wrong during update, refresh and try again');
         }
-
-
-    }
+    };
 
     return (
         <div className="relative flex min-h-screen w-full flex-col">
-
-            <main className=" flex min-h-[calc(100vh_-_theme(spacing.16))] flex-1 flex-col gap-4 bg-muted/40 p-4 md:gap-8 md:p-10">
+            <main className="flex min-h-[calc(100vh_-_theme(spacing.16))] flex-1 flex-col gap-4 bg-muted/40 p-4 md:gap-8 md:p-10">
                 <div className="mx-auto grid w-full max-w-6xl gap-2">
                     <h1 className="text-3xl font-semibold">Profile</h1>
                 </div>
@@ -220,7 +253,7 @@ const InvestorProfile: React.FC<InvestorProfileProps> = ({ investorProfile, avai
                 }
                 {/** Success alert */}
                 {
-                    updateMessage && <div className=" fixed bottom-0 right-0 mb-4 mr-4">
+                    updateMessage && <div className="fixed bottom-0 right-0 mb-4 mr-4">
                         <Alert>
                             <Info className="h-4 w-4" />
                             <AlertTitle>Profile Updated!</AlertTitle>
@@ -231,82 +264,69 @@ const InvestorProfile: React.FC<InvestorProfileProps> = ({ investorProfile, avai
                     </div>
                 }
 
-
-                <div className=" mx-auto grid w-full max-w-6xl items-start gap-6 md:grid-cols-[180px_1fr] lg:grid-cols-[250px_1fr]">
-                    <nav
-                        className="grid gap-4 text-sm text-muted-foreground" x-chunk="dashboard-04-chunk-0"
-                    >
-                        <Link href="#" className={selectedTab === 'general' ? "font-semibold text-primary" : ""} onClick={() => setSelectedTab('general')}>
+                <div className="mx-auto grid w-full max-w-6xl items-start gap-6 md:grid-cols-[180px_1fr] lg:grid-cols-[250px_1fr]">
+                    <nav className="grid gap-4 text-sm text-muted-foreground">
+                        <Link href="#" className={selectedTab === 'general' ? "font-semibold text-primary" : ""} onClick={() => changeTab('general')}>
                             General
                         </Link>
-                        <Link href="#" className={selectedTab === 'investor' ? "font-semibold text-primary" : ""} onClick={() => setSelectedTab('investor')}>Investor info</Link>
-                        <Link href="#" className={selectedTab === 'security' ? "font-semibold text-primary" : ""} onClick={() => setSelectedTab('security')}>Security</Link>
-
+                        <Link href="#" className={selectedTab === 'investor' ? "font-semibold text-primary" : ""} onClick={() => changeTab('investor')}>Investor info</Link>
+                        <Link href="#" className={selectedTab === 'security' ? "font-semibold text-primary" : ""} onClick={() => changeTab('security')}>Security</Link>
                     </nav>
 
-                    <div className=" flex flex-col">
-
-
-                        <Card x-chunk="dashboard-04-chunk-1">
+                    <div className="flex flex-col">
+                        <Card>
                             <CardHeader>
-                                <CardTitle>{selectedTab === 'general' ? 'General' :
-                                    selectedTab === 'investor' ? 'Investor' : 'Security'
-
-                                }</CardTitle>
+                                <CardTitle>{selectedTab === 'general' ? 'General' : selectedTab === 'investor' ? 'Investor' : 'Security'}</CardTitle>
                                 <CardDescription>
-                                    {selectedTab === 'investor' ? 'Investor profile info' :
-                                        selectedTab === 'security' ? 'Account and security info' :
-
-
-                                            'General profile info'}
+                                    {selectedTab === 'investor' ? 'Investor profile info' : selectedTab === 'security' ? 'Account and security info' : 'General profile info'}
                                 </CardDescription>
                             </CardHeader>
-                            <CardContent >
+                            <CardContent>
                                 {selectedTab === 'general' ?
                                     <form className="flex flex-col space-y-4">
-
                                         <Label htmlFor="first_name">First name</Label>
-                                        <ShakeableInput type="text"
+                                        <ShakeableInput
+                                            type="text"
                                             placeholder="First name"
                                             value={firstName}
                                             onChange={(e: ChangeEvent<HTMLInputElement>) => setFirstName(e.target.value)}
                                             error={errors.first_name}
                                         />
                                         <Label htmlFor="last_name">Last name</Label>
-                                        <ShakeableInput type="text"
+                                        <ShakeableInput
+                                            type="text"
                                             placeholder="Last name"
                                             value={lastName}
                                             onChange={(e: ChangeEvent<HTMLInputElement>) => setLastName(e.target.value)}
                                             error={errors.last_name}
                                         />
                                         <Label htmlFor="phone_number">Phone number</Label>
-                                        <ShakeableInput type="text"
+                                        <ShakeableInput
+                                            type="text"
                                             placeholder="Phone number"
                                             value={phoneNumber}
                                             onChange={(e: ChangeEvent<HTMLInputElement>) => setPhoneNumber(e.target.value)}
                                             error={errors.phone_number}
                                         />
                                         <Label htmlFor="address">Address</Label>
-                                        <ShakeableInput type="text"
+                                        <ShakeableInput
+                                            type="text"
                                             placeholder="Address"
                                             value={address}
                                             onChange={(e: ChangeEvent<HTMLInputElement>) => setAddress(e.target.value)}
                                             error={errors.address}
                                         />
-
-
                                     </form>
-                                    :
-                                    selectedTab === 'investor' ?
+                                    : selectedTab === 'investor' ?
                                         <form className="flex flex-col space-y-4">
-                                            <Label htmlFor="service_types">Service prefenences</Label>
-                                            <ServiceTypePicker serviceTypes={availableServiceTypes.filter((serviceType) => !selectedServiceTypes.map(e => e.service_id).includes(serviceType.service_id))}
+                                            <Label htmlFor="service_types">Service preferences</Label>
+                                            <ServiceTypePicker
+                                                serviceTypes={availableServiceTypes.filter((serviceType) => !selectedServiceTypes.map(e => e.service_id).includes(serviceType.service_id))}
                                                 selectedServiceTypes={selectedServiceTypes}
-                                                setSelectedServiceTypes={setSelectedServiceTypes} />
-
+                                                setSelectedServiceTypes={setSelectedServiceTypes}
+                                            />
                                             <Label htmlFor="geo_preferences">Country preference</Label>
                                             <CountryPicker countryCode={geoPreferences} setCountryCode={setGeoPreferences} />
-
                                             <Label htmlFor="net_worth">Net worth range</Label>
                                             <Select onValueChange={setNetWorth} value={netWorth}>
                                                 <SelectTrigger className="w-[180px]">
@@ -314,17 +334,12 @@ const InvestorProfile: React.FC<InvestorProfileProps> = ({ investorProfile, avai
                                                 </SelectTrigger>
                                                 <SelectContent>
                                                     <SelectGroup>
-
-                                                        {netWorthOptions.map((option) => {
-
-                                                            return <SelectItem key={option} value={option}>{'\$'.concat(option)}</SelectItem>
-
-                                                        })}
-
+                                                        {netWorthOptions.map((option) => (
+                                                            <SelectItem key={option} value={option}>{'\$'.concat(option)}</SelectItem>
+                                                        ))}
                                                     </SelectGroup>
                                                 </SelectContent>
                                             </Select>
-
                                             <Label htmlFor="income_range">Income range</Label>
                                             <Select onValueChange={setIncomeRange} value={incomeRange}>
                                                 <SelectTrigger className="w-[180px]">
@@ -332,66 +347,54 @@ const InvestorProfile: React.FC<InvestorProfileProps> = ({ investorProfile, avai
                                                 </SelectTrigger>
                                                 <SelectContent>
                                                     <SelectGroup>
-
-                                                        {incomeRangeOptions.map((option) => {
-
-                                                            return <SelectItem key={option} value={option}>{'\$'.concat(option)}</SelectItem>
-
-                                                        })}
-
+                                                        {incomeRangeOptions.map((option) => (
+                                                            <SelectItem key={option} value={option}>{'\$'.concat(option)}</SelectItem>
+                                                        ))}
                                                     </SelectGroup>
                                                 </SelectContent>
-
                                             </Select>
-
                                         </form>
-                                        :
-
-                                        selectedTab === 'security' ?
+                                        : selectedTab === 'security' ?
                                             <form className="flex flex-col space-y-4">
                                                 <Label htmlFor="email">Email</Label>
-                                                <ShakeableInput type="email"
+                                                <ShakeableInput
+                                                    type="email"
                                                     placeholder="Email"
                                                     value={email}
                                                     onChange={(e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
                                                     error={errors.email}
                                                 />
                                                 <Label htmlFor="password">Password</Label>
-                                                <ShakeableInput type={password ? "password" : "text"}
+                                                <ShakeableInput
+                                                    type={password ? "password" : "text"}
                                                     placeholder="Update password"
                                                     value={password ? password : ''}
                                                     onChange={(e: ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
                                                     error={errors.password}
                                                 />
-
-                                                {password && <ShakeableInput type="password"
+                                                {password && <ShakeableInput
+                                                    type="password"
                                                     placeholder="Confirm password"
                                                     value={confirmPassword}
                                                     onChange={(e: ChangeEvent<HTMLInputElement>) => setConfirmPassword(e.target.value)}
                                                     error={errors.password}
                                                 />}
-
-
-
-                                            </form> : null}
-
-
+                                            </form>
+                                            : null}
                             </CardContent>
                             <CardFooter className="border-t px-6 py-4 space-x-2">
-
-                                <Button onClick={
-                                    selectedTab === 'general' ? updateProfileData :
-                                        selectedTab === 'investor' ? updateInvestorInfo :
-                                            selectedTab === 'security' ? updateUserData : undefined
-                                }>Save</Button>
-
+                                <Button
+                                    className={fieldsChanged ? "bg-cyan-500" : "bg-cyan-200"}
+                                    disabled={!fieldsChanged}
+                                    onClick={() => requestUpdate(selectedTab)}
+                                >Save</Button>
                             </CardFooter>
                         </Card>
-
                     </div>
                 </div>
             </main>
         </div>
-    )
+    );
 }
+
 export default InvestorProfile;
