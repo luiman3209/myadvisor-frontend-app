@@ -37,7 +37,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       try {
         const decodedUser = decodeToken(token);
         if (decodedUser) {
-          setUser(decodedUser as User);
+          const currentTime = Date.now() / 1000; // Get current time in seconds
+          if (decodedUser.exp < currentTime) {
+            localStorage.removeItem('token');
+            setUser(null);
+          } else {
+            setUser(decodedUser as User);
+          }
+
+
         }
       } catch (error) {
         console.error('Failed to decode token', error);
@@ -55,7 +63,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setUser(decodedUser);
       router.push(redirectUrl || '/');
     } catch (err: any) {
-      setError(err.message);
+      throw new Error(err.message);
     } finally {
       setLoading(false);
     }
@@ -83,7 +91,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       if (isAdvisor && profileData.advisor_data) {
         await createOrUpdateAdvisor(profileData.advisor_data);
-      } else if(profileData.investor_data) {
+      } else if (profileData.investor_data) {
         await createOrUpdateInvestor(profileData.investor_data);
       }
 

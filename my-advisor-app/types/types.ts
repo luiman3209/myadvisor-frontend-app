@@ -43,11 +43,12 @@ export interface InvestorProfileDto {
   serviceTypes: ServiceType[];
 }
 
-export interface AdvisorProfileDto {
-  advisor: AdvisorEntity;
-  serviceTypes: ServiceType[];
-  qualifications: QualificationEntity[];
+export interface AdvisorPrivateProfileRespDto {
+  advisor: AdvisorDto;
+  serviceTypes: number[];
+  qualifications: number[];
   profileReviews: ReviewEntity[];
+  userProfile: ProfileEntity;
 }
 
 export interface InvestorDto {
@@ -56,6 +57,29 @@ export interface InvestorDto {
   net_worth: string;
   income_range: string;
   geo_preferences: string;
+  created_at: Date;
+  updated_at: Date;
+
+  user_config: {
+    email: string;
+    created_at: Date;
+  }
+
+}
+
+export interface AdvisorDto {
+  advisor_id: number;
+  user_id: number;
+  display_name: string;
+  office_address: string;
+  operating_city_code: string;
+  operating_country_code: string;
+  contact_information: string;
+  start_shift_1: string;
+  end_shift_1: string;
+  start_shift_2: string;
+  end_shift_2: string;
+
   created_at: Date;
   updated_at: Date;
 

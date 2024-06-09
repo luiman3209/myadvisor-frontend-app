@@ -3,17 +3,19 @@
 import { useAuth } from '@/contexts/AuthContext';
 import { useState, useEffect, ChangeEvent } from 'react';
 import { useRouter } from 'next/navigation';
-import RegisterNavbar from '@/components/navbar/RegisterNavbar';
+
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+
 import { Label } from "@/components/ui/label";
 import { Card } from '@/components/ui/card';
+import ShakeableInput from '@/components/input/ShakableInput';
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [errors, setErrors] = useState('');
   const { user, login, error } = useAuth();
   const router = useRouter();
 
@@ -25,7 +27,16 @@ export default function Login() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await login(email, password);
+    try {
+      await login(email, password);
+    } catch (err) {
+      setErrors('Invalid email or password');
+      // wait for 2 seconds and then remove the error message
+      setTimeout(() => {
+        setErrors('');
+      }, 3000);
+    }
+
   };
 
   return (
@@ -52,13 +63,11 @@ export default function Login() {
               <div className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="email">Email</Label>
-                  <Input
-                    id="email"
+                  <ShakeableInput
+                    value={email}
                     type="email"
                     placeholder="m@example.com"
-                    required
-                    onChange={(e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
-                  />
+                    onChange={(e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)} error={errors} animateOnly={true} />
                 </div>
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
@@ -70,12 +79,9 @@ export default function Login() {
                       Forgot your password?
                     </Link>
                   </div>
-                  <Input
-                    id="password"
+                  <ShakeableInput
                     type="password"
-                    required
-                    onChange={(e: ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
-                  />
+                    onChange={(e: ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)} placeholder={''} value={password} error={errors} />
                 </div>
                 <Button type="submit" className="w-full">
                   Login

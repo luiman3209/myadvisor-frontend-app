@@ -15,23 +15,13 @@ import AddressPicker from '../input/AddressPicker';
 import { CountryPicker } from '../input/CountryPicker';
 import { Pencil } from 'lucide-react';
 import { Card } from '../ui/card';
+import { calculateEndTimes, transformTime } from '@/utils/commonUtils';
+import { allTimes } from '@/utils/constants';
 
 
-const allTimes = [
-    '0000', '0030', '0100', '0130', '0200', '0230', '0300', '0330', '0400', '0430', '0500', '0530', '0600', '0630', '0700', '0730', '0800', '0830', '0900', '0930', '1000', '1030', '1100', '1130',
-    '1200', '1230', '1300', '1330', '1400', '1430', '1500', '1530', '1600', '1630', '1700', '1730', '1800', '1830', '1900', '1930', '2000', '2030', '2100', '2130', '2200', '2230', '2300', '2330'
-];
 
-function transformTime(value: string) {
-    // Ensure the input is a string and has exactly 4 characters
-    if (value.length === 4) {
-        // Insert a colon between the second and third characters
-        return value.slice(0, 2) + ':' + value.slice(2);
-    } else {
-        // Handle invalid input
-        throw new Error("Invalid input. The input should be a 4-character string.");
-    }
-}
+
+
 
 
 
@@ -88,12 +78,7 @@ const AdvisorForm: React.FC<AdvisorFormProps> = ({
     const [availableEndTime1, setAvailableEndTime1] = useState<string[]>([]);
     const [availableEndTime2, setAvailableEndTime2] = useState<string[]>([]);
 
-    const calculateEndTimes = (start: string) => {
-        const startIndex = allTimes.indexOf(start);
-        if (startIndex === -1) return [];
-        const maxEndIndex = Math.min(startIndex + 16, allTimes.length); // 16 half-hour increments = 8 hours
-        return allTimes.slice(startIndex + 1, maxEndIndex + 1);
-    };
+
 
     const updateEndTimes1 = (value: string) => {
         setStartShift1(value);

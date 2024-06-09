@@ -11,8 +11,7 @@ import {
 } from "@/components/ui/card"
 
 
-import { Input } from "@/components/ui/input"
-import { AdvisorProfileDto, InvestorProfileDto } from '@/types/types';
+import { InvestorProfileDto } from '@/types/types';
 import ShakeableInput from "../input/ShakableInput";
 import { ChangeEvent, use, useEffect, useState } from "react";
 import { updateProfile } from "@/services/profileService";
@@ -25,6 +24,9 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import { ServiceType } from "@/types/entity/service_type_entity";
 
 import { netWorthOptions, incomeRangeOptions } from "@/utils/constants";
+import { Label } from "../ui/label";
+import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
+import { Info } from "lucide-react";
 
 interface InvestorProfileProps {
     investorProfile: InvestorProfileDto;
@@ -47,12 +49,24 @@ const InvestorProfile: React.FC<InvestorProfileProps> = ({ investorProfile, avai
     const [selectedServiceTypes, setSelectedServiceTypes] = useState(investorProfile.serviceTypes);
 
     const [selectedTab, setSelectedTab] = useState<string>('general');
+    const [updateMessage, setUpdateMessage] = useState<string>('');
+    const [errorMessage, setErrorMessage] = useState<string>('');
 
-    useEffect(() => {
+    const showError = (message: string) => {
+        setErrorMessage(message);
+        // wait 5 seconds and clear the error message
+        setTimeout(() => {
+            setErrorMessage('');
+        }, 5000);
+    }
 
-        console.log('investorProfile', investorProfile);
-    });
-
+    const showSuccess = (message: string) => {
+        setUpdateMessage(message);
+        // wait 5 seconds and clear the error message
+        setTimeout(() => {
+            setUpdateMessage('');
+        }, 5000);
+    }
 
     const validateProfileData = async (data: CommonProfileData) => {
         const newErrors: { [key: string]: string } = {};
@@ -90,9 +104,14 @@ const InvestorProfile: React.FC<InvestorProfileProps> = ({ investorProfile, avai
             phone_number: phoneNumber,
             address: address,
         };
-
-        if (await validateProfileData(profileData)) {
-            await updateProfile(profileData);
+        try {
+            if (await validateProfileData(profileData)) {
+                await updateProfile(profileData);
+            }
+            showSuccess('Profile updated successfully');
+        }
+        catch (err) {
+            showError('Something went wrong during update, refresh and try again');
         }
 
     }
@@ -123,8 +142,15 @@ const InvestorProfile: React.FC<InvestorProfileProps> = ({ investorProfile, avai
             selected_service_ids: selectedServiceTypes.map(s => s.service_id),
         };
 
-        if (await validateInvestorInfo(investorData)) {
-            await createOrUpdateInvestor(investorData);
+
+        try {
+            if (await validateInvestorInfo(investorData)) {
+                await createOrUpdateInvestor(investorData);
+                showSuccess('Investor profile updated successfully');
+            }
+        }
+        catch (err) {
+            showError('Something went wrong during update, refresh and try again');
         }
 
     }
@@ -158,22 +184,55 @@ const InvestorProfile: React.FC<InvestorProfileProps> = ({ investorProfile, avai
 
     const updateUserData = async () => {
 
-        if (await validateUserData(email, password)) {
-            await updateUser(email, password);
+        try {
+            if (await validateUserData(email, password)) {
+                await updateUser(email, password);
+            }
+            showSuccess('User data updated successfully');
         }
 
+        catch (err) {
+            showError('Something went wrong during update, refresh and try again');
+        }
 
 
     }
 
     return (
-        <div className="flex min-h-screen w-full flex-col">
+        <div className="relative flex min-h-screen w-full flex-col">
 
-            <main className="flex min-h-[calc(100vh_-_theme(spacing.16))] flex-1 flex-col gap-4 bg-muted/40 p-4 md:gap-8 md:p-10">
+            <main className=" flex min-h-[calc(100vh_-_theme(spacing.16))] flex-1 flex-col gap-4 bg-muted/40 p-4 md:gap-8 md:p-10">
                 <div className="mx-auto grid w-full max-w-6xl gap-2">
                     <h1 className="text-3xl font-semibold">Profile</h1>
                 </div>
-                <div className="mx-auto grid w-full max-w-6xl items-start gap-6 md:grid-cols-[180px_1fr] lg:grid-cols-[250px_1fr]">
+
+                {/** Message alert */}
+                {
+                    errorMessage && <div className="fixed bottom-0 right-0 mb-4 mr-4">
+                        <Alert className="bg-red-500 text-white">
+                            <Info className="h-4 w-4" />
+                            <AlertTitle>Error</AlertTitle>
+                            <AlertDescription>
+                                {errorMessage}
+                            </AlertDescription>
+                        </Alert>
+                    </div>
+                }
+                {/** Success alert */}
+                {
+                    updateMessage && <div className=" fixed bottom-0 right-0 mb-4 mr-4">
+                        <Alert>
+                            <Info className="h-4 w-4" />
+                            <AlertTitle>Profile Updated!</AlertTitle>
+                            <AlertDescription>
+                                Your profile is now up to date. Thanks for staying current!
+                            </AlertDescription>
+                        </Alert>
+                    </div>
+                }
+
+
+                <div className=" mx-auto grid w-full max-w-6xl items-start gap-6 md:grid-cols-[180px_1fr] lg:grid-cols-[250px_1fr]">
                     <nav
                         className="grid gap-4 text-sm text-muted-foreground" x-chunk="dashboard-04-chunk-0"
                     >
@@ -184,150 +243,151 @@ const InvestorProfile: React.FC<InvestorProfileProps> = ({ investorProfile, avai
                         <Link href="#" className={selectedTab === 'security' ? "font-semibold text-primary" : ""} onClick={() => setSelectedTab('security')}>Security</Link>
 
                     </nav>
-                    <div className="grid gap-6">
-                        {selectedTab === 'general' &&
-                            <Card x-chunk="dashboard-04-chunk-1">
-                                <CardHeader>
-                                    <CardTitle>General</CardTitle>
-                                    <CardDescription>
-                                        General profile info
-                                    </CardDescription>
-                                </CardHeader>
-                                <CardContent>
-                                    <form>
+
+                    <div className=" flex flex-col">
+
+
+                        <Card x-chunk="dashboard-04-chunk-1">
+                            <CardHeader>
+                                <CardTitle>{selectedTab === 'general' ? 'General' :
+                                    selectedTab === 'investor' ? 'Investor' : 'Security'
+
+                                }</CardTitle>
+                                <CardDescription>
+                                    {selectedTab === 'investor' ? 'Investor profile info' :
+                                        selectedTab === 'security' ? 'Account and security info' :
+
+
+                                            'General profile info'}
+                                </CardDescription>
+                            </CardHeader>
+                            <CardContent >
+                                {selectedTab === 'general' ?
+                                    <form className="flex flex-col space-y-4">
+
+                                        <Label htmlFor="first_name">First name</Label>
                                         <ShakeableInput type="text"
                                             placeholder="First name"
-                                            value={investorProfile.userProfile.first_name}
+                                            value={firstName}
                                             onChange={(e: ChangeEvent<HTMLInputElement>) => setFirstName(e.target.value)}
                                             error={errors.first_name}
                                         />
+                                        <Label htmlFor="last_name">Last name</Label>
                                         <ShakeableInput type="text"
                                             placeholder="Last name"
-                                            value={investorProfile.userProfile.last_name}
+                                            value={lastName}
                                             onChange={(e: ChangeEvent<HTMLInputElement>) => setLastName(e.target.value)}
                                             error={errors.last_name}
                                         />
+                                        <Label htmlFor="phone_number">Phone number</Label>
                                         <ShakeableInput type="text"
                                             placeholder="Phone number"
-                                            value={investorProfile.userProfile.phone_number}
+                                            value={phoneNumber}
                                             onChange={(e: ChangeEvent<HTMLInputElement>) => setPhoneNumber(e.target.value)}
                                             error={errors.phone_number}
                                         />
+                                        <Label htmlFor="address">Address</Label>
                                         <ShakeableInput type="text"
                                             placeholder="Address"
-                                            value={investorProfile.userProfile.address}
+                                            value={address}
                                             onChange={(e: ChangeEvent<HTMLInputElement>) => setAddress(e.target.value)}
                                             error={errors.address}
                                         />
 
 
                                     </form>
-                                </CardContent>
-                                <CardFooter className="border-t px-6 py-4">
-                                    <Button onClick={updateProfileData}>Save</Button>
-                                </CardFooter>
-                            </Card>}
+                                    :
+                                    selectedTab === 'investor' ?
+                                        <form className="flex flex-col space-y-4">
+                                            <Label htmlFor="service_types">Service prefenences</Label>
+                                            <ServiceTypePicker serviceTypes={availableServiceTypes.filter((serviceType) => !selectedServiceTypes.map(e => e.service_id).includes(serviceType.service_id))}
+                                                selectedServiceTypes={selectedServiceTypes}
+                                                setSelectedServiceTypes={setSelectedServiceTypes} />
 
-                        {selectedTab === 'investor' &&
-                            <Card x-chunk="dashboard-04-chunk-1">
-                                <CardHeader>
-                                    <CardTitle>Investor</CardTitle>
-                                    <CardDescription>
-                                        Investor profile info
-                                    </CardDescription>
-                                </CardHeader>
-                                <CardContent>
-                                    <form>
+                                            <Label htmlFor="geo_preferences">Country preference</Label>
+                                            <CountryPicker countryCode={geoPreferences} setCountryCode={setGeoPreferences} />
 
-                                        <ServiceTypePicker serviceTypes={availableServiceTypes}
-                                            selectedServiceTypes={selectedServiceTypes}
-                                            setSelectedServiceTypes={setSelectedServiceTypes} />
+                                            <Label htmlFor="net_worth">Net worth range</Label>
+                                            <Select onValueChange={setNetWorth} value={netWorth}>
+                                                <SelectTrigger className="w-[180px]">
+                                                    <SelectValue placeholder={netWorth ? undefined : '-'} defaultValue={netWorth ? netWorth : undefined} />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectGroup>
 
-                                        <CountryPicker countryCode={geoPreferences} setCountryCode={setGeoPreferences} />
+                                                        {netWorthOptions.map((option) => {
 
-                                        <Select onValueChange={setNetWorth} value={netWorth}>
-                                            <SelectTrigger className="w-[180px]">
-                                                <SelectValue placeholder={netWorth ? undefined : '-'} defaultValue={netWorth ? netWorth : undefined} />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectGroup>
+                                                            return <SelectItem key={option} value={option}>{'\$'.concat(option)}</SelectItem>
 
-                                                    {netWorthOptions.map((option) => {
+                                                        })}
 
-                                                        return <SelectItem key={option} value={option}>{'\$'.concat(option)}</SelectItem>
+                                                    </SelectGroup>
+                                                </SelectContent>
+                                            </Select>
 
-                                                    })}
+                                            <Label htmlFor="income_range">Income range</Label>
+                                            <Select onValueChange={setIncomeRange} value={incomeRange}>
+                                                <SelectTrigger className="w-[180px]">
+                                                    <SelectValue placeholder={incomeRange ? undefined : '-'} defaultValue={incomeRange ? incomeRange : undefined} />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectGroup>
 
-                                                </SelectGroup>
-                                            </SelectContent>
-                                        </Select>
+                                                        {incomeRangeOptions.map((option) => {
 
+                                                            return <SelectItem key={option} value={option}>{'\$'.concat(option)}</SelectItem>
 
-                                        <Select onValueChange={setIncomeRange} value={incomeRange}>
-                                            <SelectTrigger className="w-[180px]">
-                                                <SelectValue placeholder={incomeRange ? undefined : '-'} defaultValue={incomeRange ? incomeRange : undefined} />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectGroup>
+                                                        })}
 
-                                                    {incomeRangeOptions.map((option) => {
+                                                    </SelectGroup>
+                                                </SelectContent>
 
-                                                        return <SelectItem key={option} value={option}>{'\$'.concat(option)}</SelectItem>
+                                            </Select>
 
-                                                    })}
+                                        </form>
+                                        :
 
-                                                </SelectGroup>
-                                            </SelectContent>
+                                        selectedTab === 'security' ?
+                                            <form className="flex flex-col space-y-4">
+                                                <Label htmlFor="email">Email</Label>
+                                                <ShakeableInput type="email"
+                                                    placeholder="Email"
+                                                    value={email}
+                                                    onChange={(e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
+                                                    error={errors.email}
+                                                />
+                                                <Label htmlFor="password">Password</Label>
+                                                <ShakeableInput type={password ? "password" : "text"}
+                                                    placeholder="Update password"
+                                                    value={password ? password : ''}
+                                                    onChange={(e: ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
+                                                    error={errors.password}
+                                                />
 
-                                        </Select>
-
-                                    </form>
-                                </CardContent>
-                                <CardFooter className="border-t px-6 py-4">
-                                    <Button onClick={updateInvestorInfo}>Save</Button>
-                                </CardFooter>
-                            </Card>
-                        }
-                        {selectedTab === 'security' &&
-                            <Card x-chunk="dashboard-04-chunk-1">
-                                <CardHeader>
-                                    <CardTitle>Security</CardTitle>
-                                    <CardDescription>
-                                        Account and security info
-                                    </CardDescription>
-                                </CardHeader>
-                                <CardContent>
-                                    <form>
-                                        <ShakeableInput type="email"
-                                            placeholder="Email"
-                                            value={investorProfile.investor.user_config.email}
-                                            onChange={(e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
-                                            error={errors.email}
-                                        />
-
-                                        <ShakeableInput type={password ? "password" : "text"}
-                                            placeholder="Update password"
-                                            value={password ? password : ''}
-                                            onChange={(e: ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
-                                            error={errors.password}
-                                        />
-
-                                        {password && <ShakeableInput type="password"
-                                            placeholder="Confirm password"
-                                            value={confirmPassword}
-                                            onChange={(e: ChangeEvent<HTMLInputElement>) => setConfirmPassword(e.target.value)}
-                                            error={errors.password}
-                                        />}
+                                                {password && <ShakeableInput type="password"
+                                                    placeholder="Confirm password"
+                                                    value={confirmPassword}
+                                                    onChange={(e: ChangeEvent<HTMLInputElement>) => setConfirmPassword(e.target.value)}
+                                                    error={errors.password}
+                                                />}
 
 
 
-                                    </form>
-                                </CardContent>
-                                <CardFooter className="border-t px-6 py-4">
-                                    <Button onClick={updateUserData}>Save</Button>
-                                </CardFooter>
-                            </Card>
-                        }
+                                            </form> : null}
+
+
+                            </CardContent>
+                            <CardFooter className="border-t px-6 py-4 space-x-2">
+
+                                <Button onClick={
+                                    selectedTab === 'general' ? updateProfileData :
+                                        selectedTab === 'investor' ? updateInvestorInfo :
+                                            selectedTab === 'security' ? updateUserData : undefined
+                                }>Save</Button>
+
+                            </CardFooter>
+                        </Card>
+
                     </div>
                 </div>
             </main>

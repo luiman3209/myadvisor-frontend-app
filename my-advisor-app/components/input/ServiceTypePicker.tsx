@@ -33,7 +33,7 @@ type ServiceTypePickerProps = {
 
 export function ServiceTypePicker({ serviceTypes, selectedServiceTypes, setSelectedServiceTypes }: ServiceTypePickerProps) {
     const [open, setOpen] = React.useState(false)
-    const [availableServiceTypes, setAvailableServiceTypes] = React.useState(serviceTypes.map((q) => { return q }))
+    const [availableServiceTypes, setAvailableServiceTypes] = React.useState(serviceTypes.map((q) => q).filter((q) => !selectedServiceTypes.includes(q)))
     const isDesktop = window.innerWidth > 768
 
     const handleSelectServiceType = (serviceType: ServiceType) => {
@@ -54,7 +54,7 @@ export function ServiceTypePicker({ serviceTypes, selectedServiceTypes, setSelec
 
                 <div className="flex space-x-2">
                     {selectedServiceTypes.map((serviceType) => (
-                        <Card key={serviceType.service_id} className="flex items-center space-x-2 p-2">
+                        <Card key={serviceType.service_id} className="flex items-center space-x-2 pl-2.5 text-sm font-medium">
                             <span className="">{serviceType.service_type_name}</span>
                             <Button className="bg-transparent hover:bg-red-500 text-red-500 hover:text-white" size="icon" onClick={() => removeServiceType(serviceType.service_id)}>
                                 <Trash className=" w-4 h-4" />

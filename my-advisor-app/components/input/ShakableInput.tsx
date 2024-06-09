@@ -8,7 +8,8 @@ interface ShakeableInputProps {
     value: string;
     onChange: (e: ChangeEvent<HTMLInputElement>) => void;
     error?: string;
-    className?: string; // Add className to the props
+    className?: string;
+    animateOnly?: boolean;
 }
 
 const shakeVariant = {
@@ -18,7 +19,7 @@ const shakeVariant = {
     }
 };
 
-const ShakeableInput: React.FC<ShakeableInputProps> = ({ error, className, ...props }) => {
+const ShakeableInput: React.FC<ShakeableInputProps> = ({ error, className, animateOnly, ...props }) => {
     return (
         <motion.div
             variants={shakeVariant}
@@ -29,7 +30,8 @@ const ShakeableInput: React.FC<ShakeableInputProps> = ({ error, className, ...pr
                 {...props}
                 className={`${className} ${error ? 'border-red-500' : ''}`}
             />
-            {error && <span className="text-red-500 text-sm">{error}</span>}
+            {!animateOnly && error && <span className="text-red-500 text-sm">{error}</span>}
+
         </motion.div>
     );
 };

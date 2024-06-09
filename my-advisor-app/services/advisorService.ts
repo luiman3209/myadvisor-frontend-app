@@ -1,5 +1,5 @@
 import { AdvisorProfileData } from '@/types/auth';
-import { AdvisorProfileDto } from '@/types/types';
+import { AdvisorPrivateProfileRespDto } from '@/types/types';
 import axios from 'axios';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
@@ -25,10 +25,10 @@ export const createOrUpdateAdvisor = async (profileData: AdvisorProfileData) => 
   }
 };
 
-export const getAdvisorProfile = async (): Promise<AdvisorProfileDto> => {
+export const getAdvisorProfile = async (): Promise<AdvisorPrivateProfileRespDto> => {
   try {
     const response = await axios.get('/api/advisor', headers());
-    return response.data as AdvisorProfileDto;
+    return response.data as AdvisorPrivateProfileRespDto;
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {
       throw new Error(error.response.data.message || 'Failed to fetch advisor profile');

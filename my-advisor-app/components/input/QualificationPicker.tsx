@@ -32,7 +32,7 @@ type QualificationPickerProps = {
 
 export function QualificationPicker({ qualifications, selectedQualifications, setSelectedQualifications }: QualificationPickerProps) {
     const [open, setOpen] = React.useState(false)
-    const [availableQualifications, setAvailableQualifications] = React.useState(qualifications.map((q) => q))
+    const [availableQualifications, setAvailableQualifications] = React.useState(qualifications.map((q) => q).filter((q) => !selectedQualifications.includes(q)))
     const isDesktop = window.innerWidth > 768
 
     const handleSelectQualification = (qualification: QualificationEntity) => {
