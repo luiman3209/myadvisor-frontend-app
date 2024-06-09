@@ -6,11 +6,12 @@ import './BookAppointmentStyles.css';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { bookAppointment } from '@/services/appointmentService';
+import { ServiceType } from '@/types/entity/service_type_entity';
 
 interface BookAppointmentProps {
   advisorId: number;
   offices: string[];
-  services: string[];
+  services: ServiceType[];
   days: string[];
   availableTimes: { [key: string]: string[] };
   onNavigateDays: (direction: 'next' | 'prev' | 'none') => void;
@@ -58,17 +59,17 @@ const BookAppointment: React.FC<BookAppointmentProps> = ({
       try {
         setBookingError(null);
         // Combine date and time with timezone (UTC)
-      const startTime = `${selectedDay}T${selectedTime}:00Z`;
+        const startTime = `${selectedDay}T${selectedTime}:00Z`;
 
-      // Parse the time and increment the hour for the end time
-      const [hour, minute] = selectedTime.split(':').map(Number);
-      let endHour = hour + 1;
+        // Parse the time and increment the hour for the end time
+        const [hour, minute] = selectedTime.split(':').map(Number);
+        let endHour = hour + 1;
 
-      // Format the end hour to ensure it has leading zeros if needed
-      const endHourStr = endHour.toString().padStart(2, '0');
+        // Format the end hour to ensure it has leading zeros if needed
+        const endHourStr = endHour.toString().padStart(2, '0');
 
-      // Build the end time string with timezone (UTC)
-      const endTime = `${selectedDay}T${endHourStr}:${minute.toString().padStart(2, '0')}:00Z`;
+        // Build the end time string with timezone (UTC)
+        const endTime = `${selectedDay}T${endHourStr}:${minute.toString().padStart(2, '0')}:00Z`;
 
 
         await bookAppointment(advisorId, startTime, endTime);
@@ -146,8 +147,8 @@ const BookAppointment: React.FC<BookAppointmentProps> = ({
           <Select.Content className="select-content">
             <Select.Viewport>
               {services.map((service) => (
-                <Select.Item key={service} value={service} className="select-item">
-                  <Select.ItemText>{service}</Select.ItemText>
+                <Select.Item key={service.service_id} value={service.service_type_name} className="select-item">
+                  <Select.ItemText>{service.service_type_name}</Select.ItemText>
                   <Select.ItemIndicator>
                     <CheckIcon />
                   </Select.ItemIndicator>

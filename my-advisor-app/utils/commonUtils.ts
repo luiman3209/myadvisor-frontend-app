@@ -18,3 +18,13 @@ export const calculateEndTimes = (start: string) => {
     const maxEndIndex = Math.min(startIndex + 16, allTimes.length); // 16 half-hour increments = 8 hours
     return allTimes.slice(startIndex + 1, maxEndIndex + 1);
 };
+
+export const getNextDays = (days: number, startDate: Date = new Date()) => {
+    const result = [];
+    for (let i = 0; i < days; i++) {
+        const date = new Date(startDate);
+        date.setDate(date.getDate() + i);
+        result.push(date.toISOString().split('T')[0]);
+    }
+    return result;
+};

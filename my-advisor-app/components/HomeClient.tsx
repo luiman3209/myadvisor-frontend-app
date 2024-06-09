@@ -122,7 +122,7 @@ const HomeClient: React.FC<HomeClientProps> = ({ serviceTypes, latestReviews }) 
 
               <div className="home-cta-card-header">
                 <CalendarPlus className="text-cyan-500 mr-1 w-8" />
-                <span>Book a meeting: it's easy and free!</span>
+                <span>Book a meeting: it&apos;s easy and free!</span>
               </div>
               <div className='home-cta-card-body'>
                 <p>

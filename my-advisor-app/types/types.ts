@@ -24,17 +24,32 @@ export interface AdvisorSearchParams {
   selectedTime?: string;
 }
 
-export interface AdvisorPublicProfileProps {
-  advisor: any;
-  profileReviews: any[];
-  serviceTypes: string[];
-  offices: string[];
-  initialDays: string[];
-  initialAvailableTimes: { [key: string]: string[] };
-  selectedOffice?: string;
-  selectedService?: string;
-  selectedDay?: string;
-  selectedTime?: string;
+
+
+export interface SearchAdvisorsRespDto {
+
+  totalItems: number;
+  totalPages: number;
+  currentPage: number;
+  advisors: AdvisorSearchResultResp[];
+
+}
+
+export interface AdvisorSearchResultResp {
+  advisor_id: number;
+  display_name: string;
+  contact_information: string;
+  operating_city_code: string;
+  operating_country_code: string;
+  office_address: string;
+  img_url: string;
+
+  advisor_services: {
+    service_id: number;
+  }[];
+
+  free_windows: { key: string, value: string }[];
+
 }
 
 export interface InvestorProfileDto {

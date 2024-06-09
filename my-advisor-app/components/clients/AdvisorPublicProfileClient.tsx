@@ -8,7 +8,20 @@ import Navbar from '@/components/navbar/NavBar';
 import Footer from '@/components/footer/Footer';
 import BookAppointment from '@/components/book_appointment/BookAppointment';
 import { getFreeWindows } from '@/services/appointmentService';
-import { AdvisorPublicProfileProps } from '@/types/types';
+import { ServiceType } from '@/types/entity/service_type_entity';
+
+export interface AdvisorPublicProfileProps {
+  advisor: any;
+  profileReviews: any[];
+  serviceTypes: ServiceType[];
+  offices: string[];
+  initialDays: string[];
+  initialAvailableTimes: { [key: string]: string[] };
+  selectedOffice?: string;
+  selectedService?: string;
+  selectedDay?: string;
+  selectedTime?: string;
+}
 
 const AdvisorPublicProfileClient: React.FC<AdvisorPublicProfileProps> = ({
   advisor,
@@ -24,7 +37,7 @@ const AdvisorPublicProfileClient: React.FC<AdvisorPublicProfileProps> = ({
 }) => {
   const [days, setDays] = useState<string[]>(initialDays);
   const [availableTimes, setAvailableTimes] = useState<{ [key: string]: string[] }>(initialAvailableTimes);
-  const [showBookAppointment, setShowBookAppointment] = useState<boolean>(selectedDay ? true  : false);
+  const [showBookAppointment, setShowBookAppointment] = useState<boolean>(selectedDay ? true : false);
 
   const fetchAvailableTimes = useCallback(async (newDays: string[]) => {
     try {
@@ -41,7 +54,7 @@ const AdvisorPublicProfileClient: React.FC<AdvisorPublicProfileProps> = ({
     const currentStartDate = new Date(days[0]);
     const newStartDate = new Date(currentStartDate);
 
-    if(direction === 'none') {
+    if (direction === 'none') {
       fetchAvailableTimes(days);
       return;
     }

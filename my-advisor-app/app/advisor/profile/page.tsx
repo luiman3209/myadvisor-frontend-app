@@ -3,7 +3,8 @@
 import AdvisorPublicProfileClient from '@/components/clients/AdvisorPublicProfileClient';
 import { getPublicAdvisorProfile } from '@/services/advisorService';
 import { getFreeWindows } from '@/services/appointmentService';
-import { AdvisorSearchParams, AdvisorPublicProfileProps } from '@/types/types';
+import { AdvisorSearchParams } from '@/types/types';
+import { getNextDays } from '@/utils/commonUtils';
 
 export default async function AdvisorPublicProfilePage({
   searchParams,
@@ -48,12 +49,4 @@ export default async function AdvisorPublicProfilePage({
   );
 }
 
-function getNextDays(days: number, startDate: Date = new Date()): string[] {
-  const result = [];
-  for (let i = 0; i < days; i++) {
-    const date = new Date(startDate);
-    date.setDate(date.getDate() + i);
-    result.push(date.toISOString().split('T')[0]);
-  }
-  return result;
-}
+
