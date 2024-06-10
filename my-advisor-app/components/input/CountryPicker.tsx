@@ -20,8 +20,8 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover"
-import { QualificationEntity } from "@/types/entity/qualification_entity"
-import { CirclePlus, Trash } from "lucide-react"
+
+import { ChevronDown, ChevronDownIcon } from "lucide-react"
 
 
 const usStates: { [key: string]: string } = {
@@ -79,32 +79,31 @@ const usStates: { [key: string]: string } = {
 
 
 type CountryPickerProps = {
-
-    countryCode: string;
+    countryCode: string | undefined;
     setCountryCode: (value: string) => void;
-
 }
 
 export function CountryPicker({ countryCode, setCountryCode }: CountryPickerProps) {
     const [open, setOpen] = React.useState(false)
     const [countries, setCountries] = React.useState<{ [key: string]: string }>(usStates)
-    const isDesktop = window.innerWidth > 768
+    const [isDesktop, setIsDesktop] = React.useState(false);
+
+    React.useEffect(() => {
+        setIsDesktop(window.innerWidth > 768);
+    }, []);
 
     const handleSelectCountry = (country: string) => {
-        console.log(country);
         setCountryCode(country);
         setOpen(false)
     }
 
     if (isDesktop) {
         return (
-            <>  <div className="flex items-center space-x-2">
-
-
+            <div className="flex items-center space-x-2">
                 <Popover open={open} onOpenChange={setOpen}>
                     <PopoverTrigger asChild>
                         <Button variant="outline" className="w-[150px] justify-start space-x-2">
-                            <span>{countryCode ? countryCode : 'State/Province'}</span>
+                            <span>{countryCode ? countryCode : 'State/Province'}</span><ChevronDownIcon className="w-5 h-5" />
                         </Button>
                     </PopoverTrigger>
                     <PopoverContent className="w-[200px] p-0" align="start">
@@ -116,33 +115,26 @@ export function CountryPicker({ countryCode, setCountryCode }: CountryPickerProp
                     </PopoverContent>
                 </Popover>
             </div>
-
-
-            </>
         )
     }
 
     return (
-        <>
-            <Drawer open={open} onOpenChange={setOpen}>
-                <DrawerTrigger asChild>
-                    <Button variant="outline" className="w-[150px] justify-start space-x-2">
-                        <span>State/Province</span>
-                    </Button>
-                </DrawerTrigger>
-                <DrawerContent>
-                    <div className="mt-4 border-t">
-                        <CountriesList
-                            countries={countries}
-                            setOpen={setOpen}
-                            handleSelectCountry={handleSelectCountry}
-                        />
-                    </div>
-                </DrawerContent>
-            </Drawer>
-
-
-        </>
+        <Drawer open={open} onOpenChange={setOpen}>
+            <DrawerTrigger asChild>
+                <Button variant="outline" className="w-[150px] justify-start space-x-2">
+                    <span>State/Province</span>
+                </Button>
+            </DrawerTrigger>
+            <DrawerContent>
+                <div className="mt-4 border-t">
+                    <CountriesList
+                        countries={countries}
+                        setOpen={setOpen}
+                        handleSelectCountry={handleSelectCountry}
+                    />
+                </div>
+            </DrawerContent>
+        </Drawer>
     )
 }
 
@@ -161,7 +153,6 @@ function CountriesList({
             <CommandList>
                 <CommandEmpty>No results found.</CommandEmpty>
                 <CommandGroup>
-
                     {countries && Object.keys(countries).map((country) => (
                         <CommandItem key={country} onSelect={() => handleSelectCountry(countries[country])}>
                             {country}

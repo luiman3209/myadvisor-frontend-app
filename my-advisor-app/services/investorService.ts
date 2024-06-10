@@ -15,7 +15,7 @@ const headers = () => ({
 
 export const createOrUpdateInvestor = async (profileData: InvestorProfileData) => {
   try {
-    console.log('profileData', profileData)
+
     const response = await axios.put('/api/investor', profileData, headers());
     return response.data;
   } catch (error) {

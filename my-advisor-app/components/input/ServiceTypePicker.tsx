@@ -65,8 +65,8 @@ export function ServiceTypePicker({ serviceTypes, selectedServiceTypes, setSelec
                 </div>
                 <Popover open={open} onOpenChange={setOpen}>
                     <PopoverTrigger asChild>
-                        <Button variant="outline" className="w-[150px] justify-start space-x-2">
-                            <CirclePlus /> <span>Add Expertise</span>
+                        <Button variant="outline" className=" justify-start space-x-2">
+                            <CirclePlus className="text-black w-4 h-4" /> <span>Add Expertise</span>
                         </Button>
                     </PopoverTrigger>
                     <PopoverContent className="w-[200px] p-0" align="start">

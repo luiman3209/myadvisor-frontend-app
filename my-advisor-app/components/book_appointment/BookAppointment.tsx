@@ -71,8 +71,10 @@ const BookAppointment: React.FC<BookAppointmentProps> = ({
         // Build the end time string with timezone (UTC)
         const endTime = `${selectedDay}T${endHourStr}:${minute.toString().padStart(2, '0')}:00Z`;
 
+        const service = services.find((s) => s.service_type_name === selectedService);
+        if (!service) throw new Error('Service not found');
 
-        await bookAppointment(advisorId, startTime, endTime);
+        await bookAppointment(advisorId, service.service_id, startTime, endTime);
         setSelectedDay(null);
         setSelectedTime(null);
         alert('Appointment successfully booked on ' + new Date(selectedDay).toLocaleDateString() + ' at ' + selectedTime);

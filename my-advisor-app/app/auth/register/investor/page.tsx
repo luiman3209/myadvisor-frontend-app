@@ -142,7 +142,6 @@ export default function RegisterInvestor() {
       selectedTime: searchParams.get('selectedTime') || ''
     }).toString();
 
-    console.log('profileData', profileData);
 
     await register(email, password, profileData, false);
   };

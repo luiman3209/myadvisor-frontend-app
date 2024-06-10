@@ -7,13 +7,16 @@ axios.defaults.baseURL = API_URL;
 
 
 
-export const searchAdvisors = async (operating_country_code?: string,
-  service_id?: number,
+export const searchAdvisors = async (operating_country_code: string | undefined = undefined,
+  service_id: number | undefined = undefined,
   page: number = 1,
   limit: number = 10,
 
 ): Promise<SearchAdvisorsRespDto> => {
   try {
+    console.log('Searching...')
+    console.log('operating_country_code:', operating_country_code)
+    console.log('service_id:', service_id)
     const params: any = {};
     if (operating_country_code) {
       params.operating_country_code = operating_country_code;
@@ -25,6 +28,7 @@ export const searchAdvisors = async (operating_country_code?: string,
     params.limit = limit;
 
     const response = await axios.get('/api/search/advisors', { params });
+
     return response.data as SearchAdvisorsRespDto;
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {

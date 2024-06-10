@@ -44,7 +44,7 @@ const Profile: React.FC = () => {
           setInvestorProfile(investorData);
         } else if (user?.role === 'advisor') {
           const advisorData: AdvisorPrivateProfileRespDto = await getAdvisorProfile();
-          console.log(advisorData)
+
           setAdvisorProfile(advisorData);
         }
       } catch (err: any) {

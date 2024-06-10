@@ -29,7 +29,7 @@ export const updateProfile = async (profileData: CommonProfileData) => {
   try {
 
     const response = await axios.put('/api/profile', profileData, headers());
-    console.log('response', response);
+
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {

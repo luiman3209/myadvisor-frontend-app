@@ -10,11 +10,11 @@ const headers = () => ({
   },
 });
 
-export const bookAppointment = async (advisor_id: number, start_time: string, end_time: string) => {
+export const bookAppointment = async (advisor_id: number, service_id: number, start_time: string, end_time: string) => {
   try {
     const response = await axios.post(
       '/api/appointment/book',
-      { advisor_id, start_time, end_time },
+      { advisor_id, service_id, start_time, end_time },
       headers()
     );
     return response.data;

@@ -49,12 +49,12 @@ export function QualificationPicker({ qualifications, selectedQualifications, se
 
     if (isDesktop) {
         return (
-            <>  <div className="flex items-center space-x-2">
+            <>  <div className="flex flex-wrap space-x-2 space-y-2">
 
-                <div className="flex space-x-2">
+                <div className="flex flex-wrap  space-x-2 ">
                     {selectedQualifications.map((qualification) => (
-                        <Card key={qualification.qualification_id} className="flex items-center space-x-2 p-2">
-                            <span className="">{qualification.qualification_name}</span>
+                        <Card key={qualification.qualification_id} className="flex items-center p-1 h-12 ">
+                            <span className="px-2">{qualification.qualification_name}</span>
                             <Button className="bg-transparent hover:bg-red-500 text-red-500 hover:text-white" size="icon" onClick={() => removeQualification(qualification.qualification_id)}>
                                 <Trash className=" w-4 h-4" />
                             </Button>
@@ -64,8 +64,8 @@ export function QualificationPicker({ qualifications, selectedQualifications, se
                 </div>
                 <Popover open={open} onOpenChange={setOpen}>
                     <PopoverTrigger asChild>
-                        <Button variant="outline" className="w-[150px] justify-start space-x-2">
-                            <CirclePlus className="text-black" /> <span>Add Qualification</span>
+                        <Button variant="outline" className="justify-start space-x-2">
+                            <CirclePlus className="text-black w-4 h-4" /> <span>Add Qualification</span>
                         </Button>
                     </PopoverTrigger>
                     <PopoverContent className="w-[200px] p-0" align="start">
