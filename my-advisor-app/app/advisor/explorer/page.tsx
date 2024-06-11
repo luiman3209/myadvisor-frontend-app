@@ -95,7 +95,7 @@ const AdvisorExplorer: React.FC = () => {
 
       {loading && (
         <div className="flex justify-center my-4">
-          <Loader className="animate-spin w-8 h-8 text-blue-500" />
+          <Loader className="animate-spin w-8 h-8 text-cyan-600" />
         </div>
       )}
       {error && <p className="text-center text-red-500 my-4">{error}</p>}
@@ -117,7 +117,8 @@ const AdvisorExplorer: React.FC = () => {
                           {advisor.display_name}
                         </Link>
                         <div className='flex flex-row items-center space-x-2'>
-                          <RatingStars rating={5} /> <span className='text-gray-500 text-xs'>27 Reviews</span>
+                          {advisor.average_rating > 0 &&
+                            <RatingStars rating={advisor.average_rating} />}<span className='text-gray-500 text-xs'>{advisor.review_count} Reviews</span>
                         </div>
                         <BoxCollection
                           items={serviceTypes.filter(s => advisor.advisor_services.map(a => a.service_id).includes(s.service_id)).map(s => s.service_type_name)}

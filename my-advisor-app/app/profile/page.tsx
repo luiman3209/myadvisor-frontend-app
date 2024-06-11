@@ -29,7 +29,27 @@ const Profile: React.FC = () => {
   const [availableQualifications, setAvailableQualifications] = useState<QualificationEntity[]>([]);
   const router = useRouter();
 
+  const fetchServiceTypes = async () => {
+    try {
+
+      setAvailableServiceTypes(await getServiceTypes());
+
+    } catch (error) {
+      setError('Failed to fetch service types');
+    }
+  };
+
+  const fetchQualifications = async () => {
+    try {
+      setAvailableQualifications(await getAvailableQualifications());
+    } catch (error) {
+      setError('Failed to fetch qualifications');
+    }
+  }
   useEffect(() => {
+
+
+
     const fetchProfile = async () => {
       setLoading(true);
       setError(null);
@@ -55,23 +75,6 @@ const Profile: React.FC = () => {
       }
     };
 
-    const fetchServiceTypes = async () => {
-      try {
-
-        setAvailableServiceTypes(await getServiceTypes());
-
-      } catch (error) {
-        setError('Failed to fetch service types');
-      }
-    };
-
-    const fetchQualifications = async () => {
-      try {
-        setAvailableQualifications(await getAvailableQualifications());
-      } catch (error) {
-        setError('Failed to fetch qualifications');
-      }
-    }
 
     if (user) {
 
@@ -94,10 +97,12 @@ const Profile: React.FC = () => {
           An error occurred. Please try reloading the page.
         </div> : null}
 
-      {user?.role === 'investor' && investorProfile ? <InvestorProfile investorProfile={investorProfile} availableServiceTypes={availableServiceTypes} />
-        : user?.role === 'advisor' && advisorProfile ? <AdvisorProfile advisorProfile={advisorProfile}
-          availableServiceTypes={availableServiceTypes} availableQualifications={availableQualifications} />
-          : null}
+
+
+      {user?.role === 'investor' && investorProfile ? <InvestorProfile investorProfile={investorProfile} availableServiceTypes={availableServiceTypes} /> : null}
+      {user?.role === 'advisor' && advisorProfile ? <AdvisorProfile advisorProfile={advisorProfile}
+        availableServiceTypes={availableServiceTypes} availableQualifications={availableQualifications} />
+        : null}
     </div>
 
 

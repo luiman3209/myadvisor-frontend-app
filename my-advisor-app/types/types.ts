@@ -43,6 +43,8 @@ export interface AdvisorSearchResultResp {
   operating_country_code: string;
   office_address: string;
   img_url: string;
+  average_rating: number;
+  review_count: number;
 
   advisor_services: {
     service_id: number;

@@ -7,6 +7,20 @@ import { ServiceType } from '@/types/entity/service_type_entity';
 import { getNextDays } from '@/utils/commonUtils';
 import { Label } from '../ui/label';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Button } from '../ui/button';
+
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer"
+
 
 interface BookAppointmentV2Props {
   advisorId: number;
@@ -27,6 +41,8 @@ const BookAppointmentV2: React.FC<BookAppointmentV2Props> = ({ advisorId, office
   const [availableTimes, setAvailableTimes] = useState<{ [key: string]: string[] }>({});
   const [days, setDays] = useState<string[]>(getNextDays(5));
   const [loadingTimes, setLoadingTimes] = useState<boolean>(false);
+  const [expanded, setExpanded] = useState<boolean>(false);
+  const [direction, setDirection] = useState<'left' | 'right'>('right');
 
   useEffect(() => {
     fetchAvailableTimes(days);
@@ -45,19 +61,21 @@ const BookAppointmentV2: React.FC<BookAppointmentV2Props> = ({ advisorId, office
     setLoadingTimes(false);
   };
 
-  const updateDaysAndFetch = (direction: 'next' | 'prev' | 'none') => {
+  const updateDaysAndFetch = (dir: 'next' | 'prev' | 'none') => {
     const currentStartDate = new Date(days[0]);
     const newStartDate = new Date(currentStartDate);
 
-    if (direction === 'none') {
+    if (dir === 'none') {
       fetchAvailableTimes(days);
       return;
     }
 
-    if (direction === 'next') {
+    if (dir === 'next') {
       newStartDate.setDate(currentStartDate.getDate() + 5);
+      setDirection('right');
     } else {
       newStartDate.setDate(currentStartDate.getDate() - 5);
+      setDirection('left');
     }
 
     const today = new Date();
@@ -78,7 +96,7 @@ const BookAppointmentV2: React.FC<BookAppointmentV2Props> = ({ advisorId, office
 
   const confirmBooking = async () => {
     if (!user) {
-      setShowLoginBox(true);
+      router.push('/auth/login');
       return;
     }
 
@@ -106,31 +124,74 @@ const BookAppointmentV2: React.FC<BookAppointmentV2Props> = ({ advisorId, office
     }
   };
 
-  const handleLogin = async () => {
-    const query = new URLSearchParams({
-      advisorId: advisorId.toString(),
-      selectedOffice: officeAddress || '',
-      selectedService: selectedService || '',
-      selectedDay: selectedDay || '',
-      selectedTime: selectedTime || ''
-    }).toString();
-    await login(email, password, `/advisor/profile?${query}`);
-    setShowLoginBox(false);
-    confirmBooking();
-  };
+  const windowWidth = window.innerWidth;
 
-  const handleRegisterRedirect = () => {
-    const query = new URLSearchParams({
-      advisorId: advisorId.toString(),
-      selectedOffice: officeAddress || '',
-      selectedService: selectedService || '',
-      selectedDay: selectedDay || '',
-      selectedTime: selectedTime || ''
-    }).toString();
-    router.push(`/auth/register/investor?${query}`);
-  };
+  console.log(days, availableTimes)
+
+  if (windowWidth < 768) {
+    const firstDay = days[0];
+    const availableTimes1stDay = availableTimes[firstDay];
+
+    return (availableTimes1stDay && availableTimes1stDay.length > 0 && <div>
+      <div>{firstDay}</div>
+      <div className='flex flex-row space-x-1 justify-center'>
+
+        <Button
+          className={`px-3 py-2 text-black ${selectedDay === firstDay && selectedTime === availableTimes1stDay[0] ?
+            'bg-cyan-500 text-white' : 'bg-white hover:bg-cyan-500 hover:text-white'}`}
+          onClick={() => handleTimeSlotClick(firstDay, availableTimes1stDay[0])}
+        >
+          {availableTimes1stDay[0]}
+        </Button>
+
+        <Button
+          className={`px-3 py-2 text-black ${selectedDay === firstDay && selectedTime === availableTimes1stDay[1] ?
+            'bg-cyan-500 text-white' : 'bg-white hover:bg-cyan-500 hover:text-white'}`}
+          onClick={() => handleTimeSlotClick(firstDay, availableTimes1stDay[1])}
+        >
+          {availableTimes1stDay[1]}
+        </Button>
+
+        <Button
+          className={`px-3 py-2 text-black ${selectedDay === firstDay && selectedTime === availableTimes1stDay[2] ?
+            'bg-cyan-500 text-white' : 'bg-white hover:bg-cyan-500 hover:text-white'}`}
+          onClick={() => handleTimeSlotClick(firstDay, availableTimes1stDay[2])}
+        >
+          {availableTimes1stDay[2]}
+        </Button>
+
+        <Button
+          className={`px-3 py-2  text-black ${selectedDay === firstDay && selectedTime === availableTimes1stDay[3] ?
+            'bg-cyan-500 text-white' : 'bg-white hover:bg-cyan-500 hover:text-white'}`}
+          onClick={() => handleTimeSlotClick(firstDay, availableTimes1stDay[3])}
+        >
+          {availableTimes1stDay[3]}
+        </Button>
+
+        <Drawer>
+          <DrawerTrigger>Open</DrawerTrigger>
+          <DrawerContent className='h-full'>
+            <DrawerHeader>
+              <DrawerTitle>Are you absolutely sure?</DrawerTitle>
+              <DrawerDescription>This action cannot be undone.</DrawerDescription>
+            </DrawerHeader>
+            <DrawerFooter>
+              <Button>Submit</Button>
+              <DrawerClose>
+                <Button variant="outline">Cancel</Button>
+              </DrawerClose>
+            </DrawerFooter>
+          </DrawerContent>
+        </Drawer>
+
+
+      </div>
+
+    </div>);
+  }
 
   return (
+
     <div className="p-5 flex flex-col">
       <div className="mb-5">
         <Select value={selectedService} onValueChange={setSelectedService}>
@@ -149,44 +210,60 @@ const BookAppointmentV2: React.FC<BookAppointmentV2Props> = ({ advisorId, office
         </Select>
       </div>
 
-      <div className="">
-        <div className="flex items-center">
-          <button
-            className="p-2"
-            onClick={() => updateDaysAndFetch('prev')}
-            disabled={days[0] <= new Date().toISOString().split('T')[0]}
-          >
-            <ChevronLeftIcon />
-          </button>
-          <div className="flex gap-2 overflow-x-auto">
-            {days.map((day) => (
-              <div key={day} className="flex flex-col items-center justify-items-center">
-                <span className="font-bold">{new Date(day).toLocaleDateString()}</span>
-                <div className="flex flex-col gap-2 overflow-y-auto max-h-40 min-h-40 border border-gray-300 p-2 custom-scrollbar">
-                  {loadingTimes ? (
-                    <div className="flex justify-center items-center h-full">
-                      <Loader className="animate-spin" />
-                    </div>
-                  ) : availableTimes[day] ? availableTimes[day].map((time) => (
-                    <button
-                      key={day + time}
-                      className={`px-3 py-2 border border-gray-300 rounded ${selectedDay === day && selectedTime === time ? 'bg-blue-500 text-white' : 'bg-white'}`}
-                      onClick={() => handleTimeSlotClick(day, time)}
-                    >
-                      {time}
-                    </button>
-                  )) : (
-                    <span className="text-gray-500">No slots available</span>
-                  )}
+      <div className="flex items-center">
+        <button
+          className="p-2"
+          onClick={() => updateDaysAndFetch('prev')}
+          disabled={days[0] <= new Date().toISOString().split('T')[0]}
+        >
+          <ChevronLeftIcon />
+        </button>
+        <div className={!expanded ? "relative w-full min-h-[180px]" : "relative w-full min-h-[400px]"}>
+          <AnimatePresence initial={false} custom={direction}>
+            <motion.div
+              key={days[0]}
+              initial={{ x: direction === 'right' ? 100 : -100, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: direction === 'right' ? -100 : 100, opacity: 0 }}
+              transition={{ duration: 0.5 }}
+              className="absolute top-0 left-0 right-0 flex gap-2 overflow-x-auto"
+            >
+              {days.map((day) => (
+                <div key={day} className="flex flex-col items-center justify-center">
+                  <span className="font-bold mb-2">{new Date(day).toLocaleDateString()}</span>
+                  <div className={`flex flex-col gap-2 ${expanded ? 'overflow-visible' : 'overflow-hidden max-h-40'}`}>
+                    {loadingTimes ? (
+                      <div className="flex justify-center items-center h-full">
+                        <Loader className="animate-spin" />
+                      </div>
+                    ) : availableTimes[day] ? availableTimes[day].slice(0, expanded ? undefined : 5).map((time) => (
+                      <Button
+                        key={day + time}
+                        className={`px-3 py-2 border border-gray-300 text-black rounded ${selectedDay === day && selectedTime === time ? 'bg-cyan-500 text-white' : 'bg-white hover:bg-cyan-500 hover:text-white'}`}
+                        onClick={() => handleTimeSlotClick(day, time)}
+                      >
+                        {time}
+                      </Button>
+                    )) : (
+                      <span className="text-gray-500"> - </span>
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
-          <button className="p-2" onClick={() => updateDaysAndFetch('next')}>
-            <ChevronRightIcon />
-          </button>
+              ))}
+            </motion.div>
+          </AnimatePresence>
         </div>
+        <button className="p-2" onClick={() => updateDaysAndFetch('next')}>
+          <ChevronRightIcon />
+        </button>
       </div>
+
+      <button
+        className="mt-2 px-4 py-2  rounded"
+        onClick={() => setExpanded(!expanded)}
+      >
+        {expanded ? 'Show Less' : 'Show More'}
+      </button>
 
       {selectedDay && selectedTime && (
         <div className="mt-5">
@@ -197,38 +274,7 @@ const BookAppointmentV2: React.FC<BookAppointmentV2Props> = ({ advisorId, office
         </div>
       )}
 
-      {showLoginBox && (
-        <div className="mt-5 p-5 border border-gray-300 rounded-lg bg-gray-100">
-          <h3 className="mb-3">Login</h3>
-          {authError && <p className="mb-3 text-red-500">{authError}</p>}
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            disabled={authLoading}
-            className="w-full p-3 mb-3 border border-gray-300 rounded"
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            disabled={authLoading}
-            className="w-full p-3 mb-3 border border-gray-300 rounded"
-          />
-          <button
-            onClick={handleLogin}
-            disabled={authLoading}
-            className="w-full p-3 bg-blue-500 text-white rounded mb-3"
-          >
-            {authLoading ? 'Logging in...' : 'Login'}
-          </button>
-          <p>
-            Don&apos;t have an account? <span onClick={handleRegisterRedirect} className="cursor-pointer text-blue-500">Register</span>
-          </p>
-        </div>
-      )}
+
     </div>
   );
 };
