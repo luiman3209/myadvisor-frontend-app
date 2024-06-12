@@ -1,4 +1,5 @@
 import { AdvisorProfileData } from '@/types/auth';
+import { AdvisorEntity } from '@/types/entity/advisor_entity';
 import { AdvisorPrivateProfileRespDto } from '@/types/types';
 import axios from 'axios';
 
@@ -41,6 +42,20 @@ export const getAdvisorProfile = async (): Promise<AdvisorPrivateProfileRespDto>
 export const getPublicAdvisorProfile = async (advisorId: number) => {
   try {
     const response = await axios.get(`/api/advisor/${advisorId}`);
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response) {
+      throw new Error(error.response.data.message || 'Failed to fetch public advisor profile');
+    } else {
+      throw new Error('Failed to fetch public advisor profile due to an unexpected error');
+    }
+  }
+};
+
+
+export const getAdvisorBookInfo = async (advisorId: number): Promise<AdvisorEntity> => {
+  try {
+    const response = await axios.get(`/api/advisor/book-info/${advisorId}`);
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {

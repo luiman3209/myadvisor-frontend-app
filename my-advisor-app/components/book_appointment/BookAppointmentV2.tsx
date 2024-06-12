@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { CheckIcon, ChevronDownIcon, ChevronRightIcon, ChevronLeftIcon, Loader } from 'lucide-react';
+import { CheckIcon, ChevronDownIcon, ChevronRightIcon, ChevronLeftIcon, Loader, ChevronsRight, ChevronRight } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { bookAppointment, getFreeWindows } from '@/services/appointmentService';
@@ -20,7 +20,6 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer"
-
 
 interface BookAppointmentV2Props {
   advisorId: number;
@@ -69,6 +68,9 @@ const BookAppointmentV2: React.FC<BookAppointmentV2Props> = ({ advisorId, office
       fetchAvailableTimes(days);
       return;
     }
+
+    setSelectedDay(null);
+    setSelectedTime(null);
 
     if (dir === 'next') {
       newStartDate.setDate(currentStartDate.getDate() + 5);
@@ -191,7 +193,6 @@ const BookAppointmentV2: React.FC<BookAppointmentV2Props> = ({ advisorId, office
   }
 
   return (
-
     <div className="p-5 flex flex-col">
       <div className="mb-5">
         <Select value={selectedService} onValueChange={setSelectedService}>
@@ -210,7 +211,7 @@ const BookAppointmentV2: React.FC<BookAppointmentV2Props> = ({ advisorId, office
         </Select>
       </div>
 
-      <div className="flex items-center">
+      <div className="flex items-center justify-center">
         <button
           className="p-2"
           onClick={() => updateDaysAndFetch('prev')}
@@ -218,7 +219,13 @@ const BookAppointmentV2: React.FC<BookAppointmentV2Props> = ({ advisorId, office
         >
           <ChevronLeftIcon />
         </button>
-        <div className={!expanded ? "relative w-full min-h-[180px]" : "relative w-full min-h-[400px]"}>
+        <motion.div className="relative w-full "
+
+          initial={{ height: 250 }}
+          animate={{ height: expanded ? 420 : 250 }}
+          transition={{ duration: 0.3 }}
+
+        >
           <AnimatePresence initial={false} custom={direction}>
             <motion.div
               key={days[0]}
@@ -226,55 +233,66 @@ const BookAppointmentV2: React.FC<BookAppointmentV2Props> = ({ advisorId, office
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: direction === 'right' ? -100 : 100, opacity: 0 }}
               transition={{ duration: 0.5 }}
-              className="absolute top-0 left-0 right-0 flex gap-2 overflow-x-auto"
+              className="absolute top-0 left-0 right-0 flex gap-2 justify-center overflow-x-auto"
             >
               {days.map((day) => (
                 <div key={day} className="flex flex-col items-center justify-center">
                   <span className="font-bold mb-2">{new Date(day).toLocaleDateString()}</span>
-                  <div className={`flex flex-col gap-2 ${expanded ? 'overflow-visible' : 'overflow-hidden max-h-40'}`}>
-                    {loadingTimes ? (
-                      <div className="flex justify-center items-center h-full">
-                        <Loader className="animate-spin" />
-                      </div>
-                    ) : availableTimes[day] ? availableTimes[day].slice(0, expanded ? undefined : 5).map((time) => (
-                      <Button
-                        key={day + time}
-                        className={`px-3 py-2 border border-gray-300 text-black rounded ${selectedDay === day && selectedTime === time ? 'bg-cyan-500 text-white' : 'bg-white hover:bg-cyan-500 hover:text-white'}`}
-                        onClick={() => handleTimeSlotClick(day, time)}
-                      >
-                        {time}
-                      </Button>
-                    )) : (
-                      <span className="text-gray-500"> - </span>
-                    )}
-                  </div>
+                  <motion.div
+                    initial={{ height: 0 }}
+                    animate={{ height: expanded ? 'auto' : 180 }}
+                    transition={{ duration: 0.3 }}
+                    className="overflow-hidden"
+                  >
+                    <div className="flex flex-col gap-2">
+                      {loadingTimes ? (
+                        <div className="flex justify-center items-center h-full">
+                          <Loader className="animate-spin" />
+                        </div>
+                      ) : availableTimes[day] ? availableTimes[day].slice(0, expanded ? undefined : 5).map((time) => (
+                        <Button
+                          key={day + time}
+                          className={`px-3 py-2 border border-gray-300 text-black rounded ${selectedDay === day && selectedTime === time ? 'bg-cyan-500 text-white' : 'bg-white hover:bg-cyan-500 hover:text-white'}`}
+                          onClick={() => handleTimeSlotClick(day, time)}
+                        >
+                          {time}
+                        </Button>
+                      )) : (
+                        <span className="text-gray-500"> - </span>
+                      )}
+                    </div>
+                  </motion.div>
                 </div>
               ))}
             </motion.div>
           </AnimatePresence>
-        </div>
+        </motion.div>
         <button className="p-2" onClick={() => updateDaysAndFetch('next')}>
           <ChevronRightIcon />
         </button>
       </div>
 
-      <button
-        className="mt-2 px-4 py-2  rounded"
+      <Button
+        variant="ghost"
+        className="mt-2 px-4 py-2 "
         onClick={() => setExpanded(!expanded)}
       >
         {expanded ? 'Show Less' : 'Show More'}
-      </button>
+      </Button>
 
-      {selectedDay && selectedTime && (
-        <div className="mt-5">
-          <button className="px-4 py-2 bg-blue-500 text-white rounded" onClick={confirmBooking}>
-            Confirm booking
-          </button>
-          {bookingError && <div className="mt-2 text-red-500">{bookingError}</div>}
+      {selectedDay && selectedTime && selectedService && (
+        <div className='flex items-center justify-center mt-2'>
+          <div className=" w-min ">
+            <Button className="px-4 py-2 bg-cyan-500 hover:bg-cyan-400 " onClick={confirmBooking}>
+              <div className='flex flex-row space-x-2'>
+                <span>Confirm booking for {selectedService} on {selectedDay} at {selectedTime}</span><ChevronRight className='w-5 h-5' />
+              </div>
+            </Button>
+            {bookingError && <div className="mt-2 text-red-500">{bookingError}</div>}
+          </div>
         </div>
+
       )}
-
-
     </div>
   );
 };
