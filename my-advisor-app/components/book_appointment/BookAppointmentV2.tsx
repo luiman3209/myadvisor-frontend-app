@@ -28,15 +28,12 @@ interface BookAppointmentV2Props {
 }
 
 const BookAppointmentV2: React.FC<BookAppointmentV2Props> = ({ advisorId, officeAddress, services }) => {
-  const { user, login, error: authError, loading: authLoading } = useAuth();
+  const { user } = useAuth();
   const router = useRouter();
   const [selectedService, setSelectedService] = useState<string | undefined>();
   const [selectedDay, setSelectedDay] = useState<string | null>();
   const [selectedTime, setSelectedTime] = useState<string | null>();
   const [bookingError, setBookingError] = useState<string | null>(null);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [showLoginBox, setShowLoginBox] = useState<boolean>(false);
   const [availableTimes, setAvailableTimes] = useState<{ [key: string]: string[] }>({});
   const [days, setDays] = useState<string[]>(getNextDays(5));
   const [loadingTimes, setLoadingTimes] = useState<boolean>(false);
@@ -97,10 +94,7 @@ const BookAppointmentV2: React.FC<BookAppointmentV2Props> = ({ advisorId, office
   };
 
   const confirmBooking = async () => {
-    if (!user) {
-      router.push('/auth/login');
-      return;
-    }
+
 
     if (selectedDay && selectedTime) {
       try {
@@ -113,6 +107,7 @@ const BookAppointmentV2: React.FC<BookAppointmentV2Props> = ({ advisorId, office
 
         const service = services.find((s) => s.service_type_name === selectedService);
         if (service) {
+          router.push('/book' + '?advisorId=' + advisorId + '&selectedService=' + service.service_id + '&selectedDay=' + selectedDay + '&selectedTime=' + selectedTime);
           await bookAppointment(advisorId, service?.service_id, startTime, endTime);
           setSelectedDay(null);
           setSelectedTime(null);

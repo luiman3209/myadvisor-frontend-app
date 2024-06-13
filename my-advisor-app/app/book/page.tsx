@@ -24,13 +24,13 @@ export default function ConfirmBook() {
     useEffect(() => {
         const queryParams = new URLSearchParams(window.location.search);
         const advisorId = queryParams.get('advisorId') || '';
-        setSelectedService(JSON.parse(queryParams.get('selectedService') || 'null'));
+
         setSelectedDay(queryParams.get('selectedDay') || '');
         setSelectedTime(queryParams.get('selectedTime') || '');
 
         async function fetchAdvisor() {
             try {
-                const fetchedAdvisor = await getAdvisorBookInfo(advisorId);
+                const fetchedAdvisor = await getAdvisorBookInfo(parseInt(advisorId));
                 setAdvisor(fetchedAdvisor);
             } catch (error) {
                 console.error('Error fetching advisor:', error);
@@ -81,8 +81,8 @@ export default function ConfirmBook() {
                             <div className="space-y-4">
                                 <div className="space-y-2">
                                     <Label>Service</Label>
-                                    <p>{selectedService.name}</p>
-                                    <p>{selectedService.description}</p>
+                                    <p>{selectedService.service_type_name}</p>
+
                                 </div>
                                 <div className="space-y-2">
                                     <Label>Day</Label>
@@ -96,13 +96,13 @@ export default function ConfirmBook() {
                                     <Label>Advisor</Label>
                                     <div className="flex items-center space-x-4">
                                         <Image
-                                            src={advisor.image}
-                                            alt={advisor.name}
+                                            src={advisor.img_url}
+                                            alt={advisor.display_name}
                                             width={50}
                                             height={50}
                                             className="object-cover rounded-full"
                                         />
-                                        <p>{advisor.name}</p>
+                                        <p>{advisor.display_name}</p>
                                     </div>
                                 </div>
                                 <Button onClick={handleConfirm} className="w-full">

@@ -33,3 +33,24 @@ export const getServiceTypes = async () => {
     }
   }
 };
+
+
+export const getServiceTypeById = async (serviceId: number): Promise<ServiceType> => {
+  try {
+    const response = await axios.get(`/api/services/${serviceId}`, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    const serviceType = response.data as ServiceType;
+
+    return serviceType;
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response) {
+      throw new Error(error.response.data.message || 'Failed to fetch service types');
+    } else {
+
+      throw new Error('Failed to fetch service types due to an unexpected error');
+    }
+  }
+};
