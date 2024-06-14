@@ -31,8 +31,8 @@ const BookAppointmentV2: React.FC<BookAppointmentV2Props> = ({ advisorId, office
   const { user } = useAuth();
   const router = useRouter();
   const [selectedService, setSelectedService] = useState<string | undefined>();
-  const [selectedDay, setSelectedDay] = useState<string | null>();
-  const [selectedTime, setSelectedTime] = useState<string | null>();
+  const [selectedDay, setSelectedDay] = useState<string | null>(null);
+  const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [bookingError, setBookingError] = useState<string | null>(null);
   const [availableTimes, setAvailableTimes] = useState<{ [key: string]: string[] }>({});
   const [days, setDays] = useState<string[]>(getNextDays(5));
@@ -93,10 +93,13 @@ const BookAppointmentV2: React.FC<BookAppointmentV2Props> = ({ advisorId, office
     setSelectedTime(time);
   };
 
+  const encodeQueryData = (data: object) => {
+    const str = JSON.stringify(data);
+    return btoa(str);
+  };
+
   const confirmBooking = async () => {
-
-
-    if (selectedDay && selectedTime) {
+    if (selectedDay && selectedTime && selectedService) {
       try {
         setBookingError(null);
         const startTime = `${selectedDay}T${selectedTime}:00Z`;
@@ -107,14 +110,20 @@ const BookAppointmentV2: React.FC<BookAppointmentV2Props> = ({ advisorId, office
 
         const service = services.find((s) => s.service_type_name === selectedService);
         if (service) {
-          router.push('/book' + '?advisorId=' + advisorId + '&selectedService=' + service.service_id + '&selectedDay=' + selectedDay + '&selectedTime=' + selectedTime);
+          const queryData = {
+            advisorId,
+            serviceId: service.service_id,
+            day: selectedDay,
+            time: selectedTime,
+          };
+          const encodedData = encodeQueryData(queryData);
+          router.push(`/book?data=${encodedData}`);
           await bookAppointment(advisorId, service?.service_id, startTime, endTime);
           setSelectedDay(null);
           setSelectedTime(null);
           alert('Appointment successfully booked on ' + new Date(selectedDay).toLocaleDateString() + ' at ' + selectedTime);
           updateDaysAndFetch('none');
         } else throw new Error('Service not found');
-
       } catch (error: any) {
         setBookingError(error.message);
       }
@@ -122,70 +131,6 @@ const BookAppointmentV2: React.FC<BookAppointmentV2Props> = ({ advisorId, office
   };
 
   const windowWidth = window.innerWidth;
-
-  console.log(days, availableTimes)
-
-  if (windowWidth < 768) {
-    const firstDay = days[0];
-    const availableTimes1stDay = availableTimes[firstDay];
-
-    return (availableTimes1stDay && availableTimes1stDay.length > 0 && <div>
-      <div>{firstDay}</div>
-      <div className='flex flex-row space-x-1 justify-center'>
-
-        <Button
-          className={`px-3 py-2 text-black ${selectedDay === firstDay && selectedTime === availableTimes1stDay[0] ?
-            'bg-cyan-500 text-white' : 'bg-white hover:bg-cyan-500 hover:text-white'}`}
-          onClick={() => handleTimeSlotClick(firstDay, availableTimes1stDay[0])}
-        >
-          {availableTimes1stDay[0]}
-        </Button>
-
-        <Button
-          className={`px-3 py-2 text-black ${selectedDay === firstDay && selectedTime === availableTimes1stDay[1] ?
-            'bg-cyan-500 text-white' : 'bg-white hover:bg-cyan-500 hover:text-white'}`}
-          onClick={() => handleTimeSlotClick(firstDay, availableTimes1stDay[1])}
-        >
-          {availableTimes1stDay[1]}
-        </Button>
-
-        <Button
-          className={`px-3 py-2 text-black ${selectedDay === firstDay && selectedTime === availableTimes1stDay[2] ?
-            'bg-cyan-500 text-white' : 'bg-white hover:bg-cyan-500 hover:text-white'}`}
-          onClick={() => handleTimeSlotClick(firstDay, availableTimes1stDay[2])}
-        >
-          {availableTimes1stDay[2]}
-        </Button>
-
-        <Button
-          className={`px-3 py-2  text-black ${selectedDay === firstDay && selectedTime === availableTimes1stDay[3] ?
-            'bg-cyan-500 text-white' : 'bg-white hover:bg-cyan-500 hover:text-white'}`}
-          onClick={() => handleTimeSlotClick(firstDay, availableTimes1stDay[3])}
-        >
-          {availableTimes1stDay[3]}
-        </Button>
-
-        <Drawer>
-          <DrawerTrigger>Open</DrawerTrigger>
-          <DrawerContent className='h-full'>
-            <DrawerHeader>
-              <DrawerTitle>Are you absolutely sure?</DrawerTitle>
-              <DrawerDescription>This action cannot be undone.</DrawerDescription>
-            </DrawerHeader>
-            <DrawerFooter>
-              <Button>Submit</Button>
-              <DrawerClose>
-                <Button variant="outline">Cancel</Button>
-              </DrawerClose>
-            </DrawerFooter>
-          </DrawerContent>
-        </Drawer>
-
-
-      </div>
-
-    </div>);
-  }
 
   return (
     <div className="p-5 flex flex-col">
@@ -214,12 +159,10 @@ const BookAppointmentV2: React.FC<BookAppointmentV2Props> = ({ advisorId, office
         >
           <ChevronLeftIcon />
         </button>
-        <motion.div className="relative w-full "
-
+        <motion.div className="relative w-full"
           initial={{ height: 250 }}
           animate={{ height: expanded ? 420 : 250 }}
           transition={{ duration: 0.3 }}
-
         >
           <AnimatePresence initial={false} custom={direction}>
             <motion.div
@@ -269,7 +212,7 @@ const BookAppointmentV2: React.FC<BookAppointmentV2Props> = ({ advisorId, office
 
       <Button
         variant="ghost"
-        className="mt-2 px-4 py-2 "
+        className="mt-2 px-4 py-2"
         onClick={() => setExpanded(!expanded)}
       >
         {expanded ? 'Show Less' : 'Show More'}
@@ -277,8 +220,8 @@ const BookAppointmentV2: React.FC<BookAppointmentV2Props> = ({ advisorId, office
 
       {selectedDay && selectedTime && selectedService && (
         <div className='flex items-center justify-center mt-2'>
-          <div className=" w-min ">
-            <Button className="px-4 py-2 bg-cyan-500 hover:bg-cyan-400 " onClick={confirmBooking}>
+          <div className="w-min">
+            <Button className="px-4 py-2 bg-cyan-500 hover:bg-cyan-400" onClick={confirmBooking}>
               <div className='flex flex-row space-x-2'>
                 <span>Confirm booking for {selectedService} on {selectedDay} at {selectedTime}</span><ChevronRight className='w-5 h-5' />
               </div>
@@ -286,7 +229,6 @@ const BookAppointmentV2: React.FC<BookAppointmentV2Props> = ({ advisorId, office
             {bookingError && <div className="mt-2 text-red-500">{bookingError}</div>}
           </div>
         </div>
-
       )}
     </div>
   );

@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -12,25 +11,29 @@ import { ServiceType } from '@/types/entity/service_type_entity';
 import { AdvisorEntity } from '@/types/entity/advisor_entity';
 import { getAdvisorBookInfo } from '@/services/advisorService';
 
-
 export default function ConfirmBook() {
     const [selectedService, setSelectedService] = useState<ServiceType | null>(null);
     const [selectedDay, setSelectedDay] = useState<string>('');
     const [selectedTime, setSelectedTime] = useState<string>('');
     const [advisor, setAdvisor] = useState<AdvisorEntity | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
-    const router = useRouter();
+
+    const decodeQueryData = (encodedData: string) => {
+        const decodedStr = atob(encodedData);
+        return JSON.parse(decodedStr);
+    };
 
     useEffect(() => {
         const queryParams = new URLSearchParams(window.location.search);
-        const advisorId = queryParams.get('advisorId') || '';
+        const encodedData = queryParams.get('data') || '';
+        const { advisorId, serviceId, day, time } = decodeQueryData(encodedData);
+        console.log('Decoded data:', { advisorId, serviceId, day, time });
 
-        setSelectedDay(queryParams.get('selectedDay') || '');
-        setSelectedTime(queryParams.get('selectedTime') || '');
+
 
         async function fetchAdvisor() {
             try {
-                const fetchedAdvisor = await getAdvisorBookInfo(parseInt(advisorId));
+                const fetchedAdvisor: AdvisorEntity = await getAdvisorBookInfo(advisorId);
                 setAdvisor(fetchedAdvisor);
             } catch (error) {
                 console.error('Error fetching advisor:', error);
@@ -39,14 +42,19 @@ export default function ConfirmBook() {
             }
         }
 
+
+
         if (advisorId) {
+            setSelectedDay(day);
+            setSelectedTime(time);
             fetchAdvisor();
+            console.log(selectedDay, selectedTime, advisor?.display_name, selectedService?.service_type_name);
         }
     }, []);
 
     const handleConfirm = () => {
         // Handle the booking confirmation logic here
-        router.push('/confirmation'); // Navigate to a confirmation page or another desired page
+
     };
 
     if (loading) {
@@ -54,7 +62,7 @@ export default function ConfirmBook() {
     }
 
     if (!selectedService || !selectedDay || !selectedTime || !advisor) {
-        return <div>Missing booking information.</div>;
+        return <div>Missing booking information. {selectedDay + selectedService + selectedTime + advisor?.display_name}</div>;
     }
 
     return (
@@ -81,8 +89,7 @@ export default function ConfirmBook() {
                             <div className="space-y-4">
                                 <div className="space-y-2">
                                     <Label>Service</Label>
-                                    <p>{selectedService.service_type_name}</p>
-
+                                    <p>{selectedService?.service_type_name}</p>
                                 </div>
                                 <div className="space-y-2">
                                     <Label>Day</Label>
