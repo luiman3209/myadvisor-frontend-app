@@ -25,6 +25,31 @@ export interface AdvisorSearchParams {
 }
 
 
+export interface AdvisorReviewDto {
+
+  review: string;
+  rating: number;
+  created_at: Date;
+  user_config: {
+
+    profile: {
+      first_name: string;
+    }
+  }
+
+
+}
+export interface AdvisorPublicProfileDto {
+  advisor: AdvisorEntity;
+  profileReviews: AdvisorReviewDto[];
+  serviceTypes: ServiceType[];
+  qualifications: QualificationEntity[];
+  offices: string[];
+  average_rating: number;
+  review_count: number;
+
+}
+
 
 export interface SearchAdvisorsRespDto {
 

@@ -11,6 +11,7 @@ import { checkEmailAvailability, checkPhoneAvailability } from '@/services/authS
 import RegisterNavbar from '@/components/navbar/RegisterNavbar';
 import { Button } from '@/components/ui/button';
 import InvestorForm from '@/components/forms/InvestorForm';
+import { decodeQueryDataString } from '@/utils/commonUtils';
 
 export default function RegisterInvestor() {
   const [email, setEmail] = useState('');
@@ -28,31 +29,22 @@ export default function RegisterInvestor() {
   const [formStep, setFormStep] = useState(0);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
-
+  const [redirect, setRedirect] = useState('');
   const { user, register, error } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
 
   useEffect(() => {
-    if (user) {
-      const advisorId = searchParams.get('advisorId');
-      const selectedOffice = searchParams.get('selectedOffice');
-      const selectedService = searchParams.get('selectedService');
-      const selectedDay = searchParams.get('selectedDay');
-      const selectedTime = searchParams.get('selectedTime');
 
-      if (advisorId && selectedOffice && selectedService && selectedDay && selectedTime) {
-        const query = new URLSearchParams({
-          advisorId,
-          selectedOffice,
-          selectedService,
-          selectedDay,
-          selectedTime
-        }).toString();
-        router.push(`/advisor/profile?${query}`);
-      } else {
-        router.push('/');
+    const queryParams = new URLSearchParams(window.location.search);
+    const encodedRedirect = queryParams.get('redirect') || '';
+    try {
+      if (encodedRedirect) {
+        const decodedRedirect = decodeQueryDataString(encodedRedirect);
+        setRedirect(decodedRedirect);
       }
+    } catch (err) {
+      console.error('Failed to decode redirect query string', err);
     }
 
     const fetchServiceTypes = async () => {
@@ -134,16 +126,15 @@ export default function RegisterInvestor() {
       investor_data: investorData,
     };
 
-    const query = new URLSearchParams({
-      advisorId: searchParams.get('advisorId') || '',
-      selectedOffice: searchParams.get('selectedOffice') || '',
-      selectedService: searchParams.get('selectedService') || '',
-      selectedDay: searchParams.get('selectedDay') || '',
-      selectedTime: searchParams.get('selectedTime') || ''
-    }).toString();
 
 
     await register(email, password, profileData, false);
+
+    if (redirect) {
+      router.push(redirect);
+    } else {
+      router.push('/');
+    }
   };
 
   return (

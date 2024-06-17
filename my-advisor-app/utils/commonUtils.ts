@@ -28,3 +28,22 @@ export const getNextDays = (days: number, startDate: Date = new Date()) => {
     }
     return result;
 };
+
+export const encodeQueryData = (data: object) => {
+    const str = JSON.stringify(data);
+    return btoa(str);
+};
+
+export const decodeQueryData = (encodedData: string) => {
+    const decodedStr = atob(encodedData);
+    return JSON.parse(decodedStr);
+};
+
+export const encodeQueryDataString = (str: string) => {
+    return btoa(str);
+};
+
+export const decodeQueryDataString = (encodedData: string) => {
+    return atob(encodedData);
+
+};

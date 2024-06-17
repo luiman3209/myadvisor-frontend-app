@@ -10,59 +10,105 @@ import { Card } from '@/components/ui/card';
 import { ServiceType } from '@/types/entity/service_type_entity';
 import { AdvisorEntity } from '@/types/entity/advisor_entity';
 import { getAdvisorBookInfo } from '@/services/advisorService';
+import { getServiceTypeById } from '@/services/serviceTypesService';
+import CircularProgress from '@/components/misc/CircularProgress';
 
-export default function ConfirmBook() {
+import { AvatarFallback, Avatar, AvatarImage } from '@/components/ui/avatar';
+import { bookAppointment } from '@/services/appointmentService';
+import { decodeQueryData, encodeQueryData, encodeQueryDataString } from '@/utils/commonUtils';
+import { useAuth } from '@/contexts/AuthContext';
+import { ChevronRight } from 'lucide-react';
+
+const ConfirmBook: React.FC = () => {
     const [selectedService, setSelectedService] = useState<ServiceType | null>(null);
     const [selectedDay, setSelectedDay] = useState<string>('');
     const [selectedTime, setSelectedTime] = useState<string>('');
     const [advisor, setAdvisor] = useState<AdvisorEntity | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string | null>(null);
+    const [appointmentConfirmed, setAppointmentConfirmed] = useState<boolean>(false);
+    const router = useRouter();
+    const { user } = useAuth();
 
-    const decodeQueryData = (encodedData: string) => {
-        const decodedStr = atob(encodedData);
-        return JSON.parse(decodedStr);
-    };
 
     useEffect(() => {
-        const queryParams = new URLSearchParams(window.location.search);
-        const encodedData = queryParams.get('data') || '';
-        const { advisorId, serviceId, day, time } = decodeQueryData(encodedData);
-        console.log('Decoded data:', { advisorId, serviceId, day, time });
 
 
 
-        async function fetchAdvisor() {
+        const fetchBookingData = async () => {
+            setLoading(true);
+            setError(null);
+
             try {
-                const fetchedAdvisor: AdvisorEntity = await getAdvisorBookInfo(advisorId);
+                const queryParams = new URLSearchParams(window.location.search);
+                const encodedData = queryParams.get('data') || '';
+                const encodedRedirect = encodeQueryDataString('/book?data=' + encodedData);
+                if (!user) {
+                    router.push(`/auth/login?redirect=${encodedRedirect}`);
+                    return;
+                }
+                const { advisorId, serviceId, day, time } = decodeQueryData(encodedData);
+
+                const [fetchedAdvisor, fetchedService] = await Promise.all([
+                    getAdvisorBookInfo(advisorId),
+                    getServiceTypeById(serviceId)
+                ]);
+
                 setAdvisor(fetchedAdvisor);
-            } catch (error) {
-                console.error('Error fetching advisor:', error);
+                setSelectedService(fetchedService);
+                setSelectedDay(day);
+                setSelectedTime(time);
+            } catch (err: any) {
+                setError('Failed to fetch booking information');
             } finally {
                 setLoading(false);
             }
+        };
+
+        fetchBookingData();
+    }, [router]);
+
+    const handleConfirm = async () => {
+
+        try {
+            const startTime = `${selectedDay}T${selectedTime}:00Z`;
+            const [hour, minute] = selectedTime.split(':').map(Number);
+            let endHour = hour + 1;
+            const endHourStr = endHour.toString().padStart(2, '0');
+            const endTime = `${selectedDay}T${endHourStr}:${minute.toString().padStart(2, '0')}:00Z`;
+            if (advisor && selectedService) {
+                await bookAppointment(advisor.advisor_id, selectedService.service_id, startTime, endTime);
+                setAppointmentConfirmed(true);
+            }
+
+        } catch (err) {
+            console.error('Failed to book appointment:', err);
+            setError('This advisor is not available at this time anymore. Please try another time.');
         }
-
-
-
-        if (advisorId) {
-            setSelectedDay(day);
-            setSelectedTime(time);
-            fetchAdvisor();
-            console.log(selectedDay, selectedTime, advisor?.display_name, selectedService?.service_type_name);
-        }
-    }, []);
-
-    const handleConfirm = () => {
-        // Handle the booking confirmation logic here
-
     };
 
     if (loading) {
-        return <div>Loading...</div>;
+        return (
+            <div className="flex items-center justify-center min-h-screen bg-gray-100">
+                <CircularProgress size={100} strokeWidth={10} initialProgress={0} interval={100} />
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="flex items-center justify-center min-h-screen bg-gray-100">
+                {error}.
+            </div>
+        );
     }
 
     if (!selectedService || !selectedDay || !selectedTime || !advisor) {
-        return <div>Missing booking information. {selectedDay + selectedService + selectedTime + advisor?.display_name}</div>;
+        return (
+            <div className="flex items-center justify-center min-h-screen bg-gray-100">
+                Missing booking information.
+            </div>
+        );
     }
 
     return (
@@ -80,36 +126,35 @@ export default function ConfirmBook() {
             </div>
 
             <div className="flex flex-col lg:flex-row lg:min-h-[600px] xl:min-h-[800px] w-full ">
+
                 <div className="flex items-center justify-center lg:w-1/2 py-12">
-                    <Card className='p-8'>
-                        <div className="mx-auto w-[350px] space-y-6">
+                    <Card className='p-8 '>
+                        {!appointmentConfirmed ? <div className="mx-auto w-[350px] space-y-6">
                             <div className="text-center">
                                 <h1 className="text-3xl font-bold">Confirm Booking</h1>
                             </div>
                             <div className="space-y-4">
                                 <div className="space-y-2">
                                     <Label>Service</Label>
-                                    <p>{selectedService?.service_type_name}</p>
+                                    <Card className='p-2 font-semibold'>{selectedService.service_type_name}</Card>
                                 </div>
-                                <div className="space-y-2">
-                                    <Label>Day</Label>
-                                    <p>{selectedDay}</p>
+                                <div className='flex flex-row justify-start space-x-12'>
+                                    <div className="space-y-2">
+                                        <Label>Day</Label>
+                                        <p className='font-semibold'>{selectedDay}</p>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label>Time</Label>
+                                        <p className='font-semibold'>{selectedTime}</p>
+                                    </div>
                                 </div>
-                                <div className="space-y-2">
-                                    <Label>Time</Label>
-                                    <p>{selectedTime}</p>
-                                </div>
+
                                 <div className="space-y-2">
                                     <Label>Advisor</Label>
                                     <div className="flex items-center space-x-4">
-                                        <Image
-                                            src={advisor.img_url}
-                                            alt={advisor.display_name}
-                                            width={50}
-                                            height={50}
-                                            className="object-cover rounded-full"
-                                        />
-                                        <p>{advisor.display_name}</p>
+                                        <Avatar ><AvatarImage src={advisor.img_url} alt={advisor.display_name} />
+                                            <AvatarFallback>CN</AvatarFallback> </Avatar>
+                                        <p className='font-semibold'>{(advisor.display_name)}</p>
                                     </div>
                                 </div>
                                 <Button onClick={handleConfirm} className="w-full">
@@ -117,11 +162,49 @@ export default function ConfirmBook() {
                                 </Button>
                             </div>
                             <div className="text-center text-sm mt-4">
-                                <Link href="/services" className="underline">
-                                    Back to Services
+                                <Link href={"/advisor/profile/?advisor=" + advisor.advisor_id} className="underline">
+                                    Back to Booking Page
                                 </Link>
                             </div>
-                        </div>
+                        </div> : <div className="mx-auto w-[350px] space-y-6">
+                            <div className="text-center">
+                                <h1 className="text-3xl font-bold">Appointment confirmed!</h1>
+                            </div>
+                            <div className="space-y-4">
+                                <div className="space-y-2">
+                                    <Label>Booked service</Label>
+                                    <Card className='p-2 font-semibold'>{selectedService.service_type_name}</Card>
+                                </div>
+                                <div className='flex flex-row justify-start space-x-12'>
+                                    <div className="space-y-2">
+                                        <Label>Booked Day</Label>
+                                        <p className='font-semibold'>{selectedDay}</p>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label>Booked Time</Label>
+                                        <p className='font-semibold'>{selectedTime}</p>
+                                    </div>
+                                </div>
+
+                                <div className="space-y-2">
+                                    <Label>Booked Advisor</Label>
+                                    <div className="flex items-center space-x-4">
+                                        <Avatar ><AvatarImage src={advisor.img_url} alt={advisor.display_name} />
+                                            <AvatarFallback>CN</AvatarFallback> </Avatar>
+                                        <p className='font-semibold'>{(advisor.display_name)}</p>
+                                    </div>
+                                </div>
+                                <Button onClick={handleConfirm} className="w-full">
+                                    Go to your appointments <ChevronRight />
+                                </Button>
+                            </div>
+                            <div className="text-center text-sm mt-4">
+                                <Link href={"/advisor/profile/?advisor=" + advisor.advisor_id} className="underline">
+                                    Back to Booking Page
+                                </Link>
+                            </div>
+                        </div>}
+
                     </Card>
                 </div>
                 <div className="hidden lg:block lg:w-1/2 bg-cyan-500">
@@ -136,4 +219,6 @@ export default function ConfirmBook() {
             </div>
         </main>
     );
-}
+};
+
+export default ConfirmBook;

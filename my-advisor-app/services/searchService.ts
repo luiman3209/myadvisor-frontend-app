@@ -14,9 +14,6 @@ export const searchAdvisors = async (operating_country_code: string | undefined 
 
 ): Promise<SearchAdvisorsRespDto> => {
   try {
-    console.log('Searching...')
-    console.log('operating_country_code:', operating_country_code)
-    console.log('service_id:', service_id)
     const params: any = {};
     if (operating_country_code) {
       params.operating_country_code = operating_country_code;

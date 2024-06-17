@@ -1,6 +1,6 @@
 import { AdvisorProfileData } from '@/types/auth';
 import { AdvisorEntity } from '@/types/entity/advisor_entity';
-import { AdvisorPrivateProfileRespDto } from '@/types/types';
+import { AdvisorPrivateProfileRespDto, AdvisorPublicProfileDto } from '@/types/types';
 import axios from 'axios';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
@@ -39,10 +39,10 @@ export const getAdvisorProfile = async (): Promise<AdvisorPrivateProfileRespDto>
   }
 };
 
-export const getPublicAdvisorProfile = async (advisorId: number) => {
+export const getPublicAdvisorProfile = async (advisorId: number): Promise<AdvisorPublicProfileDto> => {
   try {
     const response = await axios.get(`/api/advisor/${advisorId}`);
-    return response.data;
+    return response.data as AdvisorPublicProfileDto;
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {
       throw new Error(error.response.data.message || 'Failed to fetch public advisor profile');
@@ -56,7 +56,7 @@ export const getPublicAdvisorProfile = async (advisorId: number) => {
 export const getAdvisorBookInfo = async (advisorId: number): Promise<AdvisorEntity> => {
   try {
     const response = await axios.get(`/api/advisor/book-info/${advisorId}`);
-    return response.data;
+    return response.data as AdvisorEntity;
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {
       throw new Error(error.response.data.message || 'Failed to fetch public advisor profile');

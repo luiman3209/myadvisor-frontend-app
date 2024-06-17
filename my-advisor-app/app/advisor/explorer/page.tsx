@@ -113,7 +113,7 @@ const AdvisorExplorer: React.FC = () => {
                         <AvatarFallback>{advisor.display_name.charAt(0)}</AvatarFallback>
                       </Avatar>
                       <div className='space-y-1'>
-                        <Link href={`/advisor/profile?advisorId=${advisor.advisor_id}`} className="text-xl font-semibold hover:underline">
+                        <Link href={`/advisor/profile?advisor=${advisor.advisor_id}`} className="text-xl font-semibold hover:underline">
                           {advisor.display_name}
                         </Link>
                         <div className='flex flex-row items-center space-x-2'>

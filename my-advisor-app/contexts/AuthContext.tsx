@@ -55,13 +55,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setLoading(false);
   }, []);
 
-  const handleLogin = useCallback(async (email: string, password: string, redirectUrl?: string) => {
+  const handleLogin = useCallback(async (email: string, password: string) => {
     setError(null);
     setLoading(true);
     try {
       const decodedUser = await login(email, password);
       setUser(decodedUser);
-      router.push(redirectUrl || '/');
     } catch (err: any) {
       throw new Error(err.message);
     } finally {
@@ -75,7 +74,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     router.push('/');
   }, [router]);
 
-  const handleRegister = useCallback(async (email: string, password: string, profileData: ProfileData, isAdvisor: boolean = true, redirectUrl?: string) => {
+  const handleRegister = useCallback(async (email: string, password: string, profileData: ProfileData, isAdvisor: boolean = true) => {
     setError(null);
     setLoading(true);
     try {
@@ -94,8 +93,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       } else if (profileData.investor_data) {
         await createOrUpdateInvestor(profileData.investor_data);
       }
-
-      router.push(redirectUrl || '/');
     } catch (err: any) {
       setError(err.message);
     } finally {

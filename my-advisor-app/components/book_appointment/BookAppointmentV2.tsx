@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { CheckIcon, ChevronDownIcon, ChevronRightIcon, ChevronLeftIcon, Loader, ChevronsRight, ChevronRight } from 'lucide-react';
+import { CheckIcon, ChevronDownIcon, ChevronRightIcon, ChevronLeftIcon, Loader, ChevronsRight, ChevronRight, BadgeInfo } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { bookAppointment, getFreeWindows } from '@/services/appointmentService';
 import { ServiceType } from '@/types/entity/service_type_entity';
-import { getNextDays } from '@/utils/commonUtils';
+import { encodeQueryData, getNextDays } from '@/utils/commonUtils';
 import { Label } from '../ui/label';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -93,20 +93,12 @@ const BookAppointmentV2: React.FC<BookAppointmentV2Props> = ({ advisorId, office
     setSelectedTime(time);
   };
 
-  const encodeQueryData = (data: object) => {
-    const str = JSON.stringify(data);
-    return btoa(str);
-  };
+
 
   const confirmBooking = async () => {
     if (selectedDay && selectedTime && selectedService) {
       try {
         setBookingError(null);
-        const startTime = `${selectedDay}T${selectedTime}:00Z`;
-        const [hour, minute] = selectedTime.split(':').map(Number);
-        let endHour = hour + 1;
-        const endHourStr = endHour.toString().padStart(2, '0');
-        const endTime = `${selectedDay}T${endHourStr}:${minute.toString().padStart(2, '0')}:00Z`;
 
         const service = services.find((s) => s.service_type_name === selectedService);
         if (service) {
@@ -118,11 +110,6 @@ const BookAppointmentV2: React.FC<BookAppointmentV2Props> = ({ advisorId, office
           };
           const encodedData = encodeQueryData(queryData);
           router.push(`/book?data=${encodedData}`);
-          await bookAppointment(advisorId, service?.service_id, startTime, endTime);
-          setSelectedDay(null);
-          setSelectedTime(null);
-          alert('Appointment successfully booked on ' + new Date(selectedDay).toLocaleDateString() + ' at ' + selectedTime);
-          updateDaysAndFetch('none');
         } else throw new Error('Service not found');
       } catch (error: any) {
         setBookingError(error.message);
@@ -134,7 +121,8 @@ const BookAppointmentV2: React.FC<BookAppointmentV2Props> = ({ advisorId, office
 
   return (
     <div className="p-5 flex flex-col">
-      <div className="mb-5">
+      <div className='flex items-center space-x-1'> <BadgeInfo /> <Label>Select service and time</Label></div>
+      <div className="my-5">
         <Select value={selectedService} onValueChange={setSelectedService}>
           <SelectTrigger className="w-full px-3 py-2 border border-gray-300 rounded flex items-center justify-between bg-white">
             <SelectValue placeholder="Select a service" />
@@ -171,7 +159,7 @@ const BookAppointmentV2: React.FC<BookAppointmentV2Props> = ({ advisorId, office
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: direction === 'right' ? -100 : 100, opacity: 0 }}
               transition={{ duration: 0.5 }}
-              className="absolute top-0 left-0 right-0 flex gap-2 justify-center overflow-x-auto"
+              className="absolute top-0 left-0 right-0 flex gap-2 justify-center items-start overflow-x-auto"
             >
               {days.map((day) => (
                 <div key={day} className="flex flex-col items-center justify-center">

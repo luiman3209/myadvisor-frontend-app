@@ -11,24 +11,42 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Card } from '@/components/ui/card';
 import ShakeableInput from '@/components/input/ShakableInput';
+import { decodeQueryDataString, encodeQueryDataString } from '@/utils/commonUtils';
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState('');
+  const [redirect, setRedirect] = useState('');
   const { user, login, error } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    if (user) {
-      router.push('/');
+
+
+    const queryParams = new URLSearchParams(window.location.search);
+    const encodedRedirect = queryParams.get('redirect') || '';
+    try {
+      if (encodedRedirect) {
+        const decodedRedirect = decodeQueryDataString(encodedRedirect);
+        setRedirect(decodedRedirect);
+      }
+    } catch (err) {
+      console.error('Failed to decode redirect query string', err);
     }
+
+
   }, [user, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       await login(email, password);
+      if (redirect) {
+        router.push(redirect);
+      } else {
+        router.push('/');
+      }
     } catch (err) {
       setErrors('Invalid email or password');
       // wait for 2 seconds and then remove the error message
@@ -89,7 +107,7 @@ export default function Login() {
               </div>
               <div className="text-center text-sm mt-4">
                 Don&apos;t have an account?{" "}
-                <Link href="/auth/register/investor" className="underline">
+                <Link href={"/auth/register/investor?redirect=" + encodeQueryDataString(redirect)} className="underline">
                   Sign up
                 </Link>
               </div>
