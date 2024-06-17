@@ -66,7 +66,7 @@ const ConfirmBook: React.FC = () => {
         };
 
         fetchBookingData();
-    }, [router]);
+    }, [router, user]);
 
     const handleConfirm = async () => {
 
@@ -194,7 +194,7 @@ const ConfirmBook: React.FC = () => {
                                         <p className='font-semibold'>{(advisor.display_name)}</p>
                                     </div>
                                 </div>
-                                <Button onClick={handleConfirm} className="w-full">
+                                <Button onClick={() => router.push('/dashboard')} className="w-full">
                                     Go to your appointments <ChevronRight />
                                 </Button>
                             </div>

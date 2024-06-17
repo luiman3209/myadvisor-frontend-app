@@ -1,3 +1,4 @@
+import { AppointmentsFilterReq, FilteredAppointmentsResp } from '@/types/types';
 import axios from 'axios';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
@@ -38,6 +39,24 @@ export const getFreeWindows = async (advisorId: number | null, startDate: string
       throw new Error(error.response.data.message || 'Failed to get free windows');
     } else {
       throw new Error('Failed to get free windows due to an unexpected error');
+    }
+  }
+};
+
+
+export const filterAdvisorAppointments = async (filter: AppointmentsFilterReq): Promise<FilteredAppointmentsResp> => {
+
+  try {
+
+    const response = await axios.post(`/api/appointment/advisor`,
+      filter,
+      headers());
+    return response.data as FilteredAppointmentsResp;
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response) {
+      throw new Error(error.response.data.message || 'Failed to retrieve appointments');
+    } else {
+      throw new Error('Failed to retrieve appointments due to an unexpected error');
     }
   }
 };

@@ -50,6 +50,72 @@ export interface AdvisorPublicProfileDto {
 
 }
 
+export interface ReviewFilterReq {
+
+
+  page: number;
+  limit: number;
+  sort_type: string | null;
+  sort_by: string | null;
+  min_rating: number | null;
+  max_rating: number | null;
+  min_date: string | null;
+  max_date: string | null;
+  has_text: boolean | null;
+
+
+}
+
+export interface AppointmentsFilterReq {
+
+
+  page: number;
+  limit: number;
+  sort_type: string;
+  min_date: string | null;
+  max_date: string | null;
+  service_id: number | null;
+
+}
+
+
+export interface FilteredAppointmentsResp {
+
+  totalItems: number;
+  totalPages: number;
+  currentPage: number;
+  appointments: AppointmentDto[];
+}
+
+export interface AppointmentDto {
+  appointment_id: number;
+  user_id: number;
+  service_id: number;
+  start_time: Date;
+  end_time: Date;
+  is_reviewed: boolean;
+  status: string;
+}
+
+// ['review_id', 'user_id', 'appointment_id', 'rating', 'review', 'created_at']
+
+export interface ReviewDto {
+
+  review_id: number;
+  user_id: number;
+  appointment_id: number;
+  rating: number;
+  review: string;
+  created_at: Date;
+}
+
+export interface FilteredReviewsResp {
+  totalItems: number;
+  totalPages: number;
+  currentPage: number;
+  reviews: ReviewEntity[];
+}
+
 
 export interface SearchAdvisorsRespDto {
 

@@ -1,96 +1,115 @@
 "use client";
 
 import { useEffect, useState } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
-import { getInvestorDashboard, getAdvisorDashboard } from '@/services/dashboardService';
-import ProtectedRoute from '@/components/auth/ProtectedRoutes';
+import { useRouter } from 'next/navigation';
+import CircularProgress from '@/components/misc/CircularProgress';
+import Navbar from '@/components/navbar/NavBar';
 
-const Dashboard: React.FC = () => {
-  const { user } = useAuth();
-  const [dashboardData, setDashboardData] = useState<any>(null);
+import { AppointmentDto, FilteredAppointmentsResp, FilteredReviewsResp, ReviewDto } from '@/types/types';
+import { filterAdvisorAppointments } from '@/services/appointmentService';
+import { filterAdvisorReviews } from '@/services/reviewService';
+
+
+const DashboardPage: React.FC = () => {
+  const [appointments, setAppointments] = useState<AppointmentDto[]>([]);
+  const [reviews, setReviews] = useState<ReviewDto[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
+  const router = useRouter();
+
   useEffect(() => {
-    const fetchDashboardData = async () => {
+    const fetchData = async () => {
       setLoading(true);
       setError(null);
 
       try {
-        if (user?.role === 'investor') {
-          const data = await getInvestorDashboard();
+        // Fetch appointments data
+        const appointmentsData: FilteredAppointmentsResp = await filterAdvisorAppointments(
+          {
+            page: 1,
+            limit: 5,
+            sort_type: 'asc',
+            min_date: new Date().toISOString(),
+            max_date: null,
+            service_id: null,
+          }
+        );
+        setAppointments(appointmentsData.appointments);
 
-          setDashboardData(data);
-        } else if (user?.role === 'advisor') {
-
-          const data = await getAdvisorDashboard();
-
-          setDashboardData(data);
-        }
-      } catch (err: any) {
-        setError(err.message);
+        // Fetch reviews data
+        const reviewsData: FilteredReviewsResp = await filterAdvisorReviews(
+          {
+            page: 1,
+            limit: 5,
+            sort_type: 'desc',
+            sort_by: 'created_at',
+            min_rating: null,
+            max_rating: null,
+            min_date: null,
+            max_date: null,
+            has_text: null,
+          }
+        );
+        setReviews(reviewsData.reviews);
+      } catch (error) {
+        console.error('Failed to fetch dashboard data', error);
+        setError('Failed to fetch dashboard data');
       } finally {
         setLoading(false);
       }
     };
 
-    if (user) {
-      fetchDashboardData();
-    }
-  }, [user]);
+    fetchData();
+  }, []);
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-100">
+        <CircularProgress size={100} strokeWidth={10} initialProgress={0} interval={100} />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-100">
+        {error}. Please try reloading the page.
+      </div>
+    );
+  }
 
   return (
-    <ProtectedRoute>
-      <div>
-        <h1>Dashboard</h1>
-        {user?.role === 'investor' && dashboardData && (
-          <div>
-            <h2>Upcoming Appointments</h2>
-            <ul>
-              {dashboardData.upcomingAppointments.map((appointment: any) => (
-                <li key={appointment.appointment_id}>
-                  {appointment.start_time} with {appointment.advisor.user_config.email}
-                </li>
-              ))}
-            </ul>
-            <h2>Recent Activity</h2>
-            <ul>
-              {dashboardData.recentActivity.map((activity: any) => (
-                <li key={activity.id}>
-                  {activity.text} - {activity.Advisor.User.email}
-                </li>
-              ))}
-            </ul>
+    <div className="bg-gray-100">
+      <Navbar />
+      <div className="md:my-8 mx-auto p-12 lg:w-1/2">
+        <section>
+          <h2 className="text-2xl font-bold mb-4">Appointments Manager</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {appointments.length > 0 ? (
+              appointments.map((appointment) => (
+                appointment.start_time.toString()
+              ))
+            ) : (
+              <p>No appointments scheduled.</p>
+            )}
           </div>
-        )}
-        {user?.role === 'advisor' && dashboardData && (
-          <div>
-            <h2>Upcoming Appointments</h2>
-            <ul>
-              {dashboardData.upcomingAppointments.map((appointment: any) => (
-                <li key={appointment.appointment_id}>
-                  {appointment.start_time} with {appointment.user_config.email}
-                </li>
-              ))}
-            </ul>
-            <h2>Client Interactions</h2>
-            <ul>
-              {dashboardData.clientInteractions.map((interaction: any) => (
-                <li key={interaction.appointment_id}>
-                  {interaction.start_time} with {interaction.user_config.email}
-                </li>
-              ))}
-            </ul>
-            <h2>Profile Views</h2>
-            <p>{dashboardData.profileViews[0]?.profile_views || 0} views</p>
+        </section>
+        <section className="mt-8">
+          <h2 className="text-2xl font-bold mb-4">Reviews</h2>
+          <div className="grid gap-4">
+            {reviews.length > 0 ? (
+              reviews.map((review) => (
+                review.review
+              ))
+            ) : (
+              <p>No reviews yet.</p>
+            )}
           </div>
-        )}
+        </section>
       </div>
-    </ProtectedRoute>
+    </div>
   );
 };
 
-export default Dashboard;
+export default DashboardPage;

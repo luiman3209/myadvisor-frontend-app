@@ -57,9 +57,7 @@ const Navbar: React.FC = () => {
         {/* Desktop Menu */}
 
         <div className="hidden lg:flex space-x-1 items-center">
-          <Link href="/data-processing-policy" className="nav-link">
-            Data processing policy
-          </Link>
+
           {!user || user.role === 'investor' && (
             <Link href="/ask-an-advisor" className="nav-link">
               Ask an Advisor
@@ -80,8 +78,8 @@ const Navbar: React.FC = () => {
               <DropdownMenu>
                 <DropdownMenuTrigger className="nav-link">Register for free</DropdownMenuTrigger>
                 <DropdownMenuContent>
-                  <DropdownMenuItem className="nav-menu"><div className='flex'><User className="mr-2 h-5 w-5" /><Link href="/auth/register/investor">I'm an investor</Link></div></DropdownMenuItem>
-                  <DropdownMenuItem className="nav-menu"><div className='flex'><UserCog className="mr-2 h-5 w-5" /><Link href="/auth/register/advisor">I'm an advisor</Link></div></DropdownMenuItem>
+                  <DropdownMenuItem className="nav-menu"><div className='flex'><User className="mr-2 h-5 w-5" /><Link href="/auth/register/investor">I&apos;m an investor</Link></div></DropdownMenuItem>
+                  <DropdownMenuItem className="nav-menu"><div className='flex'><UserCog className="mr-2 h-5 w-5" /><Link href="/auth/register/advisor">I&apos;m an advisor</Link></div></DropdownMenuItem>
 
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -109,9 +107,6 @@ const Navbar: React.FC = () => {
       {isMenuOpen && (
         <div className="lg:hidden">
           <div className="flex flex-col items-center space-y-4 p-4 bg-cyan-500">
-            <Link href="/data-processing-policy" className="nav-link">
-              Data processing policy
-            </Link>
             {user && user.role === 'investor' && (
               <Link href="/ask-an-advisor" className="nav-link" onClick={closeMenu}>
                 Ask an Advisor
@@ -130,10 +125,10 @@ const Navbar: React.FC = () => {
             ) : (
               <>
                 <Link href="/auth/register/investor" className="nav-link" onClick={closeMenu}>
-                  I'm an investor
+                  I&apos;m an investor
                 </Link>
                 <Link href="/auth/register/advisor" className="nav-link" onClick={closeMenu}>
-                  I'm an advisor
+                  I&apos;m an advisor
                 </Link>
                 <Link href="/auth/login" className="nav-link" onClick={closeMenu}>
                   Login
