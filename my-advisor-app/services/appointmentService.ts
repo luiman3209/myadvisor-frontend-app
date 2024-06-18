@@ -60,3 +60,19 @@ export const filterAdvisorAppointments = async (filter: AppointmentsFilterReq): 
     }
   }
 };
+
+export const deleteAppointment = async (appointmentId: number) => {
+
+  try {
+
+    const response = await axios.delete(`/api/appointment/${appointmentId}`, headers());
+
+    return response.data as FilteredAppointmentsResp;
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response) {
+      throw new Error(error.response.data.message || 'Failed to retrieve appointments');
+    } else {
+      throw new Error('Failed to retrieve appointments due to an unexpected error');
+    }
+  }
+};

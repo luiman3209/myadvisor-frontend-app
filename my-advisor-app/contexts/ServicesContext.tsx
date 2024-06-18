@@ -29,7 +29,9 @@ export const ServiceProvider: React.FC<ServiceProviderProps> = ({ children }) =>
     const [availableServices, setAvailableServices] = useState<ServiceType[]>([]);
 
     useEffect(() => {
+
         const fetchServiceTypes = async () => {
+
             const services = await getServiceTypes();
             setAvailableServices(services);
         };
