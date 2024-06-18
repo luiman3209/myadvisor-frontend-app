@@ -17,6 +17,7 @@ import AdvisorProfile from '@/components/profile/AdvisorProfile';
 import { QualificationEntity } from '@/types/entity/qualification_entity';
 import { getAvailableQualifications } from '@/services/qualificationService';
 import CircularProgress from '@/components/misc/CircularProgress';
+import { useServiceContext } from '@/contexts/ServicesContext';
 
 const Profile: React.FC = () => {
   const { user } = useAuth();
@@ -29,10 +30,12 @@ const Profile: React.FC = () => {
   const [availableQualifications, setAvailableQualifications] = useState<QualificationEntity[]>([]);
   const router = useRouter();
 
+  const { availableServices } = useServiceContext();
+
   const fetchServiceTypes = async () => {
     try {
 
-      setAvailableServiceTypes(await getServiceTypes());
+      setAvailableServiceTypes(availableServices);
 
     } catch (error) {
       setError('Failed to fetch service types');

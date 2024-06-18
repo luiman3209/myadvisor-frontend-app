@@ -6,11 +6,11 @@ import { Check, Mail, X } from "lucide-react";
 import RatingStars from "../RatingStars";
 
 
-interface AdvisorAppointmentBox {
+interface AdvisorReviewBox {
     review: ReviewDto;
 }
 
-const AdvisorAppointmentBox: React.FC<AdvisorAppointmentBox> = ({ review }) => {
+const AdvisorReviewBox: React.FC<AdvisorReviewBox> = ({ review }) => {
 
     return (<Card className="items-center">
 
@@ -35,4 +35,4 @@ const AdvisorAppointmentBox: React.FC<AdvisorAppointmentBox> = ({ review }) => {
 
 
 
-export default AdvisorAppointmentBox;
+export default AdvisorReviewBox;

@@ -3,6 +3,7 @@ import { AuthProvider } from '@/contexts/AuthContext';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
+import { ServiceProvider } from '@/contexts/ServicesContext';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -19,7 +20,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <AuthProvider><div className="flex flex-col min-h-screen">{children}</div></AuthProvider>
+        <ServiceProvider><AuthProvider><div className="flex flex-col min-h-screen">{children}</div></AuthProvider></ServiceProvider>
+
       </body>
     </html>
   );

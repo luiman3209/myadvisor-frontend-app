@@ -17,6 +17,7 @@ import BoxCollection from '@/components/misc/BoxCollection';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import BookAppointmentV2 from '@/components/book_appointment/BookAppointmentV2';
 import { useSearchParams } from 'next/navigation';
+import { useServiceContext } from '@/contexts/ServicesContext';
 
 
 const AdvisorExplorer: React.FC = () => {
@@ -28,18 +29,13 @@ const AdvisorExplorer: React.FC = () => {
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
   const [totalItems, setTotalItems] = useState<number>(0);
-  const [serviceTypes, setServiceTypes] = useState<ServiceType[]>([]);
+
   const searchParams = useSearchParams();
 
+  const { availableServices } = useServiceContext();
+
   useEffect(() => {
-    const fetchServiceTypes = async () => {
-      try {
-        const types = await getServiceTypes();
-        setServiceTypes(types);
-      } catch (err) {
-        console.error('Failed to fetch service types', err);
-      }
-    };
+
 
     const initialCountryCode = searchParams.get('country_code');
     const initialServiceId = searchParams.get('service_id');
@@ -47,7 +43,6 @@ const AdvisorExplorer: React.FC = () => {
     if (initialCountryCode) setCountryCode(initialCountryCode);
     if (initialServiceId) setServiceId(parseInt(initialServiceId, 10));
 
-    fetchServiceTypes();
   }, [searchParams]);
 
   const handleSearch = async () => {
@@ -75,13 +70,13 @@ const AdvisorExplorer: React.FC = () => {
       <Navbar />
       <div className="py-4 bg-gray-100 border-b justify-center items-center">
         <div className="container mx-auto px-4 flex space-x-4">
-          <Select value={serviceTypes.find(s => s.service_id === serviceId)?.service_type_name || ''} onValueChange={(e) => setServiceId(serviceTypes.find(s => s.service_type_name === e)?.service_id || undefined)}>
+          <Select value={availableServices.find(s => s.service_id === serviceId)?.service_type_name || ''} onValueChange={(e) => setServiceId(availableServices.find(s => s.service_type_name === e)?.service_id || undefined)}>
             <SelectTrigger className=" text-slate-600 text-base">
               <SelectValue placeholder="Service Type" />
             </SelectTrigger>
             <SelectContent>
               <SelectGroup>
-                {serviceTypes.map((type) => (
+                {availableServices.map((type) => (
                   <SelectItem className="text-base text-black" key={type.service_id} value={type.service_type_name}>
                     {type.service_type_name}
                   </SelectItem>
@@ -121,7 +116,7 @@ const AdvisorExplorer: React.FC = () => {
                             <RatingStars rating={advisor.average_rating} />}<span className='text-gray-500 text-xs'>{advisor.review_count} Reviews</span>
                         </div>
                         <BoxCollection
-                          items={serviceTypes.filter(s => advisor.advisor_services.map(a => a.service_id).includes(s.service_id)).map(s => s.service_type_name)}
+                          items={availableServices.filter(s => advisor.advisor_services.map(a => a.service_id).includes(s.service_id)).map(s => s.service_type_name)}
                         />
                       </div>
                     </div>
@@ -145,7 +140,7 @@ const AdvisorExplorer: React.FC = () => {
                     <BookAppointmentV2
                       advisorId={advisor.advisor_id}
                       officeAddress={advisor.office_address}
-                      services={serviceTypes.filter(s => advisor.advisor_services.map(a => a.service_id).includes(s.service_id))}
+                      services={availableServices.filter(s => advisor.advisor_services.map(a => a.service_id).includes(s.service_id))}
                     />
                   </div>
                 </div>

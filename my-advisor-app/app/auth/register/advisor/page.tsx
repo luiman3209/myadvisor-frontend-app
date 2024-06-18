@@ -17,6 +17,7 @@ import { ServiceType } from '@/types/entity/service_type_entity';
 import { checkEmailAvailability, checkPhoneAvailability } from '@/services/authService';
 import RegisterNavbar from '@/components/navbar/RegisterNavbar';
 import AdvisorForm from '@/components/forms/AdvisorForm';
+import { useServiceContext } from '@/contexts/ServicesContext';
 
 
 
@@ -38,7 +39,7 @@ export default function RegisterAdvisor() {
   const [operatingCountryCode, setOperatingCountryCode] = useState('');
   const [operatingCityCode, setOperatingCityCode] = useState('');
   const [officeAddress, setOfficeAddress] = useState('');
-  const [serviceTypes, setServiceTypes] = useState<ServiceType[]>([]);
+
   const [selectedServiceTypes, setSelectedServiceTypes] = useState<ServiceType[]>([]);
   const [formStep, setFormStep] = useState(0);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
@@ -46,20 +47,14 @@ export default function RegisterAdvisor() {
   const { user, register, error } = useAuth();
   const router = useRouter();
 
+  const { availableServices } = useServiceContext();
+
   useEffect(() => {
     if (user) {
       router.push('/');
     }
 
-    const fetchServiceTypes = async () => {
-      try {
-        const types = await getServiceTypes();
 
-        setServiceTypes(types);
-      } catch (error) {
-        console.error('Failed to fetch service types', error);
-      }
-    };
 
     const fetchAvailableQualifications = async () => {
       try {
@@ -71,7 +66,7 @@ export default function RegisterAdvisor() {
     };
 
     fetchAvailableQualifications();
-    fetchServiceTypes();
+
   }, [user, router]);
 
 
@@ -199,7 +194,7 @@ export default function RegisterAdvisor() {
               setStartShift2={setStartShift1}
               setEndShift2={setEndShift1}
               availableQualifications={availableQualifications}
-              availableServiceTypes={serviceTypes}
+              availableServiceTypes={availableServices}
               setSelectedQualifications={setSelectedQualifications}
               setSelectedOfficeAddress={setOfficeAddress}
               setSelectedServiceTypes={setSelectedServiceTypes}

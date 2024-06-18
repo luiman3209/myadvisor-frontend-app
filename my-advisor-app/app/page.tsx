@@ -6,30 +6,28 @@ import { getLastReviews } from '@/services/reviewService';
 import { getServiceTypes } from '@/services/serviceTypesService';
 import { ServiceType } from '@/types/entity/service_type_entity';
 import { HomeReviewDto } from '@/types/types';
+import { useServiceContext } from '@/contexts/ServicesContext';
 
 export default function Home() {
   const [serviceTypes, setServiceTypes] = useState<ServiceType[]>([]);
   const [latestReviews, setLatestReviews] = useState<HomeReviewDto[]>([]);
-  const [retryCount, setRetryCount] = useState(0);
+
+
+  const { availableServices } = useServiceContext();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const fetchedServiceTypes = await getServiceTypes();
         const fetchedLatestReviews = await getLastReviews(6);
-        setServiceTypes(fetchedServiceTypes);
+        setServiceTypes(availableServices);
         setLatestReviews(fetchedLatestReviews);
       } catch (error) {
-        if (retryCount < 5) { // limit the number of retries
-          setTimeout(() => {
-            setRetryCount(retryCount + 1);
-          }, 5000);
-        }
+        console.error('Failed to fetch data', error);
       }
     };
 
     fetchData();
-  }, [retryCount]); // re-run the effect when `retryCount` changes
+  }, []); // re-run the effect when `retryCount` changes
 
   return <HomeClient serviceTypes={serviceTypes} latestReviews={latestReviews} />;
 }

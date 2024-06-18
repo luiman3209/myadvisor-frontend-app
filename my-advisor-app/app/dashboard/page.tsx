@@ -11,6 +11,7 @@ import { filterAdvisorReviews } from '@/services/reviewService';
 import AdvisorDashboard from '@/components/dashboard/AdvisorDashboard';
 import { useAuth } from '@/contexts/AuthContext';
 import Footer from '@/components/footer/Footer';
+import { useServiceContext } from '@/contexts/ServicesContext';
 
 
 const DashboardPage: React.FC = () => {
@@ -21,53 +22,60 @@ const DashboardPage: React.FC = () => {
 
   const { user } = useAuth();
 
+  const { availableServices } = useServiceContext();
+
+
   const router = useRouter();
 
   useEffect(() => {
+
     const fetchAdvisorData = async () => {
-      setLoading(true);
-      setError(null);
+      if (user) {
+        setLoading(true);
+        setError(null);
 
-      try {
-        // Fetch appointments data
-        const appointmentsData: FilteredAppointmentsResp = await filterAdvisorAppointments(
-          {
-            page: 1,
-            limit: 5,
-            sort_type: 'asc',
-            min_date: new Date().toISOString(),
-            max_date: null,
-            service_id: null,
-          }
-        );
-        console.log(appointmentsData.appointments)
-        setAppointments(appointmentsData.appointments);
+        try {
+          console.log('Fetching advisor data..')
+          // Fetch appointments data
+          const appointmentsData: FilteredAppointmentsResp = await filterAdvisorAppointments(
+            {
+              page: 1,
+              limit: 5,
+              sort_type: 'asc',
+              min_date: new Date().toISOString(),
+              max_date: null,
+              service_id: null,
+            }
+          );
 
-        // Fetch reviews data
-        const reviewsData: FilteredReviewsResp = await filterAdvisorReviews(
-          {
-            page: 1,
-            limit: 5,
-            sort_type: 'desc',
-            sort_by: 'created_at',
-            min_rating: null,
-            max_rating: null,
-            min_date: null,
-            max_date: null,
-            has_text: null,
-          }
-        );
+          setAppointments(appointmentsData.appointments);
 
-        setReviews(reviewsData.reviews);
-      } catch (error) {
-        console.error('Failed to fetch dashboard data', error);
-        setError('Failed to fetch dashboard data');
-      } finally {
-        setLoading(false);
+          // Fetch reviews data
+          const reviewsData: FilteredReviewsResp = await filterAdvisorReviews(
+            {
+              page: 1,
+              limit: 5,
+              sort_type: 'desc',
+              sort_by: 'created_at',
+              min_rating: null,
+              max_rating: null,
+              min_date: null,
+              max_date: null,
+              has_text: null,
+            }
+          );
+
+          setReviews(reviewsData.reviews);
+        } catch (error) {
+          console.error('Failed to fetch dashboard data', error);
+          setError('Failed to fetch dashboard data');
+        } finally {
+          setLoading(false);
+        }
       }
+
     };
 
-    console.log('>>>>>>>>>>useEffect()')
     fetchAdvisorData();
   }, [user, router]);
 
@@ -91,7 +99,7 @@ const DashboardPage: React.FC = () => {
     <div className="bg-gray-100">
       <Navbar />
       <div className="h-auto mx-auto p-12 lg:w-1/2 flex flex-col min-h-screen">
-        <AdvisorDashboard appointments={appointments} reviews={reviews} />
+        <AdvisorDashboard appointments={appointments} reviews={reviews} availableServices={availableServices} />
       </div>
       <Footer />
     </div>

@@ -12,6 +12,7 @@ import RegisterNavbar from '@/components/navbar/RegisterNavbar';
 import { Button } from '@/components/ui/button';
 import InvestorForm from '@/components/forms/InvestorForm';
 import { decodeQueryDataString } from '@/utils/commonUtils';
+import { useServiceContext } from '@/contexts/ServicesContext';
 
 export default function RegisterInvestor() {
   const [email, setEmail] = useState('');
@@ -24,7 +25,6 @@ export default function RegisterInvestor() {
   const [netWorth, setNetWorth] = useState('');
   const [incomeRange, setIncomeRange] = useState('');
   const [geoPreferences, setGeoPreferences] = useState('');
-  const [serviceTypes, setServiceTypes] = useState<ServiceType[]>([]);
   const [selectedServiceTypes, setSelectedServiceTypes] = useState<ServiceType[]>([]);
   const [formStep, setFormStep] = useState(0);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
@@ -33,6 +33,8 @@ export default function RegisterInvestor() {
   const { user, register, error } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
+
+  const { availableServices } = useServiceContext();
 
   useEffect(() => {
 
@@ -47,16 +49,7 @@ export default function RegisterInvestor() {
       console.error('Failed to decode redirect query string', err);
     }
 
-    const fetchServiceTypes = async () => {
-      try {
-        const types = await getServiceTypes();
-        setServiceTypes(types);
-      } catch (error) {
-        console.error('Failed to fetch service types', error);
-      }
-    };
 
-    fetchServiceTypes();
   }, [user, router, searchParams]);
 
 
@@ -172,7 +165,7 @@ export default function RegisterInvestor() {
               setGeoPreferences={setGeoPreferences}
               selectedServiceTypes={selectedServiceTypes}
               setSelectedServiceTypes={setSelectedServiceTypes}
-              availableServiceTypes={serviceTypes}
+              availableServiceTypes={availableServices}
 
             />
           </div>

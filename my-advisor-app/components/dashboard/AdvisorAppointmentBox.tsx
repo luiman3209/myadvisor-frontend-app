@@ -4,14 +4,15 @@ import { Card } from "../ui/card";
 import { Button } from "../ui/button";
 import { Check, Mail, X } from "lucide-react";
 import { appointmentStatusOrder } from "@/utils/constants";
+import { ServiceType } from "@/types/entity/service_type_entity";
 
 
 interface AdvisorAppointmentBox {
     appointment: AppointmentDto;
-    serviceName: string;
+    service: ServiceType | undefined;
 }
 
-const AdvisorAppointmentBox: React.FC<AdvisorAppointmentBox> = ({ appointment, serviceName }) => {
+const AdvisorAppointmentBox: React.FC<AdvisorAppointmentBox> = ({ appointment, service }) => {
 
     return (<Card className="items-center">
 
@@ -19,7 +20,7 @@ const AdvisorAppointmentBox: React.FC<AdvisorAppointmentBox> = ({ appointment, s
             <div className="space-y-2">
                 <div className="flex items-center justify-between">
                     <p className="text-lg font-semibold">{formatDateToUTCString(appointment.start_time, "MMM d, yyyy")}</p>
-                    <h1 className="text-sm text-gray-500">{serviceName}</h1>
+                    {service && <h1 className="text-sm text-gray-500">{service.service_type_name}</h1>}
                 </div>
 
                 <div className="flex items-center justify-between">
