@@ -8,6 +8,9 @@ import Navbar from '@/components/navbar/NavBar';
 import { AppointmentDto, FilteredAppointmentsResp, FilteredReviewsResp, ReviewDto } from '@/types/types';
 import { filterAdvisorAppointments } from '@/services/appointmentService';
 import { filterAdvisorReviews } from '@/services/reviewService';
+import AdvisorDashboard from '@/components/dashboard/AdvisorDashboard';
+import { useAuth } from '@/contexts/AuthContext';
+import Footer from '@/components/footer/Footer';
 
 
 const DashboardPage: React.FC = () => {
@@ -16,10 +19,12 @@ const DashboardPage: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
+  const { user } = useAuth();
+
   const router = useRouter();
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchAdvisorData = async () => {
       setLoading(true);
       setError(null);
 
@@ -35,6 +40,7 @@ const DashboardPage: React.FC = () => {
             service_id: null,
           }
         );
+        console.log(appointmentsData.appointments)
         setAppointments(appointmentsData.appointments);
 
         // Fetch reviews data
@@ -51,6 +57,7 @@ const DashboardPage: React.FC = () => {
             has_text: null,
           }
         );
+
         setReviews(reviewsData.reviews);
       } catch (error) {
         console.error('Failed to fetch dashboard data', error);
@@ -60,8 +67,9 @@ const DashboardPage: React.FC = () => {
       }
     };
 
-    fetchData();
-  }, []);
+    console.log('>>>>>>>>>>useEffect()')
+    fetchAdvisorData();
+  }, [user, router]);
 
   if (loading) {
     return (
@@ -82,32 +90,10 @@ const DashboardPage: React.FC = () => {
   return (
     <div className="bg-gray-100">
       <Navbar />
-      <div className="md:my-8 mx-auto p-12 lg:w-1/2">
-        <section>
-          <h2 className="text-2xl font-bold mb-4">Appointments Manager</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {appointments.length > 0 ? (
-              appointments.map((appointment) => (
-                appointment.start_time.toString()
-              ))
-            ) : (
-              <p>No appointments scheduled.</p>
-            )}
-          </div>
-        </section>
-        <section className="mt-8">
-          <h2 className="text-2xl font-bold mb-4">Reviews</h2>
-          <div className="grid gap-4">
-            {reviews.length > 0 ? (
-              reviews.map((review) => (
-                review.review
-              ))
-            ) : (
-              <p>No reviews yet.</p>
-            )}
-          </div>
-        </section>
+      <div className="h-auto mx-auto p-12 lg:w-1/2 flex flex-col min-h-screen">
+        <AdvisorDashboard appointments={appointments} reviews={reviews} />
       </div>
+      <Footer />
     </div>
   );
 };

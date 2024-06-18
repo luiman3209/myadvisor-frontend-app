@@ -48,7 +48,7 @@ export const filterAdvisorAppointments = async (filter: AppointmentsFilterReq): 
 
   try {
 
-    const response = await axios.post(`/api/appointment/advisor`,
+    const response = await axios.post(`/api/appointment/filter`,
       filter,
       headers());
     return response.data as FilteredAppointmentsResp;

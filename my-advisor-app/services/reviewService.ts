@@ -43,8 +43,7 @@ export const getLastReviews = async (limit = 10) => {
 export const filterAdvisorReviews = async (filter: ReviewFilterReq): Promise<FilteredReviewsResp> => {
     try {
 
-        const response = await axios.post('/api/reviews/advisor', filter, headers());
-
+        const response = await axios.post('/api/reviews/filter', filter, headers());
         return response.data as FilteredReviewsResp;
     } catch (error) {
         if (axios.isAxiosError(error) && error.response) {

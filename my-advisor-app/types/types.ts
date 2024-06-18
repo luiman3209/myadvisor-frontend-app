@@ -30,14 +30,16 @@ export interface AdvisorReviewDto {
   review: string;
   rating: number;
   created_at: Date;
-  user_config: {
-
-    profile: {
-      first_name: string;
-    }
-  }
+  user_config: UserFirstNameDto;
 
 
+}
+
+export interface UserFirstNameDto {
+
+  profile: {
+    first_name: string;
+  };
 }
 export interface AdvisorPublicProfileDto {
   advisor: AdvisorEntity;
@@ -95,6 +97,7 @@ export interface AppointmentDto {
   end_time: Date;
   is_reviewed: boolean;
   status: string;
+  user_config: UserFirstNameDto;
 }
 
 // ['review_id', 'user_id', 'appointment_id', 'rating', 'review', 'created_at']
@@ -107,13 +110,14 @@ export interface ReviewDto {
   rating: number;
   review: string;
   created_at: Date;
+  user_config: UserFirstNameDto;
 }
 
 export interface FilteredReviewsResp {
   totalItems: number;
   totalPages: number;
   currentPage: number;
-  reviews: ReviewEntity[];
+  reviews: ReviewDto[];
 }
 
 

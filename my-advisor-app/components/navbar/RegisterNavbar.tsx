@@ -3,9 +3,11 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '../ui/button';
+import { useRouter } from 'next/navigation';
 
 
 const RegisterNavbar: React.FC = () => {
+    const router = useRouter();
     return (
         <div className="flex justify-between p-5 bg-cyan-500">
             <Link href="/">
@@ -22,7 +24,7 @@ const RegisterNavbar: React.FC = () => {
             </Link>
             <div className="flex items-center">
                 <span className="mr-3 text-white">Already registered?</span>
-                <Button className='bg-cyan-600'>Login</Button>
+                <Button className='bg-cyan-600' onClick={() => router.push('/auth/login')}>Login</Button>
             </div>
         </div>
     );
