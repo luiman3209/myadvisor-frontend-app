@@ -59,7 +59,7 @@ export default function Home() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const fetchedLatestReviews = await getLastReviews(6);
+        const fetchedLatestReviews: HomeReviewDto[] = await getLastReviews(6);
         setLatestReviews(fetchedLatestReviews);
       } catch (error) {
         console.error('Failed to fetch data', error);
@@ -212,15 +212,15 @@ export default function Home() {
                 <div className='flex flex-row'>
                   <div className='w-2/12'>
                     <Avatar>
-                      <AvatarImage src={review.advisor_img_url} alt="advisor" />
+                      <AvatarImage src={review.advisor.img_url} alt="advisor" />
                       <AvatarFallback>N/A</AvatarFallback>
                     </Avatar>
                   </div>
                   <div className='w-10/12 space-y-2'>
                     <div className="flex space-x-2">
-                      <Link href="" className='text-lg font-medium'>{review.advisor_display_name}</Link>
+                      <Link href="" className='text-lg font-medium'>{review.advisor.display_name}</Link>
                       <div className=''>
-                        <RatingStars rating={3} />
+                        <RatingStars initialRating={review.rating} />
                       </div>
                     </div>
                     <div className='text-sm text-slate-800'>
@@ -229,7 +229,7 @@ export default function Home() {
                       </p>
                     </div>
                     <div className='text-slate-600 italic'>
-                      <p>{review.reviewer_first_name}</p>
+                      <p>{review.user_config.profile.first_name}</p>
                     </div>
                   </div>
 

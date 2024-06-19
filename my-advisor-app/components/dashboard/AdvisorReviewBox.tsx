@@ -15,12 +15,12 @@ const AdvisorReviewBox: React.FC<AdvisorReviewBox> = ({ review }) => {
         <div className=" items-center p-4 space-y-2">
             <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                    <RatingStars initialRating={4} />
+                    <RatingStars initialRating={review.rating} />
                     <h1 className="text-sm text-gray-500">{formatDateToUTCString(review.created_at, "MMM d, yyyy")}</h1>
                 </div>
 
                 <div className="flex items-center justify-between">
-                    <p className="text-sm text-gray-500">{review.user_config.profile.first_name}</p>
+                    <p className="text-sm text-gray-500 italic">{review.user_config.profile.first_name}</p>
                     <div className="text-sm flex items-center ">{review.review}</div>
                 </div>
 

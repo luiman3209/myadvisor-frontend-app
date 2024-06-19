@@ -218,7 +218,11 @@ export interface HomeReviewDto {
   review: string;
   created_at: Date;
   updated_at: Date;
-  advisor_display_name: string;
-  advisor_img_url: string;
-  reviewer_first_name: string;
+  advisor: {
+    advisor_id: number;
+    display_name: string;
+    img_url: string;
+  },
+  user_config: UserFirstNameDto;
+
 }

@@ -113,7 +113,7 @@ const AdvisorExplorer: React.FC = () => {
                         </Link>
                         <div className='flex flex-row items-center space-x-2'>
                           {advisor.average_rating > 0 &&
-                            <RatingStars rating={advisor.average_rating} />}<span className='text-gray-500 text-xs'>{advisor.review_count} Reviews</span>
+                            <RatingStars initialRating={advisor.average_rating} />}<span className='text-gray-500 text-xs'>{advisor.review_count} Reviews</span>
                         </div>
                         <BoxCollection
                           items={availableServices.filter(s => advisor.advisor_services.map(a => a.service_id).includes(s.service_id)).map(s => s.service_type_name)}
