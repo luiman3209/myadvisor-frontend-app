@@ -98,6 +98,7 @@ export interface AppointmentDto {
   is_reviewed: boolean;
   status: string;
   user_config: UserFirstNameDto;
+  advisor: AdvisorDisplayNameDto;
 }
 
 // ['review_id', 'user_id', 'appointment_id', 'rating', 'review', 'created_at']
@@ -111,6 +112,12 @@ export interface ReviewDto {
   review: string;
   created_at: Date;
   user_config: UserFirstNameDto;
+
+}
+
+export interface AdvisorDisplayNameDto {
+  advisor_id: number;
+  display_name: string;
 }
 
 export interface FilteredReviewsResp {

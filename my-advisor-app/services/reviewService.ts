@@ -1,3 +1,4 @@
+import { ReviewEntity } from '@/types/entity/review_entity';
 import { FilteredReviewsResp, ReviewFilterReq } from '@/types/types';
 import axios from 'axios';
 
@@ -50,6 +51,27 @@ export const filterAdvisorReviews = async (filter: ReviewFilterReq): Promise<Fil
             throw new Error(error.response.data.message || 'Failed to retrieve reviews');
         } else {
             throw new Error('Failed to retrieve reviews due to an unexpected error');
+        }
+    }
+};
+
+
+export const reviewAppointment = async (appointmentId: number, rating: number, review: string): Promise<ReviewEntity> => {
+
+    try {
+
+        const response = await axios.post(`/api/advisor/review/`, {
+            appointmentId,
+            rating,
+            review,
+        }, headers());
+
+        return response.data as ReviewEntity;
+    } catch (error) {
+        if (axios.isAxiosError(error) && error.response) {
+            throw new Error(error.response.data.message || 'Failed to retrieve appointments');
+        } else {
+            throw new Error('Failed to retrieve appointments due to an unexpected error');
         }
     }
 };

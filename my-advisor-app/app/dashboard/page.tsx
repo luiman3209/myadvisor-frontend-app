@@ -7,7 +7,7 @@ import Navbar from '@/components/navbar/NavBar';
 
 import { AppointmentDto, FilteredAppointmentsResp, FilteredReviewsResp, ReviewDto } from '@/types/types';
 import { deleteAppointment, filterAdvisorAppointments } from '@/services/appointmentService';
-import { filterAdvisorReviews } from '@/services/reviewService';
+import { filterAdvisorReviews, reviewAppointment } from '@/services/reviewService';
 
 import { useAuth } from '@/contexts/AuthContext';
 import Footer from '@/components/footer/Footer';
@@ -54,62 +54,87 @@ const DashboardPage: React.FC = () => {
     try {
       await deleteAppointment(appointmentId);
       showSuccess('Appointment deleted successfully');
+      setAppointments(appointments.filter((a) => a.appointment_id !== appointmentId));
     } catch (e) {
       showError('Failed to delete appointment');
       console.error(e);
     }
   };
 
-  useEffect(() => {
+  const requestReviewAppointment = async (appointmentId: number, rating: number, review: string) => {
 
-    const fetchAdvisorData = async () => {
-      if (user) {
-        setLoading(true);
-        setError(null);
+    try {
+      await reviewAppointment(appointmentId, rating, review);
+      showSuccess('Appointment reviewed successfully');
+      await fetchData();
+    } catch (e) {
+      showError('Failed to review appointment');
+      console.error(e);
+    }
+  };
 
-        try {
-
-          // Fetch appointments data
-          const appointmentsData: FilteredAppointmentsResp = await filterAdvisorAppointments(
-            {
-              page: 1,
-              limit: 5,
-              sort_type: 'asc',
-              min_date: new Date().toISOString(),
-              max_date: null,
-              service_id: null,
-            }
-          );
-
-          setAppointments(appointmentsData.appointments);
-
-          // Fetch reviews data
-          const reviewsData: FilteredReviewsResp = await filterAdvisorReviews(
-            {
-              page: 1,
-              limit: 5,
-              sort_type: 'desc',
-              sort_by: 'created_at',
-              min_rating: null,
-              max_rating: null,
-              min_date: null,
-              max_date: null,
-              has_text: null,
-            }
-          );
-
-          setReviews(reviewsData.reviews);
-        } catch (error) {
-          console.error('Failed to fetch dashboard data', error);
-          setError('Failed to fetch dashboard data');
-        } finally {
-          setLoading(false);
-        }
+  const fetchReviews = async () => {
+    // Fetch reviews data
+    const reviewsData: FilteredReviewsResp = await filterAdvisorReviews(
+      {
+        page: 1,
+        limit: 5,
+        sort_type: 'desc',
+        sort_by: 'created_at',
+        min_rating: null,
+        max_rating: null,
+        min_date: null,
+        max_date: null,
+        has_text: null,
       }
+    );
 
-    };
+    setReviews(reviewsData.reviews);
 
-    fetchAdvisorData();
+  };
+
+
+  const fetchAppointments = async () => {
+    // Fetch appointments data
+    const appointmentsData: FilteredAppointmentsResp = await filterAdvisorAppointments(
+      {
+        page: 1,
+        limit: 5,
+        sort_type: 'asc',
+        min_date: new Date().toISOString(),
+        max_date: null,
+        service_id: null,
+      }
+    );
+
+
+    setAppointments(appointmentsData.appointments);
+  };
+
+  const fetchData = async () => {
+    if (user) {
+      setLoading(true);
+      setError(null);
+
+      try {
+
+        // Fetch appointments data
+        fetchAppointments();
+        // Fetch reviews data
+        fetchReviews();
+
+      } catch (error) {
+        console.error('Failed to fetch dashboard data', error);
+        setError('Failed to fetch dashboard data');
+      } finally {
+        setLoading(false);
+      }
+    }
+
+  };
+
+  useEffect(() => {
+    fetchData();
   }, [user, router]);
 
   if (loading) {
@@ -167,7 +192,10 @@ const DashboardPage: React.FC = () => {
                     key={appointment.appointment_id}
                     appointment={appointment}
                     service={availableServices.find((s) => s.service_id === appointment.service_id)}
-                    requestAppointmentDeletion={requestAppointmentDeletion} isInvestorType={user?.role === 'investor'} />
+                    requestAppointmentDeletion={requestAppointmentDeletion}
+
+                    isInvestorType={user?.role === 'investor'}
+                    reviewAppontment={requestReviewAppointment} />
 
                 ))
               ) : (
