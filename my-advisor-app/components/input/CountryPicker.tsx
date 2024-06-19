@@ -102,7 +102,7 @@ export function CountryPicker({ countryCode, setCountryCode }: CountryPickerProp
             <div className="flex items-center space-x-2">
                 <Popover open={open} onOpenChange={setOpen}>
                     <PopoverTrigger asChild>
-                        <Button variant="outline" className="w-[150px] justify-start space-x-2">
+                        <Button variant="outline" className="w-[150px] justify-between space-x-2">
                             <span>{countryCode ? countryCode : 'State/Province'}</span><ChevronDownIcon className="w-5 h-5" />
                         </Button>
                     </PopoverTrigger>
@@ -149,7 +149,7 @@ function CountriesList({
 }) {
     return (
         <Command>
-            <CommandInput placeholder="Filter qualifications..." />
+            <CommandInput placeholder="Filter countries..." />
             <CommandList>
                 <CommandEmpty>No results found.</CommandEmpty>
                 <CommandGroup>
