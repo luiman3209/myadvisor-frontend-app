@@ -94,6 +94,8 @@ const AdvisorForm: React.FC<AdvisorFormProps> = ({
         setSelectedOfficeAddress('');
     };
 
+    const formHeight = formStep !== 2 ? "flex flex-col  space-y-6 h-[400px]" : "flex flex-col  space-y-6";
+
     return (
         <div className="text-left">
             <motion.div
@@ -106,7 +108,7 @@ const AdvisorForm: React.FC<AdvisorFormProps> = ({
                     exit: { opacity: 0, x: -100, transition: { duration: 0.4 } }
                 }}
                 key={formStep}
-                className="flex flex-col  space-y-6"
+                className={formHeight}
             >
                 {formStep === 0 && (
                     <>
@@ -213,12 +215,13 @@ const AdvisorForm: React.FC<AdvisorFormProps> = ({
 
 
                         <Label className=''>Office address</Label>
-                        {selectedOfficeAddress ?
-                            <Card className='flex flex-row space-x-2 p-2 items-center'>
-
-                                <span>{selectedOfficeAddress}</span><Pencil onClick={resetOfficeAddress} className="w-4 h-4 text-black" />
-                            </Card>
-                            : <AddressPicker onAddressSelect={setSelectedOfficeAddress} />}
+                        {<ShakeableInput
+                            type="text"
+                            placeholder="Office address"
+                            value={selectedOfficeAddress}
+                            onChange={(e: ChangeEvent<HTMLInputElement>) => setSelectedOfficeAddress(e.target.value)}
+                            error={errors.address}
+                        />}
 
                         <div className='flex space-x-12'>
                             <div>

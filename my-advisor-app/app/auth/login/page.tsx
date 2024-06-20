@@ -41,6 +41,10 @@ export default function Login() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
+      if (!email || !password) {
+        setErrors('Please enter email and password');
+        return;
+      }
       await login(email, password);
       if (redirect) {
         router.push(redirect);
@@ -59,60 +63,63 @@ export default function Login() {
 
   return (
     <main className=''>
-      <div className="absolute top-0 left-0 p-4">
-        <Link href="/">
-          <Image
-            src="/images/myadvisor-logo-black.svg"
-            alt="Logo"
-            width={70}
-            height={70}
-            className="object-contain"
-          />
-        </Link>
-      </div>
 
-      <div className="flex flex-col lg:flex-row lg:min-h-[600px] xl:min-h-[800px] w-full ">
-        <div className="flex items-center justify-center lg:w-1/2 py-12">
-          <Card className='p-8'>
-            <form onSubmit={handleSubmit} className="mx-auto w-[350px] space-y-6">
-              <div className="text-center">
-                <h1 className="text-3xl font-bold">Login</h1>
-              </div>
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
-                  <ShakeableInput
-                    value={email}
-                    type="email"
-                    placeholder="m@example.com"
-                    onChange={(e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)} error={errors} animateOnly={true} />
+      <div className="flex flex-row w-full ">
+        <div className="xl:w-1/2 ">
+          <div className='p-4'>
+            <Link href="/">
+              <Image
+                src="/images/myadvisor-logo-black.svg"
+                alt="Logo"
+                width={70}
+                height={70}
+                className="object-contain"
+              />
+            </Link>
+          </div>
+          <div className='flex items-center justify-center h-3/4'>
+            <Card className='p-8'>
+              <form onSubmit={handleSubmit} className="mx-auto w-[350px] space-y-6">
+                <div className="text-center">
+                  <h1 className="text-3xl font-bold">Login</h1>
                 </div>
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <Label htmlFor="password">Password</Label>
-                    <Link
-                      href="/forgot-password"
-                      className="text-sm underline"
-                    >
-                      Forgot your password?
-                    </Link>
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="email">Email</Label>
+                    <ShakeableInput
+                      value={email}
+                      type="email"
+                      placeholder="m@example.com"
+                      onChange={(e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)} error={errors} animateOnly={true} />
                   </div>
-                  <ShakeableInput
-                    type="password"
-                    onChange={(e: ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)} placeholder={''} value={password} error={errors} />
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <Label htmlFor="password">Password</Label>
+                      <Link
+                        href="/forgot-password"
+                        className="text-sm underline"
+                      >
+                        Forgot your password?
+                      </Link>
+                    </div>
+                    <ShakeableInput
+                      type="password"
+                      onChange={(e: ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)} placeholder={''} value={password} error={errors} />
+                  </div>
+                  <Button type="submit" className="bg-cyan-500 hover:bg-cyan-400 w-full">
+                    Login
+                  </Button>
                 </div>
-                <Button type="submit" className="w-full">
-                  Login
-                </Button>
-              </div>
-              <div className="text-center text-sm mt-4">
-                Don&apos;t have an account?{" "}
-                <Link href={"/auth/register/investor?redirect=" + encodeQueryDataString(redirect)} className="underline">
-                  Sign up
-                </Link>
-              </div>
-            </form>
-          </Card>
+                <div className="text-center text-sm mt-4">
+                  Don&apos;t have an account?{" "}
+                  <Link href={"/auth/register/investor?redirect=" + encodeQueryDataString(redirect)} className="underline">
+                    Sign up
+                  </Link>
+                </div>
+              </form>
+            </Card>
+          </div>
+
         </div>
         <div className="hidden lg:block lg:w-1/2 bg-cyan-500">
           <Image

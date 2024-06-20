@@ -148,9 +148,7 @@ export interface AdvisorSearchResultResp {
   average_rating: number;
   review_count: number;
 
-  advisor_services: {
-    service_id: number;
-  }[];
+  advisor_services: number[];
 
   free_windows: { key: string, value: string }[];
 

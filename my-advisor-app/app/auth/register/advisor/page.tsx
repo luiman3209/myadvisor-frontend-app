@@ -3,12 +3,10 @@
 import { useAuth } from '@/contexts/AuthContext';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { getServiceTypes } from '@/services/serviceTypesService';
+
 import { ProfileData, CommonProfileData, AdvisorProfileData } from '@/types/auth';
 
 import { Button } from '@/components/ui/button';
-import Link from 'next/link';
-import Image from 'next/image';
 
 
 import { getAvailableQualifications } from '@/services/qualificationService';
@@ -18,6 +16,7 @@ import { checkEmailAvailability, checkPhoneAvailability } from '@/services/authS
 import RegisterNavbar from '@/components/navbar/RegisterNavbar';
 import AdvisorForm from '@/components/forms/AdvisorForm';
 import { useServiceContext } from '@/contexts/ServicesContext';
+import { Card } from '@/components/ui/card';
 
 
 
@@ -84,7 +83,9 @@ export default function RegisterAdvisor() {
       if (!lastName) newErrors.lastName = "Last Name is required";
       if (lastName.length < 2) newErrors.lastName = "Last Name must be at least 2 characters long";
       if (!phoneNumber) newErrors.phoneNumber = "Phone Number is required";
+      // check if phone number is made of digits only
       if (phoneNumber.length < 10) newErrors.phoneNumber = "Phone Number must be at least 10 characters long";
+      if (!/^\d+$/.test(phoneNumber)) newErrors.phoneNumber = "Phone Number must contain only digits";
       if (! await checkPhoneAvailability(phoneNumber)) newErrors.phoneNumber = "Phone Number is already taken";
       if (!address) newErrors.address = "Address is required";
     } else if (formStep === 2) {
@@ -150,63 +151,63 @@ export default function RegisterAdvisor() {
   };
 
   return (
-    <main>
+    <main className='bg-gray-100 min-h-screen '>
       <RegisterNavbar />
-
-      <div className='flex items-center justify-center'>
-        <div className="relative text-center py-20 px-5 w-full md:w-1/2 lg:w-1/4 space-y-8">
-          <h1 className="text-3xl font-bold mb-5">Register as Advisor</h1>
-          <p>Will take just a minute</p>
-          <div className="relative w-full">
-            <AdvisorForm
-              formStep={formStep}
-              errors={errors}
-              email={email}
-              password={password}
-              confirmPassword={confirmPassword}
-              firstName={firstName}
-              lastName={lastName}
-              phoneNumber={phoneNumber}
-              address={address}
-              selectedOfficeAddress={officeAddress}
-              selectedQualifications={selectedQualifications}
-              operatingCityCode={operatingCityCode}
-              operatingCountryCode={operatingCountryCode}
-              setOperatingCityCode={setOperatingCityCode}
-              setOperatingCountryCode={setOperatingCountryCode}
-              contactInformation={contactInformation}
-              startShift1={startShift1}
-              endShift1={endShift1}
-              startShift2={startShift2}
-              endShift2={endShift2}
-              setEmail={setEmail}
-              setPassword={setPassword}
-              setConfirmPassword={setConfirmPassword}
-              setFirstName={setFirstName}
-              setLastName={setLastName}
-              setPhoneNumber={setPhoneNumber}
-              setAddress={setAddress}
-
-
-              setContactInformation={setContactInformation}
-              setStartShift1={setStartShift1}
-              setEndShift1={setEndShift1}
-              setStartShift2={setStartShift1}
-              setEndShift2={setEndShift1}
-              availableQualifications={availableQualifications}
-              availableServiceTypes={availableServices}
-              setSelectedQualifications={setSelectedQualifications}
-              setSelectedOfficeAddress={setOfficeAddress}
-              setSelectedServiceTypes={setSelectedServiceTypes}
-              selectedServiceTypes={selectedServiceTypes} />
-            <div className="flex justify-between mt-6">
-              {formStep > 0 && <Button onClick={previousStep}>Back</Button>}
-              {formStep < 3 && <Button onClick={nextStep} className="ml-auto bg-cyan-500">Next</Button>}
-              {formStep === 3 && <Button onClick={handleSubmit} className="ml-auto bg-cyan-500">Submit</Button>}
+      <Card className=" md:my-8 mx-auto md:w-1/2 ">
+        <div className='flex items-center justify-center '>
+          <div className="relative text-center py-10 w-full md:w-1/2 space-y-8">
+            <h1 className="text-3xl font-bold mb-5">Register as Advisor</h1>
+            <p>Will take just a minute</p>
+            <div className="sm:px-8 md:px-0 mx-4">
+              <AdvisorForm
+                formStep={formStep}
+                errors={errors}
+                email={email}
+                password={password}
+                confirmPassword={confirmPassword}
+                firstName={firstName}
+                lastName={lastName}
+                phoneNumber={phoneNumber}
+                address={address}
+                selectedOfficeAddress={officeAddress}
+                selectedQualifications={selectedQualifications}
+                operatingCityCode={operatingCityCode}
+                operatingCountryCode={operatingCountryCode}
+                setOperatingCityCode={setOperatingCityCode}
+                setOperatingCountryCode={setOperatingCountryCode}
+                contactInformation={contactInformation}
+                startShift1={startShift1}
+                endShift1={endShift1}
+                startShift2={startShift2}
+                endShift2={endShift2}
+                setEmail={setEmail}
+                setPassword={setPassword}
+                setConfirmPassword={setConfirmPassword}
+                setFirstName={setFirstName}
+                setLastName={setLastName}
+                setPhoneNumber={setPhoneNumber}
+                setAddress={setAddress}
+                setContactInformation={setContactInformation}
+                setStartShift1={setStartShift1}
+                setEndShift1={setEndShift1}
+                setStartShift2={setStartShift1}
+                setEndShift2={setEndShift1}
+                availableQualifications={availableQualifications}
+                availableServiceTypes={availableServices}
+                setSelectedQualifications={setSelectedQualifications}
+                setSelectedOfficeAddress={setOfficeAddress}
+                setSelectedServiceTypes={setSelectedServiceTypes}
+                selectedServiceTypes={selectedServiceTypes} />
+              <div className="flex justify-between mt-6">
+                {formStep > 0 && <Button onClick={previousStep}>Back</Button>}
+                {formStep < 3 && <Button onClick={nextStep} className="ml-auto bg-cyan-500">Next</Button>}
+                {formStep === 3 && <Button onClick={handleSubmit} className="ml-auto bg-cyan-500">Submit</Button>}
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </Card>
+
     </main>
   );
 }

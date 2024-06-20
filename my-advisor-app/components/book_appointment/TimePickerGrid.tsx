@@ -40,7 +40,7 @@ const TimePickerGrid: React.FC<TimePickerGridProps> = ({
         <motion.div className="relative w-[530px]"
             initial={{ height: 250 }}
             animate={{ height: expanded ? 420 : 250 }}
-            transition={{ duration: 0.3 }}
+            transition={{ duration: 0.4 }}
         >
             <AnimatePresence initial={false} custom={direction}>
                 <motion.div
@@ -48,8 +48,8 @@ const TimePickerGrid: React.FC<TimePickerGridProps> = ({
                     initial={{ x: direction === 'right' ? 100 : -100, opacity: 0 }}
                     animate={{ x: 0, opacity: 1 }}
                     exit={{ x: direction === 'right' ? -100 : 100, opacity: 0 }}
-                    transition={{ duration: 0.3 }}
-                    className="absolute top-0 left-0 right-0 flex md:gap-2 lg:gap-4 xl:gap-8  justify-center items-center overflow-x-auto"
+                    transition={{ duration: 0.4 }}
+                    className="absolute top-0 left-0 right-0 flex md:gap-2 lg:gap-4 xl:gap-8  justify-center items-start overflow-x-auto"
                 >
                     {days.map((day) => (
                         <div key={day} className="flex flex-col items-center justify-center">
@@ -57,7 +57,7 @@ const TimePickerGrid: React.FC<TimePickerGridProps> = ({
                             <motion.div
                                 initial={{ height: 0 }}
                                 animate={{ height: expanded ? 'auto' : 180 }}
-                                transition={{ duration: 0.3 }}
+                                transition={{ duration: 0.4 }}
                                 className="overflow-hidden"
                             >
                                 <div className="flex flex-col gap-2">

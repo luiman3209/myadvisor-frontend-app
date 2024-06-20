@@ -46,7 +46,7 @@ const ExplorerResultList: React.FC<ExplorerResultListProps> = ({
                       <RatingStars initialRating={advisor.average_rating} />}<span className='text-gray-500 text-xs'>{advisor.review_count} Reviews</span>
                   </div>
                   <BoxCollection
-                    items={availableServices.filter(s => advisor.advisor_services.map(a => a.service_id).includes(s.service_id)).map(s => s.service_type_name)}
+                    items={availableServices.filter(s => advisor.advisor_services.includes(s.service_id)).map(s => s.service_type_name)}
                   />
                 </div>
               </div>
@@ -70,7 +70,7 @@ const ExplorerResultList: React.FC<ExplorerResultListProps> = ({
               <BookAppointmentV2
                 advisorId={advisor.advisor_id}
                 officeAddress={advisor.office_address}
-                services={availableServices.filter(s => advisor.advisor_services.map(a => a.service_id).includes(s.service_id))}
+                services={availableServices.filter(s => advisor.advisor_services.includes(s.service_id))}
               />
             </div>
           </div>

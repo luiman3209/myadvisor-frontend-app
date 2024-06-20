@@ -50,12 +50,12 @@ export function ServiceTypePicker({ serviceTypes, selectedServiceTypes, setSelec
 
     if (isDesktop) {
         return (
-            <>  <div className="flex items-center space-x-2">
+            <>  <div className="flex flex-wrap  ">
 
-                <div className="flex space-x-2">
+                <div className="flex flex-wrap  space-x-1 ">
                     {selectedServiceTypes.map((serviceType) => (
-                        <Card key={serviceType.service_id} className="flex items-center space-x-2 pl-2.5 text-sm font-medium">
-                            <span className="">{serviceType.service_type_name}</span>
+                        <Card key={serviceType.service_id} className="flex items-center h-10 text-sm mt-1 ">
+                            <span className="px-2">{serviceType.service_type_name}</span>
                             <Button className="bg-transparent hover:bg-red-500 text-red-500 hover:text-white" size="icon" onClick={() => removeServiceType(serviceType.service_id)}>
                                 <Trash className=" w-4 h-4" />
                             </Button>
@@ -65,7 +65,7 @@ export function ServiceTypePicker({ serviceTypes, selectedServiceTypes, setSelec
                 </div>
                 <Popover open={open} onOpenChange={setOpen}>
                     <PopoverTrigger asChild>
-                        <Button variant="outline" className=" justify-start space-x-2">
+                        <Button variant="outline" className="mt-1 justify-start space-x-2">
                             <CirclePlus className="text-black w-4 h-4" /> <span>Add Expertise</span>
                         </Button>
                     </PopoverTrigger>
@@ -85,27 +85,27 @@ export function ServiceTypePicker({ serviceTypes, selectedServiceTypes, setSelec
     }
 
     return (
-        <>
-            <Drawer open={open} onOpenChange={setOpen}>
-                <DrawerTrigger asChild>
-                    <Button variant="outline" className="w-[150px] justify-start space-x-2">
-                        <CirclePlus /> <span>Add Expertise</span>
-                    </Button>
-                </DrawerTrigger>
-                <DrawerContent>
-                    <div className="mt-4 border-t">
-                        <ServiceTypeList
-                            serviceTypes={availableServiceTypes}
-                            setOpen={setOpen}
-                            handleSelectServiceType={handleSelectServiceType}
-                        />
-                    </div>
-                </DrawerContent>
-            </Drawer>
-            <div className="flex space-x-2 space-y-2">
+        <> <div><Drawer open={open} onOpenChange={setOpen}>
+            <DrawerTrigger asChild>
+                <Button variant="outline" className="w-[180px] justify-start space-x-2">
+                    <CirclePlus /> <span>Add Expertise</span>
+                </Button>
+            </DrawerTrigger>
+            <DrawerContent>
+                <div className="mt-4 border-t">
+                    <ServiceTypeList
+                        serviceTypes={availableServiceTypes}
+                        setOpen={setOpen}
+                        handleSelectServiceType={handleSelectServiceType}
+                    />
+                </div>
+            </DrawerContent>
+        </Drawer></div>
+
+            <div className="flex flex-wrap  space-y-1.5">
                 {selectedServiceTypes.map((serviceType) => (
-                    <div key={serviceType.service_id} className="flex items-center space-x-2">
-                        <span>{serviceType.service_type_name}</span>
+                    <div key={serviceType.service_id} className="flex items-center h-10 text-sm">
+                        <span className="px-2">{serviceType.service_type_name}</span>
                         <Button className="bg-transparent hover:bg-red-500 text-red-500 hover:text-white " size="icon" onClick={() => removeServiceType(serviceType.service_id)}>
                             <Trash className="w-4 h-4" />
                         </Button>

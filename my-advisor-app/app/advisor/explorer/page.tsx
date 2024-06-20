@@ -45,12 +45,13 @@ const AdvisorExplorer: React.FC = () => {
     setLoading(true);
 
     // wait 3 seconds
-    await new Promise(resolve => setTimeout(resolve, 3000));
+    await new Promise(resolve => setTimeout(resolve, 1000));
 
     setError(null);
     try {
       const result: SearchAdvisorsRespDto = await searchAdvisors(countryCode, serviceId, page);
       setAdvisors(result.advisors);
+      console.log(result.advisors);
       setPage(result.currentPage);
       setTotalPages(result.totalPages);
       setTotalItems(result.totalItems);
@@ -88,10 +89,11 @@ const AdvisorExplorer: React.FC = () => {
               </div>
             )}
             {error && <p className="text-center text-red-500 my-4">{error}</p>}
-            {!loading && !error && <ExplorerResultList
-              advisors={advisors}
-              availableServices={availableServices}
-            />}
+            {!loading && !error &&
+              <ExplorerResultList
+                advisors={advisors}
+                availableServices={availableServices}
+              />}
 
           </div>
           <div className="mt-6 flex justify-center space-x-4">

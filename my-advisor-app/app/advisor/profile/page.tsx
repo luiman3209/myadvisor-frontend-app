@@ -11,7 +11,7 @@ import { AdvisorEntity } from '@/types/entity/advisor_entity';
 import { Card } from '@/components/ui/card';
 import { AdvisorPublicProfileDto, AdvisorReviewDto } from '@/types/types';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import Link from 'next/link';
+
 import RatingStars from '@/components/RatingStars';
 import BoxCollection from '@/components/misc/BoxCollection';
 import { ServiceType } from '@/types/entity/service_type_entity';
@@ -94,7 +94,7 @@ const AdvisorPublicProfilePage: React.FC = () => {
                 <div className='flex flex-row items-center space-x-2'>
 
                   {reviewsCount && averageRating && reviewsCount > 0 ?
-                    <RatingStars rating={averageRating} /> : <div></div>}
+                    <RatingStars initialRating={averageRating} /> : <div></div>}
 
                   <span className='text-gray-500 text-xs'>{reviewsCount} Reviews</span>
                 </div>

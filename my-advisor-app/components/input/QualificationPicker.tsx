@@ -49,19 +49,7 @@ export function QualificationPicker({ qualifications, selectedQualifications, se
 
     if (isDesktop) {
         return (
-            <>  <div className="flex flex-wrap space-x-2 space-y-2">
-
-                <div className="flex flex-wrap  space-x-2 ">
-                    {selectedQualifications.map((qualification) => (
-                        <Card key={qualification.qualification_id} className="flex items-center p-1 h-12 ">
-                            <span className="px-2">{qualification.qualification_name}</span>
-                            <Button className="bg-transparent hover:bg-red-500 text-red-500 hover:text-white" size="icon" onClick={() => removeQualification(qualification.qualification_id)}>
-                                <Trash className=" w-4 h-4" />
-                            </Button>
-
-                        </Card>
-                    ))}
-                </div>
+            <>  <div className="flex flex-wrap space-x-1.5 space-y-1.5 ">
                 <Popover open={open} onOpenChange={setOpen}>
                     <PopoverTrigger asChild>
                         <Button variant="outline" className="justify-start space-x-2">
@@ -76,6 +64,19 @@ export function QualificationPicker({ qualifications, selectedQualifications, se
                         />
                     </PopoverContent>
                 </Popover>
+
+
+                {selectedQualifications.map((qualification) => (
+                    <Card key={qualification.qualification_id} className="flex items-center h-10 text-sm">
+                        <span className="px-2">{qualification.qualification_name}</span>
+                        <Button className="bg-transparent hover:bg-red-500 text-red-500 hover:text-white" size="icon" onClick={() => removeQualification(qualification.qualification_id)}>
+                            <Trash className=" w-4 h-4" />
+                        </Button>
+
+                    </Card>
+                ))}
+
+
             </div>
 
 
@@ -85,30 +86,35 @@ export function QualificationPicker({ qualifications, selectedQualifications, se
 
     return (
         <>
-            <Drawer open={open} onOpenChange={setOpen}>
-                <DrawerTrigger asChild>
-                    <Button variant="outline" className="w-[150px] justify-start space-x-2">
-                        <CirclePlus /> <span>Add Qualification</span>
-                    </Button>
-                </DrawerTrigger>
-                <DrawerContent>
-                    <div className="mt-4 border-t">
-                        <QualificationList
-                            qualifications={availableQualifications}
-                            setOpen={setOpen}
-                            handleSelectQualification={handleSelectQualification}
-                        />
-                    </div>
-                </DrawerContent>
-            </Drawer>
-            <div className="flex space-x-2 space-y-2">
-                {selectedQualifications.map((qualification) => (
-                    <div key={qualification.qualification_id} className="flex items-center space-x-2">
-                        <span>{qualification.qualification_name}</span>
-                        <Button className="bg-transparent hover:bg-red-500 text-red-500 hover:text-white " size="icon" onClick={() => removeQualification(qualification.qualification_id)}>
-                            <Trash className="w-4 h-4" />
+            <div>
+
+                <Drawer open={open} onOpenChange={setOpen}>
+                    <DrawerTrigger asChild>
+                        <Button variant="outline" className="w-[180px] justify-start space-x-2">
+                            <CirclePlus className="w-4 h-4" /> <span>Add Qualification</span>
                         </Button>
-                    </div>
+                    </DrawerTrigger>
+                    <DrawerContent>
+                        <div className="mt-4 border-t">
+                            <QualificationList
+                                qualifications={availableQualifications}
+                                setOpen={setOpen}
+                                handleSelectQualification={handleSelectQualification}
+                            />
+                        </div>
+                    </DrawerContent>
+                </Drawer>
+            </div>
+
+            <div className="flex flex-wrap  space-y-1.5 ">
+                {selectedQualifications.map((qualification) => (
+                    <Card key={qualification.qualification_id} className="flex items-center h-10 text-sm">
+                        <span className="px-2">{qualification.qualification_name}</span>
+                        <Button className="bg-transparent hover:bg-red-500 text-red-500 hover:text-white" size="icon" onClick={() => removeQualification(qualification.qualification_id)}>
+                            <Trash className=" w-4 h-4" />
+                        </Button>
+
+                    </Card>
                 ))}
             </div>
 

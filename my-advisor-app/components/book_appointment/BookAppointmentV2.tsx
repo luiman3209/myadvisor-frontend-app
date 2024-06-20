@@ -19,9 +19,10 @@ import {
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
-} from "@/components/ui/drawer"
-import TimePickerGrid from './TimePickerGrid';
+} from "@/components/ui/drawer";
 import TimePickerController from './TimePickerController';
+import { formatDateToUTCString } from '@/utils/dateUtils';
+import TimePickerMobileGrid from './TimePickerMobileGrid';
 
 interface BookAppointmentV2Props {
   advisorId: number;
@@ -30,7 +31,7 @@ interface BookAppointmentV2Props {
 }
 
 const BookAppointmentV2: React.FC<BookAppointmentV2Props> = ({ advisorId, officeAddress, services }) => {
-  const { user } = useAuth();
+
   const router = useRouter();
   const [selectedService, setSelectedService] = useState<string | undefined>();
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
@@ -39,8 +40,7 @@ const BookAppointmentV2: React.FC<BookAppointmentV2Props> = ({ advisorId, office
   const [availableTimes, setAvailableTimes] = useState<{ [key: string]: string[] }>({});
   const [days, setDays] = useState<string[]>(getNextDays(5));
   const [loadingTimes, setLoadingTimes] = useState<boolean>(false);
-  const [expanded, setExpanded] = useState<boolean>(false);
-  const [direction, setDirection] = useState<'left' | 'right'>('right');
+
 
   useEffect(() => {
     fetchAvailableTimes(days);
@@ -59,36 +59,6 @@ const BookAppointmentV2: React.FC<BookAppointmentV2Props> = ({ advisorId, office
     setLoadingTimes(false);
   };
 
-  const updateDaysAndFetch = (dir: 'next' | 'prev' | 'none') => {
-    const currentStartDate = new Date(days[0]);
-    const newStartDate = new Date(currentStartDate);
-
-    if (dir === 'none') {
-      fetchAvailableTimes(days);
-      return;
-    }
-
-    setSelectedDay(null);
-    setSelectedTime(null);
-
-    if (dir === 'next') {
-      newStartDate.setDate(currentStartDate.getDate() + 5);
-      setDirection('right');
-    } else {
-      newStartDate.setDate(currentStartDate.getDate() - 5);
-      setDirection('left');
-    }
-
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    if (newStartDate < today) {
-      newStartDate.setDate(today.getDate());
-    }
-
-    const newDays = getNextDays(5, newStartDate);
-    setDays(newDays);
-    fetchAvailableTimes(newDays);
-  };
 
   const handleTimeSlotClick = (day: string, time: string) => {
     setSelectedDay(day);
@@ -126,7 +96,7 @@ const BookAppointmentV2: React.FC<BookAppointmentV2Props> = ({ advisorId, office
     const availableTimes1stDay = availableTimes[firstDay];
 
     return (availableTimes1stDay && availableTimes1stDay.length > 0 && <div>
-      <div>{firstDay}</div>
+      <div>{formatDateToUTCString(new Date(firstDay), "MMM d")}</div>
       <div className='flex flex-row space-x-1 justify-center'>
 
         <Button
@@ -168,6 +138,9 @@ const BookAppointmentV2: React.FC<BookAppointmentV2Props> = ({ advisorId, office
               <DrawerTitle>Are you absolutely sure?</DrawerTitle>
               <DrawerDescription>This action cannot be undone.</DrawerDescription>
             </DrawerHeader>
+            <DrawerContent>
+              <p>Are you sure you want to do that?</p>
+            </DrawerContent>
             <DrawerFooter>
               <Button>Submit</Button>
               <DrawerClose>
