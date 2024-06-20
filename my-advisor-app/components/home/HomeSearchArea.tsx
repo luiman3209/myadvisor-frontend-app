@@ -1,11 +1,11 @@
 
-import React from 'react';
+import React, { use, useEffect } from 'react';
 import { CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
 
 
 import { ServiceType } from '@/types/entity/service_type_entity';
 import { Button } from '../ui/button';
-import { CountryPicker } from './CountryPicker';
+import { CountryPicker } from '../input/CountryPicker';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { useRouter } from 'next/navigation';
 
@@ -55,8 +55,8 @@ const HomeSearchArea: React.FC<HomeSearchAreaProps> = ({ serviceTypes }) => {
                         <div className="flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0">
                             <CountryPicker countryCode={operatingCountryCode} setCountryCode={setOperatingCountryCode} />
                             <Select value={selectedServiceName || ''} onValueChange={(e) => setSelectedServiceName(e)}>
-                                <SelectTrigger className="md:w-5/12 text-slate-600 text-base" >
-                                    <SelectValue placeholder="Service Type" />
+                                <SelectTrigger className="md:w-5/12 text-slate-600 text-base font-medium " >
+                                    <SelectValue className="" placeholder="Service Type" />
                                 </SelectTrigger>
                                 <SelectContent>
                                     <SelectGroup>
@@ -69,7 +69,9 @@ const HomeSearchArea: React.FC<HomeSearchAreaProps> = ({ serviceTypes }) => {
                                 </SelectContent>
                             </Select>
 
-                            <Button type="submit" className="md:w-2/12 p-2 mt-4 bg-cyan-200 hover:bg-cyan text-black text-base font-semibold rounded">
+                            <Button
+                                disabled={!selectedServiceName && !operatingCountryCode}
+                                className="md:w-2/12 p-2 mt-4 bg-cyan-200 hover:bg-cyan-100 text-black text-base font-semibold rounded">
                                 Search
                             </Button>
                         </div>

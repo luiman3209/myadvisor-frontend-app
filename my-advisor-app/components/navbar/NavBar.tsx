@@ -58,11 +58,6 @@ const Navbar: React.FC = () => {
 
         <div className="hidden lg:flex space-x-1 items-center">
 
-          {!user || user.role === 'investor' && (
-            <Link href="/ask-an-advisor" className="nav-link">
-              Ask an Advisor
-            </Link>
-          )}
           {user ? (
             <>
               <Link href="/dashboard" className="nav-link">
@@ -107,11 +102,6 @@ const Navbar: React.FC = () => {
       {isMenuOpen && (
         <div className="lg:hidden">
           <div className="flex flex-col items-center space-y-4 p-4 bg-cyan-500">
-            {user && user.role === 'investor' && (
-              <Link href="/ask-an-advisor" className="nav-link" onClick={closeMenu}>
-                Ask an Advisor
-              </Link>
-            )}
             {user ? (
               <>
                 <Link href="/dashboard" className="nav-link" onClick={closeMenu}>

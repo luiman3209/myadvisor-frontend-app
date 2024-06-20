@@ -16,7 +16,7 @@ interface HomeLatestReviewsProps {
 const HomeLatestReviews: React.FC<HomeLatestReviewsProps> = ({ latestReviews }) => {
     return (
 
-        <div className='m-2 md:px-16 lg:px-56 justify-center'>
+        <div className='m-2 md:px-16 lg:px-56 2xl:px-72 justify-center'>
             <CardHeader>
                 <CardTitle>Latest reviews</CardTitle>
                 <CardDescription>Discover the latest feedback from our clients. See how our financial advisors are making a difference.</CardDescription>

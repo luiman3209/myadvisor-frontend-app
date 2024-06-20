@@ -20,6 +20,8 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer"
+import TimePickerGrid from './TimePickerGrid';
+import TimePickerController from './TimePickerController';
 
 interface BookAppointmentV2Props {
   advisorId: number;
@@ -183,16 +185,16 @@ const BookAppointmentV2: React.FC<BookAppointmentV2Props> = ({ advisorId, office
 
   return (
     <div className="p-5 flex flex-col">
-      <div className='flex items-center space-x-1'> <BadgeInfo /> <Label>Select service and time</Label></div>
+      <div className='flex items-center space-x-1 '> <BadgeInfo className='w-6 h-6 mr-1.5' /> <Label className='text-lg'>Select service and time</Label></div>
       <div className="my-5">
         <Select value={selectedService} onValueChange={setSelectedService}>
-          <SelectTrigger className="w-full px-3 py-2 border border-gray-300 rounded flex items-center justify-between bg-white">
+          <SelectTrigger className="w-full py-2 border border-gray-300 rounded flex items-center justify-between ">
             <SelectValue placeholder="Select a service" />
           </SelectTrigger>
           <SelectContent className="border border-gray-300 rounded bg-white">
             <SelectGroup>
               {services.map((service) => (
-                <SelectItem key={service.service_id} value={service.service_type_name} className="px-3 py-2 cursor-pointer hover:bg-gray-100">
+                <SelectItem key={service.service_id} value={service.service_type_name} className=" cursor-pointer hover:bg-gray-100">
                   {service.service_type_name}
                 </SelectItem>
               ))}
@@ -201,72 +203,14 @@ const BookAppointmentV2: React.FC<BookAppointmentV2Props> = ({ advisorId, office
         </Select>
       </div>
 
-      <div className="flex items-center justify-center">
-        <button
-          className="p-2"
-          onClick={() => updateDaysAndFetch('prev')}
-          disabled={days[0] <= new Date().toISOString().split('T')[0]}
-        >
-          <ChevronLeftIcon />
-        </button>
-        <motion.div className="relative w-full"
-          initial={{ height: 250 }}
-          animate={{ height: expanded ? 420 : 250 }}
-          transition={{ duration: 0.3 }}
-        >
-          <AnimatePresence initial={false} custom={direction}>
-            <motion.div
-              key={days[0]}
-              initial={{ x: direction === 'right' ? 100 : -100, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              exit={{ x: direction === 'right' ? -100 : 100, opacity: 0 }}
-              transition={{ duration: 0.5 }}
-              className="absolute top-0 left-0 right-0 flex gap-2 justify-center items-start overflow-x-auto"
-            >
-              {days.map((day) => (
-                <div key={day} className="flex flex-col items-center justify-center">
-                  <span className="font-bold mb-2">{new Date(day).toLocaleDateString()}</span>
-                  <motion.div
-                    initial={{ height: 0 }}
-                    animate={{ height: expanded ? 'auto' : 180 }}
-                    transition={{ duration: 0.3 }}
-                    className="overflow-hidden"
-                  >
-                    <div className="flex flex-col gap-2">
-                      {loadingTimes ? (
-                        <div className="flex justify-center items-center h-full">
-                          <Loader className="animate-spin" />
-                        </div>
-                      ) : availableTimes[day] ? availableTimes[day].slice(0, expanded ? undefined : 5).map((time) => (
-                        <Button
-                          key={day + time}
-                          className={`px-3 py-2 border border-gray-300 text-black rounded ${selectedDay === day && selectedTime === time ? 'bg-cyan-500 text-white' : 'bg-white hover:bg-cyan-500 hover:text-white'}`}
-                          onClick={() => handleTimeSlotClick(day, time)}
-                        >
-                          {time}
-                        </Button>
-                      )) : (
-                        <span className="text-gray-500"> - </span>
-                      )}
-                    </div>
-                  </motion.div>
-                </div>
-              ))}
-            </motion.div>
-          </AnimatePresence>
-        </motion.div>
-        <button className="p-2" onClick={() => updateDaysAndFetch('next')}>
-          <ChevronRightIcon />
-        </button>
-      </div>
+      <TimePickerController
+        advisorId={advisorId}
+        selectedDay={selectedDay}
+        selectedTime={selectedTime}
+        setSelectedDay={setSelectedDay}
+        setSelectedTime={setSelectedTime}
+      />
 
-      <Button
-        variant="ghost"
-        className="mt-2 px-4 py-2"
-        onClick={() => setExpanded(!expanded)}
-      >
-        {expanded ? 'Show Less' : 'Show More'}
-      </Button>
 
       {selectedDay && selectedTime && selectedService && (
         <div className='flex items-center justify-center mt-2'>

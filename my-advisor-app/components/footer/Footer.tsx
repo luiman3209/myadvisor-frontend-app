@@ -7,8 +7,8 @@ const Footer: React.FC = () => {
       <div className="container mx-auto flex flex-col md:flex-row justify-between">
         {[
           { title: 'Services', links: ['Privacy and cookies', 'Terms of Service'] },
-          { title: 'For investors', links: ['Advisors', 'Financial advisory firms', 'Offices', 'Ask an advisor'] },
-          { title: 'For advisors and organizations', links: ['Prices', 'Help Center', 'Free resources'] },
+          { title: 'For investors', links: ['Advisors', 'Financial advisory firms', 'Offices'] },
+          { title: 'For advisors', links: ['Prices', 'Help Center', 'Free resources'] },
 
         ].map((section) => (
           <div key={section.title} className="mb-8 md:mb-0">

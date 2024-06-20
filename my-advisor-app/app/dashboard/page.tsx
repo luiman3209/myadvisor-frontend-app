@@ -204,7 +204,7 @@ const DashboardPage: React.FC = () => {
             </div>
           </section>
           <section className="mt-8">
-            <h2 className="text-2xl font-bold mb-4">Reviews</h2>
+            <h2 className="text-2xl font-bold mb-4">Your reviews</h2>
             <div className="grid gap-4">
               {reviews.length > 0 ? (
                 reviews.map((review) => (

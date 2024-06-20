@@ -14,11 +14,11 @@ import { getLastReviews } from '@/services/reviewService';
 
 import { Separator } from '@/components/ui/separator';
 
-import HomeLatestReviews from '@/components/input/HomeLatestReviews';
-import HomeCTAs from '@/components/input/HomeCTAs';
-import HomeAvailableServices from '@/components/input/HomeAvailableServices';
-import HomeAdvisorBanner from '@/components/input/HomeAdvisorBanner';
-import HomeSearchArea from '@/components/input/HomeSearchArea';
+import HomeLatestReviews from '@/components/home/HomeLatestReviews';
+import HomeCTAs from '@/components/home/HomeCTAs';
+import HomeAvailableServices from '@/components/home/HomeAvailableServices';
+import HomeAdvisorBanner from '@/components/home/HomeAdvisorBanner';
+import HomeSearchArea from '@/components/home/HomeSearchArea';
 
 
 export default function Home() {

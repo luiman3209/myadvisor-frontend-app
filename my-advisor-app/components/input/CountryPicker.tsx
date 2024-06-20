@@ -21,7 +21,7 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover"
 
-import { ChevronDown, ChevronDownIcon } from "lucide-react"
+import { ChevronDown, ChevronDownIcon, MapPin } from "lucide-react"
 
 
 const usStates: { [key: string]: string } = {
@@ -99,11 +99,11 @@ export function CountryPicker({ countryCode, setCountryCode }: CountryPickerProp
 
     if (isDesktop) {
         return (
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-2 ">
                 <Popover open={open} onOpenChange={setOpen}>
                     <PopoverTrigger asChild>
-                        <Button variant="outline" className="w-[150px] justify-between space-x-2">
-                            <span>{countryCode ? countryCode : 'State/Province'}</span><ChevronDownIcon className="w-5 h-5" />
+                        <Button variant="outline" className="w-[150px] justify-between space-x-2 text-base ">
+                            <span className="text-gray-600">{countryCode ? countryCode : 'State'}</span><MapPin className="w-5 h-5" />
                         </Button>
                     </PopoverTrigger>
                     <PopoverContent className="w-[200px] p-0" align="start">
