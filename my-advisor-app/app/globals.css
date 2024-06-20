@@ -65,17 +65,6 @@
   @apply text-slate-700 hover:text-black hover:bg-cyan-100 block px-2 py-2 font-medium text-base;
 }
 
-.home-cta-card {
-  @apply flex flex-col w-full md:w-1/4 p-4 m-4;
-}
-
-.home-cta-card-header {
-  @apply flex flex-row space-x-2 mb-1.5 font-semibold text-lg h-1/4;
-}
-
-.home-cta-card-body {
-  @apply text-slate-600;
-}
 
 .custom-scrollbar::-webkit-scrollbar {
   width: 8px;

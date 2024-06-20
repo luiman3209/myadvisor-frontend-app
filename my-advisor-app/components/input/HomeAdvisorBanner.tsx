@@ -13,10 +13,10 @@ import { Rocket, Star } from 'lucide-react';
 
 const HomeAdvisorBanner = () => {
     return (
-        <div className="flex flex-col md:px-32 bg-white ">
+        <div className="xl:px-32 2xl:px-72 ">
             <div className='m-2 rounded-md bg-cyan-100 flex flex-col md:flex-row space-x-4'>
 
-                <div className='relative md:w-1/2 p-2'>
+                <div className='relative lg:w-1/2 p-2'>
                     <img src="/images/office_bg_edite_banner.webp" alt="Subjects" className="rounded-md" />
                     <div className='absolute top-6 left-4 shadow-xl w-56 h-auto'>
 
@@ -43,7 +43,7 @@ const HomeAdvisorBanner = () => {
                         </div>
                     </div>
                 </div>
-                <div className='md:w-1/2 p-4 space-y-6'>
+                <div className='lg:w-1/2 p-4 space-y-6'>
                     <div>
                         <h3 className='text-2xl font-bold'>Are you a financial advisor? Start connecting with new clients today!</h3>
                     </div>

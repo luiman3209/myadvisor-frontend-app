@@ -15,7 +15,7 @@ interface HomeAvailableServicesProps {
 
 const HomeAvailableServices: React.FC<HomeAvailableServicesProps> = ({ serviceTypes }) => {
     return (
-        <div className="flex flex-col lg:px-96 bg-white">
+        <div className="flex flex-col lg:px-72 bg-white">
             <CardHeader>
                 <CardTitle>Available services by certified advisors</CardTitle>
                 <CardDescription>Pick the service based on your needs.</CardDescription>
