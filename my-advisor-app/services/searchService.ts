@@ -7,8 +7,8 @@ axios.defaults.baseURL = API_URL;
 
 
 
-export const searchAdvisors = async (operating_country_code: string | undefined = undefined,
-  service_id: number | undefined = undefined,
+export const searchAdvisors = async (operating_country_code: string | undefined,
+  service_id: number | undefined,
   page: number = 1,
   limit: number = 10,
 

@@ -66,7 +66,7 @@ const ExplorerResultList: React.FC<ExplorerResultListProps> = ({
                 </TabsContent>
               </Tabs>
             </div>
-            <div className="md:w-2/3 mt-4 md:mt-0 border-l-2 ml-2">
+            <div className="md:w-2/3 mt-4 md:mt-0 md:border-l-2 md:ml-2">
               <BookAppointmentV2
                 advisorId={advisor.advisor_id}
                 officeAddress={advisor.office_address}

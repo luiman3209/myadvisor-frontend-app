@@ -64,8 +64,8 @@ export default function Login() {
   return (
     <main className=''>
 
-      <div className="flex flex-row w-full ">
-        <div className="xl:w-1/2 ">
+      <div className="flex flex-row w-full min-h-screen ">
+        <div className="w-full xl:w-1/2 ">
           <div className='p-4'>
             <Link href="/">
               <Image
@@ -77,8 +77,9 @@ export default function Login() {
               />
             </Link>
           </div>
-          <div className='flex items-center justify-center h-3/4'>
-            <Card className='p-8'>
+          <div className='flex items-center justify-center h-3/4 '>
+
+            <Card className='p-8 border-cyan-500 hover:border-cyan-400'>
               <form onSubmit={handleSubmit} className="mx-auto w-[350px] space-y-6">
                 <div className="text-center">
                   <h1 className="text-3xl font-bold">Login</h1>

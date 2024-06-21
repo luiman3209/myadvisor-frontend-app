@@ -18,6 +18,8 @@ import { bookAppointment } from '@/services/appointmentService';
 import { decodeQueryData, encodeQueryData, encodeQueryDataString } from '@/utils/commonUtils';
 import { useAuth } from '@/contexts/AuthContext';
 import { ChevronRight, Loader } from 'lucide-react';
+import { formatDateToUTCString } from '@/utils/dateUtils';
+
 
 const ConfirmBook: React.FC = () => {
     const [selectedService, setSelectedService] = useState<ServiceType | null>(null);
@@ -115,99 +117,105 @@ const ConfirmBook: React.FC = () => {
 
     return (
         <main className=''>
-            <div className="absolute top-0 left-0 p-4">
-                <Link href="/">
-                    <Image
-                        src="/images/myadvisor-logo-black.svg"
-                        alt="Logo"
-                        width={70}
-                        height={70}
-                        className="object-contain"
-                    />
-                </Link>
-            </div>
+            <div className="flex flex-row w-full min-h-screen ">
+                <div className="w-full xl:w-1/2 ">
+                    <div className='p-4'>
+                        <Link href="/">
+                            <Image
+                                src="/images/myadvisor-logo-black.svg"
+                                alt="Logo"
+                                width={70}
+                                height={70}
+                                className="object-contain"
+                            />
+                        </Link>
+                    </div>
 
-            <div className="flex flex-col lg:flex-row lg:min-h-[600px] xl:min-h-[800px] w-full ">
+                    <div className="flex items-center justify-center h-3/4">
 
-                <div className="flex items-center justify-center lg:w-1/2 py-12">
-                    <Card className='p-8 border-cyan-500'>
-                        {!appointmentConfirmed ? <div className="mx-auto w-[350px] space-y-6">
-                            <div className="text-center">
-                                <h1 className="text-3xl font-bold">Confirm Booking</h1>
-                            </div>
-                            <div className="space-y-4">
-                                <div className="space-y-2">
-                                    <Label>Service</Label>
-                                    <Card className='p-2 font-semibold'>{selectedService.service_type_name}</Card>
-                                </div>
-                                <div className='flex flex-row justify-start space-x-12'>
-                                    <div className="space-y-2">
-                                        <Label>Day</Label>
-                                        <p className='font-semibold'>{selectedDay}</p>
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Label>Time</Label>
-                                        <p className='font-semibold'>{selectedTime}</p>
-                                    </div>
-                                </div>
 
-                                <div className="space-y-2">
-                                    <Label>Advisor</Label>
-                                    <div className="flex items-center space-x-4">
-                                        <Avatar ><AvatarImage src={advisor.img_url} alt={advisor.display_name} />
-                                            <AvatarFallback>CN</AvatarFallback> </Avatar>
-                                        <p className='font-semibold'>{(advisor.display_name)}</p>
-                                    </div>
-                                </div>
-                                <Button onClick={handleConfirm} className="w-full bg-cyan-500 hover:bg-cyan-400">
-                                    Confirm Booking
-                                </Button>
-                            </div>
-                            <div className="text-center text-sm mt-4">
-                                <Link href={"/advisor/profile/?advisor=" + advisor.advisor_id} className="underline">
-                                    Back to Booking Page
-                                </Link>
-                            </div>
-                        </div> : <div className="mx-auto w-[350px] space-y-6">
-                            <div className="text-center">
-                                <h1 className="text-3xl font-bold">Appointment confirmed!</h1>
-                            </div>
-                            <div className="space-y-4">
-                                <div className="space-y-2">
-                                    <Label>Booked service</Label>
-                                    <Card className='p-2 font-semibold'>{selectedService.service_type_name}</Card>
-                                </div>
-                                <div className='flex flex-row justify-start space-x-12'>
-                                    <div className="space-y-2">
-                                        <Label>Booked Day</Label>
-                                        <p className='font-semibold'>{selectedDay}</p>
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Label>Booked Time</Label>
-                                        <p className='font-semibold'>{selectedTime}</p>
-                                    </div>
-                                </div>
+                        <Card className='p-8 border-cyan-500 hover:border-cyan-400'>
+                            {!appointmentConfirmed ?
+                                <div className="mx-auto w-[350px] space-y-6">
+                                    <div className="text-center">
+                                        <h1 className="text-3xl font-bold">Confirm Booking</h1>
 
-                                <div className="space-y-2">
-                                    <Label>Booked Advisor</Label>
-                                    <div className="flex items-center space-x-4">
-                                        <Avatar ><AvatarImage src={advisor.img_url} alt={advisor.display_name} />
-                                            <AvatarFallback>CN</AvatarFallback> </Avatar>
-                                        <p className='font-semibold'>{(advisor.display_name)}</p>
                                     </div>
-                                </div>
-                                <Button onClick={() => router.push('/dashboard')} className="w-full bg-cyan-500 hover:bg-cyan-400">
-                                    Go to your appointments <ChevronRight />
-                                </Button>
-                            </div>
-                            <div className="text-center text-sm mt-4">
-                                <Link href={"/advisor/profile/?advisor=" + advisor.advisor_id} className="underline">
-                                    Back to Booking Page
-                                </Link>
-                            </div>
-                        </div>}
+                                    <div className="space-y-4">
+                                        <div className="space-y-2">
+                                            <Label>Service</Label>
+                                            <Card className='p-2 font-semibold'>{selectedService.service_type_name}</Card>
+                                        </div>
+                                        <div className='flex flex-row justify-start space-x-12'>
+                                            <div className="space-y-2">
+                                                <Label>Day</Label>
+                                                <p className='font-semibold'>{formatDateToUTCString(new Date(selectedDay), "MMM d, yyyy")}</p>
+                                            </div>
+                                            <div className="space-y-2">
+                                                <Label>Time</Label>
+                                                <p className='font-semibold'>{selectedTime}</p>
+                                            </div>
+                                        </div>
 
-                    </Card>
+                                        <div className="space-y-2">
+                                            <Label>Advisor</Label>
+                                            <div className="flex items-center space-x-4">
+                                                <Avatar ><AvatarImage src={advisor.img_url} alt={advisor.display_name} />
+                                                    <AvatarFallback>CN</AvatarFallback> </Avatar>
+                                                <p className='font-semibold'>{(advisor.display_name)}</p>
+                                            </div>
+                                        </div>
+                                        <Button onClick={handleConfirm} className="w-full bg-cyan-500 hover:bg-cyan-400">
+                                            Confirm Booking
+                                        </Button>
+                                    </div>
+                                    <div className="text-center text-sm mt-4">
+                                        <Link href={"/advisor/profile/?advisor=" + advisor.advisor_id} className="underline">
+                                            Change time or day
+                                        </Link>
+                                    </div>
+                                </div> : <div className="mx-auto w-[350px] space-y-6">
+                                    <div className="text-center">
+                                        <h1 className="text-3xl font-bold">Appointment confirmed!</h1>
+                                    </div>
+                                    <div className="space-y-4">
+                                        <div className="space-y-2">
+                                            <Label>Booked service</Label>
+                                            <Card className='p-2 font-semibold'>{selectedService.service_type_name}</Card>
+                                        </div>
+                                        <div className='flex flex-row justify-start space-x-12'>
+                                            <div className="space-y-2">
+                                                <Label>Booked Day</Label>
+                                                <p className='font-semibold'>{formatDateToUTCString(new Date(selectedDay), "MMM d, yyyy")}</p>
+                                            </div>
+                                            <div className="space-y-2">
+                                                <Label>Booked Time</Label>
+                                                <p className='font-semibold'>{selectedTime}</p>
+                                            </div>
+                                        </div>
+
+                                        <div className="space-y-2">
+                                            <Label>Booked Advisor</Label>
+                                            <div className="flex items-center space-x-4">
+                                                <Avatar ><AvatarImage src={advisor.img_url} alt={advisor.display_name} />
+                                                    <AvatarFallback>CN</AvatarFallback> </Avatar>
+                                                <p className='font-semibold'>{(advisor.display_name)}</p>
+                                            </div>
+                                        </div>
+                                        <Button onClick={() => router.push('/dashboard')} className="w-full bg-cyan-500 hover:bg-cyan-400">
+                                            Go to your appointments <ChevronRight />
+                                        </Button>
+                                    </div>
+                                    <div className="text-center text-sm mt-4">
+                                        <Link href={"/advisor/profile/?advisor=" + advisor.advisor_id} className="underline">
+                                            Back to Booking Page
+                                        </Link>
+                                    </div>
+                                </div>}
+
+                        </Card>
+
+                    </div>
                 </div>
                 <div className="hidden lg:block lg:w-1/2 bg-cyan-500">
                     <Image
@@ -219,6 +227,7 @@ const ConfirmBook: React.FC = () => {
                     />
                 </div>
             </div>
+
         </main>
     );
 };

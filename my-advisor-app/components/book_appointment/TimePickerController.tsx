@@ -12,7 +12,7 @@ interface TimePickerControllerProps {
     selectedTime: string | null;
     setSelectedDay: (day: string | null) => void;
     setSelectedTime: (time: string | null) => void;
-
+    initiallyExpanded?: boolean;
 
 }
 
@@ -24,11 +24,12 @@ const TimePickerController: React.FC<TimePickerControllerProps> = ({
     selectedDay,
     selectedTime,
     setSelectedDay,
-    setSelectedTime
+    setSelectedTime,
+    initiallyExpanded
 
 }) => {
 
-    const [expanded, setExpanded] = useState<boolean>(false);
+    const [expanded, setExpanded] = useState<boolean>(initiallyExpanded ?? false);
     const [direction, setDirection] = useState<'left' | 'right'>('right');
     const [days, setDays] = useState<string[]>(getNextDays(5));
     const [loadingTimes, setLoadingTimes] = useState<boolean>(false);
@@ -89,7 +90,7 @@ const TimePickerController: React.FC<TimePickerControllerProps> = ({
     };
 
     return (
-        <div >
+        <div className="" >
             <div className="flex items-center justify-center">
 
                 {!(days[0] <= new Date().toISOString().split('T')[0]) &&
@@ -115,7 +116,7 @@ const TimePickerController: React.FC<TimePickerControllerProps> = ({
                     <ChevronRightIcon />
                 </Button>
             </div>
-            <div className="flex items-center justify-center">
+            {!initiallyExpanded && <div className="flex items-center justify-center">
                 <Button
                     variant="ghost"
                     className="mt-2 px-4 py-2"
@@ -123,7 +124,8 @@ const TimePickerController: React.FC<TimePickerControllerProps> = ({
                 >
                     {expanded ? 'Show Less' : 'Show More'}
                 </Button>
-            </div>
+            </div>}
+
 
         </div>
 

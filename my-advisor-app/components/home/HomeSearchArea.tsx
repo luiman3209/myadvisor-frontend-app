@@ -28,7 +28,7 @@ const HomeSearchArea: React.FC<HomeSearchAreaProps> = ({ serviceTypes }) => {
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
         const query = new URLSearchParams();
-        if (operatingCountryCode) query.append('operating_country_code', operatingCountryCode);
+        if (operatingCountryCode) query.append('country_code', operatingCountryCode);
 
         // find the service_id by selected service_name
         if (selectedServiceName) {

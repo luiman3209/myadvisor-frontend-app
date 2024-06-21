@@ -16,9 +16,9 @@ const Footer: React.FC = () => {
             <ul>
               {section.links.map((link) => (
                 <li key={link} className="mb-2">
-                  <Link href={`/${link.toLowerCase().replace(/ /g, '-')}`} className="text-gray-400 hover:text-white">
+                  <div className="text-gray-400 hover:text-white">
                     {link}
-                  </Link>
+                  </div>
                 </li>
               ))}
             </ul>

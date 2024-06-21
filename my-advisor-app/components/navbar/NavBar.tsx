@@ -83,9 +83,6 @@ const Navbar: React.FC = () => {
               </Link>
             </>
           )}
-          {/*!user && (
-            <button className="nav-link">Are you a financial advisor?</button>
-          )*/}
         </div>
 
         {/* Mobile Menu Button */}
@@ -125,9 +122,7 @@ const Navbar: React.FC = () => {
                 </Link>
               </>
             )}
-            {/*!user && (
-              <button className="nav-link">Are you a financial advisor?</button>
-            )*/}
+
           </div>
         </div>
       )}

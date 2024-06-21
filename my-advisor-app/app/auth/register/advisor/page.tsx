@@ -17,6 +17,7 @@ import RegisterNavbar from '@/components/navbar/RegisterNavbar';
 import AdvisorForm from '@/components/forms/AdvisorForm';
 import { useServiceContext } from '@/contexts/ServicesContext';
 import { Card } from '@/components/ui/card';
+import RegisterFormNavigator from '@/components/input/RegisterFormNavigator';
 
 
 
@@ -114,8 +115,8 @@ export default function RegisterAdvisor() {
     setFormStep(prevStep => Math.max(prevStep - 1, 0));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
+
 
     if (! await validateStep()) {
       return;
@@ -198,11 +199,12 @@ export default function RegisterAdvisor() {
                 setSelectedOfficeAddress={setOfficeAddress}
                 setSelectedServiceTypes={setSelectedServiceTypes}
                 selectedServiceTypes={selectedServiceTypes} />
-              <div className="flex justify-between mt-6">
-                {formStep > 0 && <Button onClick={previousStep}>Back</Button>}
-                {formStep < 3 && <Button onClick={nextStep} className="ml-auto bg-cyan-500">Next</Button>}
-                {formStep === 3 && <Button onClick={handleSubmit} className="ml-auto bg-cyan-500">Submit</Button>}
-              </div>
+              <RegisterFormNavigator
+                formStep={formStep}
+                nextStep={nextStep}
+                previousStep={previousStep}
+                handleSubmit={handleSubmit}
+              />
             </div>
           </div>
         </div>

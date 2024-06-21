@@ -51,7 +51,6 @@ const AdvisorExplorer: React.FC = () => {
     try {
       const result: SearchAdvisorsRespDto = await searchAdvisors(countryCode, serviceId, page);
       setAdvisors(result.advisors);
-      console.log(result.advisors);
       setPage(result.currentPage);
       setTotalPages(result.totalPages);
       setTotalItems(result.totalItems);
