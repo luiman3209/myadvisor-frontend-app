@@ -39,9 +39,6 @@ const BookAppointmentV2: React.FC<BookAppointmentV2Props> = ({ advisorId, office
   const [availableTimes, setAvailableTimes] = useState<{ [key: string]: string[] }>({});
   const [days, setDays] = useState<string[]>(getNextDays(5));
   const [loadingTimes, setLoadingTimes] = useState<boolean>(false);
-  const [expanded, setExpanded] = useState<boolean>(false);
-  const [direction, setDirection] = useState<'left' | 'right'>('right');
-
   useEffect(() => {
     fetchAvailableTimes(days);
   }, []);
@@ -59,36 +56,7 @@ const BookAppointmentV2: React.FC<BookAppointmentV2Props> = ({ advisorId, office
     setLoadingTimes(false);
   };
 
-  const updateDaysAndFetch = (dir: 'next' | 'prev' | 'none') => {
-    const currentStartDate = new Date(days[0]);
-    const newStartDate = new Date(currentStartDate);
 
-    if (dir === 'none') {
-      fetchAvailableTimes(days);
-      return;
-    }
-
-    setSelectedDay(null);
-    setSelectedTime(null);
-
-    if (dir === 'next') {
-      newStartDate.setDate(currentStartDate.getDate() + 5);
-      setDirection('right');
-    } else {
-      newStartDate.setDate(currentStartDate.getDate() - 5);
-      setDirection('left');
-    }
-
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    if (newStartDate < today) {
-      newStartDate.setDate(today.getDate());
-    }
-
-    const newDays = getNextDays(5, newStartDate);
-    setDays(newDays);
-    fetchAvailableTimes(newDays);
-  };
 
   const handleTimeSlotClick = (day: string, time: string) => {
     setSelectedDay(day);
