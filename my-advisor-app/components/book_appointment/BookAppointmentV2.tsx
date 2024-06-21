@@ -94,8 +94,22 @@ const BookAppointmentV2: React.FC<BookAppointmentV2Props> = ({ advisorId, office
 
     return (availableTimes1stDay && availableTimes1stDay.length > 0 &&
 
-      <div className="md:hidden">
-        <div>{formatDateToUTCString(new Date(firstDay), "MMM d")}</div>
+      <div className="md:hidden space-y-2">
+        <Select value={selectedService} onValueChange={setSelectedService}>
+          <SelectTrigger className="w-full py-2 border border-gray-300 rounded flex items-center justify-between ">
+            <SelectValue placeholder="Select a service" />
+          </SelectTrigger>
+          <SelectContent className="border border-gray-300 rounded bg-white">
+            <SelectGroup>
+              {services.map((service) => (
+                <SelectItem key={service.service_id} value={service.service_type_name} className=" cursor-pointer hover:bg-gray-100">
+                  {service.service_type_name}
+                </SelectItem>
+              ))}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+        <div className='font-semibold'>{formatDateToUTCString(new Date(firstDay), "MMM d")}</div>
         <div className='flex flex-row space-x-1 justify-center'>
 
           <Button
@@ -186,6 +200,19 @@ const BookAppointmentV2: React.FC<BookAppointmentV2Props> = ({ advisorId, office
 
 
         </div>
+
+        {selectedDay && selectedTime && selectedService && (
+          <div className='flex items-center justify-center'>
+            <div className="w-min">
+              <Button className="px-4 py-2 bg-cyan-500 hover:bg-cyan-400" onClick={confirmBooking}>
+                <div className='flex flex-row space-x-2'>
+                  <span>Confirm booking  on {formatDateToUTCString(new Date(selectedDay), "MMM, dd")} at {selectedTime}</span><ChevronRight className='w-5 h-5' />
+                </div>
+              </Button>
+              {bookingError && <div className="mt-2 text-red-500">{bookingError}</div>}
+            </div>
+          </div>
+        )}
 
       </div>);
   }

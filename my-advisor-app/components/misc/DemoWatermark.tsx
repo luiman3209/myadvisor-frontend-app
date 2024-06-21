@@ -18,7 +18,7 @@ import { Button } from '../ui/button';
 const DemoBanner = () => {
     return (
         <div className="fixed bottom-0 left-0 w-full z-50">
-            <div className="bg-gradient-to-r from-cyan-500 to-cyan-300 py-3 px-6 text-white text-center shadow-lg demo-banner text-xl">
+            <div className="bg-gradient-to-r from-cyan-500 to-cyan-300 py-3 px-6 text-white text-center shadow-lg demo-banner md:text-xl">
                 <div className='flex items-center justify-center'>
                     <TriangleAlert className='w-7 h-7 mr-2' />
                     <div className='font-semibold'>
@@ -46,13 +46,13 @@ const DemoBanner = () => {
                                 <AlertDialogFooter>
                                     <Button className='flex items-center justify-start text-sm bg-transparent hover:bg-transparent text-black '>
 
-                                        <Link href="/privacy-policy" className='underline '>
+                                        <Link href="/privacy-policy" target="_blank" className='underline '>
 
                                             Read our Privacy Policy
 
                                         </Link>
                                     </Button>
-                                    <Button className=''><Link href="https://luiman3209.github.io/" className=''>
+                                    <Button className=''><Link href="https://luiman3209.github.io/" target="_blank" className=''>
 
                                         Check out my website
 

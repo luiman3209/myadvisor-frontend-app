@@ -79,7 +79,7 @@ const AdvisorExplorer: React.FC = () => {
 
 
         <div className="flex-grow container 2xl:ml-64 px-4 py-6">
-          <div className="bg-white shadow-md rounded-lg p-6">
+          <div className="bg-white  rounded-lg p-6">
             <h2 className="text-2xl font-bold mb-4">Search Results</h2>
 
             {loading && (
@@ -105,7 +105,7 @@ const AdvisorExplorer: React.FC = () => {
                 Previous
               </Button>}
 
-            {page !== totalPages &&
+            {advisors.length > 0 && page !== totalPages &&
               <Button
                 className="px-4 py-2  rounded bg-cyan-500 hover:bg-cyan-400"
                 onClick={() => setPage(page + 1)}

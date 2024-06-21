@@ -11,7 +11,7 @@ export default function PrivacyPolicy() {
                 flex flex-col justify-center items-center
                 shadow-md rounded-lg p-6">
                     <h1 className="font-bold text-2xl">
-                        Privacy Policy
+                        MyAdvisor Demo  Privacy Policy
                     </h1>
                     <div className="text-left space-y-4">
                         <p>Date: June 21, 2024</p>

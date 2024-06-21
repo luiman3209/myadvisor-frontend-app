@@ -28,7 +28,13 @@ const ExplorerResultList: React.FC<ExplorerResultListProps> = ({
 
   return (
     <ul className="space-y-6 ">
-      {advisors.map((advisor) => (
+      {advisors.length === 0 && <div className="text-center text-lg items-center justify-center">
+        <span>
+
+          No advisors found, try changing filters
+        </span>
+      </div>}
+      {advisors.length > 0 && advisors.map((advisor) => (
         <li key={advisor.advisor_id} className="p-4 border rounded-lg hover:shadow-md transition-shadow duration-300">
           <div className="flex flex-col md:flex-row">
             <div className="flex flex-col space-y-4 md:w-1/3">
