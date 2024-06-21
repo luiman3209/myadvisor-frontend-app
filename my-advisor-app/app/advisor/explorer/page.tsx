@@ -96,20 +96,23 @@ const AdvisorExplorer: React.FC = () => {
 
           </div>
           <div className="mt-6 flex justify-center space-x-4">
-            <Button
-              className="px-4 py-2 rounded"
-              onClick={() => setPage(page - 1)}
-              disabled={page === 1}
-            >
-              Previous
-            </Button>
-            <Button
-              className="px-4 py-2  rounded"
-              onClick={() => setPage(page + 1)}
-              disabled={page === totalPages}
-            >
-              Next
-            </Button>
+            {page !== 1 &&
+              <Button
+                className="px-4 py-2 rounded bg-cyan-500 hover:bg-cyan-400"
+                onClick={() => setPage(page - 1)}
+
+              >
+                Previous
+              </Button>}
+
+            {page !== totalPages &&
+              <Button
+                className="px-4 py-2  rounded bg-cyan-500 hover:bg-cyan-400"
+                onClick={() => setPage(page + 1)}
+
+              >
+                Next
+              </Button>}
           </div>
         </div>
 

@@ -3,7 +3,7 @@ import React, { ChangeEvent } from 'react';
 import { Card, CardDescription, CardHeader, CardTitle } from '../ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import Link from 'next/link';
-import RatingStars from '../RatingStars';
+import RatingStars from '../misc/RatingStars';
 import { HomeReviewDto } from '@/types/types';
 
 

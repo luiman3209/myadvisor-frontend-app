@@ -19,7 +19,14 @@ export default function Login() {
   const [errors, setErrors] = useState('');
   const [redirect, setRedirect] = useState('');
   const { user, login, error } = useAuth();
+  const [logInConfirmed, setLogInConfirmed] = useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    if (user && !logInConfirmed) {
+      router.push('/profile');
+    }
+  });
 
   useEffect(() => {
 
@@ -46,6 +53,7 @@ export default function Login() {
         return;
       }
       await login(email, password);
+      setLogInConfirmed(true);
       if (redirect) {
         router.push(redirect);
       } else {

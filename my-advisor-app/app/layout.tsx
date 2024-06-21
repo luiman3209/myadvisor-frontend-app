@@ -4,6 +4,7 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
 import { ServiceProvider } from '@/contexts/ServicesContext';
+import DemoWatermark from '@/components/misc/DemoWatermark';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -20,7 +21,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <ServiceProvider><AuthProvider><div className="flex flex-col min-h-screen">{children}</div></AuthProvider></ServiceProvider>
+        <ServiceProvider>
+          <AuthProvider>
+            <div className="">
+              <DemoWatermark />
+              {children}
+
+            </div>
+          </AuthProvider>
+        </ServiceProvider>
 
       </body>
     </html>

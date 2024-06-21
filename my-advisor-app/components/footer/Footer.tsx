@@ -1,12 +1,11 @@
 // components/Footer.tsx
-import Link from 'next/link';
 
 const Footer: React.FC = () => {
   return (
     <footer className="bg-gray-800 text-gray-200 py-8">
       <div className="container mx-auto flex flex-col md:flex-row justify-between">
         {[
-          { title: 'Services', links: ['Privacy and cookies', 'Terms of Service'] },
+          { title: 'Services', links: ['Privacy policy', 'Terms of Service'] },
           { title: 'For investors', links: ['Advisors', 'Financial advisory firms', 'Offices'] },
           { title: 'For advisors', links: ['Prices', 'Help Center', 'Free resources'] },
 

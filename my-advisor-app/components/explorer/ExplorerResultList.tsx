@@ -2,7 +2,7 @@
 import { Avatar, AvatarImage, AvatarFallback } from "../ui/avatar";
 
 import { Video, MapPin } from "lucide-react";
-import RatingStars from "../RatingStars";
+import RatingStars from "../misc/RatingStars";
 import BookAppointmentV2 from "../book_appointment/BookAppointmentV2";
 import BoxCollection from "../misc/BoxCollection";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";

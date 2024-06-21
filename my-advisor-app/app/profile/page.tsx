@@ -10,14 +10,15 @@ import { getAdvisorProfile } from '@/services/advisorService';
 import InvestorProfile from '@/components/profile/InvestorProfile';
 import { AdvisorPrivateProfileRespDto, InvestorProfileDto } from '@/types/types';
 import { ServiceType } from '@/types/entity/service_type_entity';
-import { getServiceTypes } from '@/services/serviceTypesService';
+
 import Navbar from '@/components/navbar/NavBar';
 import { useRouter } from 'next/navigation';
 import AdvisorProfile from '@/components/profile/AdvisorProfile';
 import { QualificationEntity } from '@/types/entity/qualification_entity';
 import { getAvailableQualifications } from '@/services/qualificationService';
-import CircularProgress from '@/components/misc/CircularProgress';
+
 import { useServiceContext } from '@/contexts/ServicesContext';
+import { Loader } from 'lucide-react';
 
 const Profile: React.FC = () => {
   const { user } = useAuth();
@@ -49,9 +50,14 @@ const Profile: React.FC = () => {
       setError('Failed to fetch qualifications');
     }
   }
+
   useEffect(() => {
+    if (!user) {
+      router.push('/auth/login');
+    }
+  });
 
-
+  useEffect(() => {
 
     const fetchProfile = async () => {
       setLoading(true);
@@ -93,8 +99,8 @@ const Profile: React.FC = () => {
     <div>
       <Navbar />
 
-      {loading ? <div className="flex items-center justify-center min-h-screen bg-gray-100">
-        <CircularProgress size={100} strokeWidth={10} initialProgress={0} interval={100} />
+      {loading ? <div className="flex justify-center my-4">
+        <Loader className="animate-spin w-8 h-8 text-cyan-600" />
       </div> :
         error ? <div className="flex items-center justify-center min-h-screen bg-gray-100"  >
           An error occurred. Please try reloading the page.

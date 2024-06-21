@@ -1,14 +1,9 @@
 
 
-import BarChart from '../HomeBannerChart';
+import BarChart from './HomeBannerChart';
 import { Button } from '../ui/button';
 
-
-
 import { Rocket, Star } from 'lucide-react';
-
-
-
 
 
 const HomeAdvisorBanner = () => {

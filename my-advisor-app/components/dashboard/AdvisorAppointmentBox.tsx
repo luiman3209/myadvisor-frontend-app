@@ -10,7 +10,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
-import RatingStars from "../RatingStars";
+import RatingStars from "../misc/RatingStars";
 import { ChangeEvent, useState } from "react";
 import Link from "next/link";
 

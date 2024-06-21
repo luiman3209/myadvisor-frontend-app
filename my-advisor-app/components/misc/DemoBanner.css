@@ -1,0 +1,18 @@
+/* DemoBanner.css */
+@keyframes moveGradient {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.demo-banner {
+    background: linear-gradient(to right, rgb(34 211 238),  rgb(6 182 212), rgb(14 116 144));
+    background-size: 200% 100%;
+    animation: moveGradient 2s linear infinite;
+}

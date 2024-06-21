@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { getPublicAdvisorProfile } from '@/services/advisorService';
 
 import CircularProgress from '@/components/misc/CircularProgress';
@@ -12,7 +12,7 @@ import { Card } from '@/components/ui/card';
 import { AdvisorPublicProfileDto, AdvisorReviewDto } from '@/types/types';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
-import RatingStars from '@/components/RatingStars';
+import RatingStars from '@/components/misc/RatingStars';
 import BoxCollection from '@/components/misc/BoxCollection';
 import { ServiceType } from '@/types/entity/service_type_entity';
 

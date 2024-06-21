@@ -6,8 +6,6 @@ import { useRouter } from 'next/navigation';
 
 import { ProfileData, CommonProfileData, AdvisorProfileData } from '@/types/auth';
 
-import { Button } from '@/components/ui/button';
-
 
 import { getAvailableQualifications } from '@/services/qualificationService';
 import { QualificationEntity } from '@/types/entity/qualification_entity';

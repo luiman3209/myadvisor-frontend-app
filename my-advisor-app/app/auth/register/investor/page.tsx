@@ -3,13 +3,10 @@
 import { useAuth } from '@/contexts/AuthContext';
 import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { getServiceTypes } from '@/services/serviceTypesService';
 import { ProfileData, CommonProfileData, InvestorProfileData } from '@/types/auth';
 import { ServiceType } from '@/types/entity/service_type_entity';
-
 import { checkEmailAvailability, checkPhoneAvailability } from '@/services/authService';
 import RegisterNavbar from '@/components/navbar/RegisterNavbar';
-import { Button } from '@/components/ui/button';
 import InvestorForm from '@/components/forms/InvestorForm';
 import { decodeQueryDataString } from '@/utils/commonUtils';
 import { useServiceContext } from '@/contexts/ServicesContext';

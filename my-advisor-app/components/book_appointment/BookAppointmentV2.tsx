@@ -1,20 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { CheckIcon, ChevronDownIcon, ChevronRightIcon, ChevronLeftIcon, Loader, ChevronsRight, ChevronRight, BadgeInfo } from 'lucide-react';
+import { ChevronRight, BadgeInfo } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '@/contexts/AuthContext';
-import { bookAppointment, getFreeWindows } from '@/services/appointmentService';
+
+import { getFreeWindows } from '@/services/appointmentService';
 import { ServiceType } from '@/types/entity/service_type_entity';
 import { encodeQueryData, getNextDays } from '@/utils/commonUtils';
 import { Label } from '../ui/label';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
-import { motion, AnimatePresence } from 'framer-motion';
+
 import { Button } from '../ui/button';
 
 import {
   Drawer,
   DrawerClose,
   DrawerContent,
-  DrawerDescription,
+
   DrawerFooter,
   DrawerHeader,
   DrawerTitle,
@@ -22,7 +22,6 @@ import {
 } from "@/components/ui/drawer";
 import TimePickerController from './TimePickerController';
 import { formatDateToUTCString } from '@/utils/dateUtils';
-import TimePickerMobileGrid from './TimePickerMobileGrid';
 
 interface BookAppointmentV2Props {
   advisorId: number;
@@ -225,7 +224,7 @@ const BookAppointmentV2: React.FC<BookAppointmentV2Props> = ({ advisorId, office
           <div className="w-min">
             <Button className="px-4 py-2 bg-cyan-500 hover:bg-cyan-400" onClick={confirmBooking}>
               <div className='flex flex-row space-x-2'>
-                <span>Confirm booking for {selectedService} on {selectedDay} at {selectedTime}</span><ChevronRight className='w-5 h-5' />
+                <span>Confirm booking for {selectedService} on {formatDateToUTCString(new Date(selectedDay), "MMM, dd")} at {selectedTime}</span><ChevronRight className='w-5 h-5' />
               </div>
             </Button>
             {bookingError && <div className="mt-2 text-red-500">{bookingError}</div>}

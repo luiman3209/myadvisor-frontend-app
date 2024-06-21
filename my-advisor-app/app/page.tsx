@@ -45,7 +45,7 @@ export default function Home() {
     fetchData();
   }, []);
 
-  return <div className='flex flex-col '>
+  return <div className=' flex flex-col min-h-screen '>
     <Navbar />
     <main className="flex-grow flex-col">
 

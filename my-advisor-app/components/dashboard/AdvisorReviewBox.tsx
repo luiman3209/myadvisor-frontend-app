@@ -1,7 +1,7 @@
 import { AppointmentDto, ReviewDto } from "@/types/types";
 import { formatDateToUTCString } from "@/utils/dateUtils";
 import { Card } from "../ui/card";
-import RatingStars from "../RatingStars";
+import RatingStars from "../misc/RatingStars";
 
 
 interface AdvisorReviewBox {
