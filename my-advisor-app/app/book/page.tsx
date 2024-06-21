@@ -17,7 +17,7 @@ import { AvatarFallback, Avatar, AvatarImage } from '@/components/ui/avatar';
 import { bookAppointment } from '@/services/appointmentService';
 import { decodeQueryData, encodeQueryData, encodeQueryDataString } from '@/utils/commonUtils';
 import { useAuth } from '@/contexts/AuthContext';
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, Loader } from 'lucide-react';
 
 const ConfirmBook: React.FC = () => {
     const [selectedService, setSelectedService] = useState<ServiceType | null>(null);
@@ -106,7 +106,9 @@ const ConfirmBook: React.FC = () => {
     if (!selectedService || !selectedDay || !selectedTime || !advisor) {
         return (
             <div className="flex items-center justify-center min-h-screen bg-gray-100">
-                Missing booking information.
+
+                <Loader className="animate-spin w-8 h-8 text-cyan-600" />
+
             </div>
         );
     }
@@ -128,7 +130,7 @@ const ConfirmBook: React.FC = () => {
             <div className="flex flex-col lg:flex-row lg:min-h-[600px] xl:min-h-[800px] w-full ">
 
                 <div className="flex items-center justify-center lg:w-1/2 py-12">
-                    <Card className='p-8 '>
+                    <Card className='p-8 border-cyan-500'>
                         {!appointmentConfirmed ? <div className="mx-auto w-[350px] space-y-6">
                             <div className="text-center">
                                 <h1 className="text-3xl font-bold">Confirm Booking</h1>
@@ -157,7 +159,7 @@ const ConfirmBook: React.FC = () => {
                                         <p className='font-semibold'>{(advisor.display_name)}</p>
                                     </div>
                                 </div>
-                                <Button onClick={handleConfirm} className="w-full">
+                                <Button onClick={handleConfirm} className="w-full bg-cyan-500 hover:bg-cyan-400">
                                     Confirm Booking
                                 </Button>
                             </div>
@@ -194,7 +196,7 @@ const ConfirmBook: React.FC = () => {
                                         <p className='font-semibold'>{(advisor.display_name)}</p>
                                     </div>
                                 </div>
-                                <Button onClick={() => router.push('/dashboard')} className="w-full">
+                                <Button onClick={() => router.push('/dashboard')} className="w-full bg-cyan-500 hover:bg-cyan-400">
                                     Go to your appointments <ChevronRight />
                                 </Button>
                             </div>

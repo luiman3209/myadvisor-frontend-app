@@ -6,12 +6,6 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
 
 axios.defaults.baseURL = API_URL;
 
-const headers = () => ({
-  headers: {
-    Authorization: `Bearer ${localStorage.getItem('token')}`,
-  },
-});
-
 
 export const getAvailableQualifications = async (): Promise<QualificationEntity[]> => {
   try {

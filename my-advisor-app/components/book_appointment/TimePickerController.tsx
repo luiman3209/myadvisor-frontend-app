@@ -89,7 +89,7 @@ const TimePickerController: React.FC<TimePickerControllerProps> = ({
     };
 
     return (
-        <div>
+        <div >
             <div className="flex items-center justify-center">
 
                 {!(days[0] <= new Date().toISOString().split('T')[0]) &&
@@ -115,13 +115,16 @@ const TimePickerController: React.FC<TimePickerControllerProps> = ({
                     <ChevronRightIcon />
                 </Button>
             </div>
-            <Button
-                variant="ghost"
-                className="mt-2 px-4 py-2"
-                onClick={() => setExpanded(!expanded)}
-            >
-                {expanded ? 'Show Less' : 'Show More'}
-            </Button>
+            <div className="flex items-center justify-center">
+                <Button
+                    variant="ghost"
+                    className="mt-2 px-4 py-2"
+                    onClick={() => setExpanded(!expanded)}
+                >
+                    {expanded ? 'Show Less' : 'Show More'}
+                </Button>
+            </div>
+
         </div>
 
     );

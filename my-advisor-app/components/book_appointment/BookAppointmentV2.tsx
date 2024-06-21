@@ -40,8 +40,6 @@ const BookAppointmentV2: React.FC<BookAppointmentV2Props> = ({ advisorId, office
   const [availableTimes, setAvailableTimes] = useState<{ [key: string]: string[] }>({});
   const [days, setDays] = useState<string[]>(getNextDays(5));
   const [loadingTimes, setLoadingTimes] = useState<boolean>(false);
-
-
   useEffect(() => {
     fetchAvailableTimes(days);
   }, []);
