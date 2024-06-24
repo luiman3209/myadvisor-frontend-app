@@ -42,7 +42,7 @@ const HomeLatestReviews: React.FC<HomeLatestReviewsProps> = ({ latestReviews }) 
                                         <RatingStars initialRating={review.rating} />
                                     </div>
                                 </div>
-                                <div className='text-sm text-slate-800 h-1/4'>
+                                <div className='text-sm text-slate-800'>
                                     <p >
                                         {review.review}
                                     </p>

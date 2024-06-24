@@ -36,7 +36,7 @@ const RatingStars: React.FC<RatingStarsProps> = ({ initialRating, isInput = fals
         <div className="flex space-x-1">
             {[1, 2, 3, 4, 5].map((index) => (
                 <Star
-                    key={index}
+                    key={'star'.concat(Math.random().toString())}
                     className={`w-6 h-6 ${index <= (hoverRating || selectedRating) ? 'text-cyan-400' : 'text-gray-400'}`}
                     fill={index <= (hoverRating || selectedRating) ? 'currentColor' : 'none'}
                     onMouseEnter={() => handleMouseEnter(index)}

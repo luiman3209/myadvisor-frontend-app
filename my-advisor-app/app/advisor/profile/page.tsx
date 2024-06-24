@@ -8,13 +8,14 @@ import CircularProgress from '@/components/misc/CircularProgress';
 import Navbar from '@/components/navbar/NavBar';
 import BookAppointmentV2 from '@/components/book_appointment/BookAppointmentV2';
 import { AdvisorEntity } from '@/types/entity/advisor_entity';
-import { Card } from '@/components/ui/card';
+import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { AdvisorPublicProfileDto, AdvisorReviewDto } from '@/types/types';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 import RatingStars from '@/components/misc/RatingStars';
 import BoxCollection from '@/components/misc/BoxCollection';
 import { ServiceType } from '@/types/entity/service_type_entity';
+import { Link } from 'lucide-react';
 
 const AdvisorPublicProfilePage: React.FC = () => {
   const [advisor, setAdvisor] = useState<AdvisorEntity | null>(null);
@@ -119,11 +120,41 @@ const AdvisorPublicProfilePage: React.FC = () => {
             <div className="mt-4">
               <h2 className="text-xl font-bold">What people think about {advisor.display_name}...</h2>
               {profileReviews.length === 0 ? <p>No reviews yet.</p> :
-                <ul>
-                  {profileReviews.map((review, index) => (
-                    <li key={index}>{review.review}</li>
-                  ))}
-                </ul>}
+                <div className='m-2 md:px-16 lg:px-56 2xl:px-72 justify-center'>
+
+
+                  <div className='grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-6 mt-2'>
+
+                    {profileReviews.map((review) => (
+
+
+                      <Card key={review.review_id} className="p-6 space-y-3 ">
+
+
+                        <div className='space-y-2'>
+
+
+                          <div className=''>
+                            <RatingStars initialRating={review.rating} />
+                          </div>
+
+                          <div className='text-sm text-slate-800'>
+                            <p >
+                              {review.review}
+                            </p>
+                          </div>
+                          <div className='text-slate-600 italic'>
+                            <p>{review.user_config.profile.first_name}</p>
+                          </div>
+                        </div>
+
+
+                      </Card>
+
+                    ))}
+
+                  </div>
+                </div>}
             </div>
           </div>
         ) : (

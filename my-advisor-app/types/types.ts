@@ -26,7 +26,7 @@ export interface AdvisorSearchParams {
 
 
 export interface AdvisorReviewDto {
-
+  review_id: number;
   review: string;
   rating: number;
   created_at: Date;
