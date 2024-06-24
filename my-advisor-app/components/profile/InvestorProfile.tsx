@@ -24,7 +24,6 @@ import { ServiceType } from "@/types/entity/service_type_entity";
 
 import { netWorthOptions, incomeRangeOptions } from "@/utils/constants";
 import { Label } from "../ui/label";
-import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
 import { Info, Lock } from "lucide-react";
 import AlertNotification from "../misc/AlertNotification";
 
@@ -297,7 +296,7 @@ const InvestorProfile: React.FC<InvestorProfileProps> = ({ investorProfile, avai
                                         <ShakeableInput
                                             type="text"
                                             placeholder="First name"
-                                            value={firstName}
+                                            value={firstName ?? ''}
                                             onChange={(e: ChangeEvent<HTMLInputElement>) => setFirstName(e.target.value)}
                                             error={errors.first_name}
                                         />
@@ -305,7 +304,7 @@ const InvestorProfile: React.FC<InvestorProfileProps> = ({ investorProfile, avai
                                         <ShakeableInput
                                             type="text"
                                             placeholder="Last name"
-                                            value={lastName}
+                                            value={lastName ?? ''}
                                             onChange={(e: ChangeEvent<HTMLInputElement>) => setLastName(e.target.value)}
                                             error={errors.last_name}
                                         />
@@ -313,7 +312,7 @@ const InvestorProfile: React.FC<InvestorProfileProps> = ({ investorProfile, avai
                                         <ShakeableInput
                                             type="text"
                                             placeholder="Phone number"
-                                            value={phoneNumber}
+                                            value={phoneNumber ?? ''}
                                             onChange={(e: ChangeEvent<HTMLInputElement>) => setPhoneNumber(e.target.value)}
                                             error={errors.phone_number}
                                         />
@@ -321,7 +320,7 @@ const InvestorProfile: React.FC<InvestorProfileProps> = ({ investorProfile, avai
                                         <ShakeableInput
                                             type="text"
                                             placeholder="Address"
-                                            value={address}
+                                            value={address ?? ''}
                                             onChange={(e: ChangeEvent<HTMLInputElement>) => setAddress(e.target.value)}
                                             error={errors.address}
                                         />

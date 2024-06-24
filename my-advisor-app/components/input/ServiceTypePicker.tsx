@@ -50,11 +50,11 @@ export function ServiceTypePicker({ serviceTypes, selectedServiceTypes, setSelec
 
     if (isDesktop) {
         return (
-            <>  <div className="flex flex-wrap  ">
+            <>  <div className="">
 
-                <div className="flex flex-wrap  space-x-1 ">
+                <div className="grid grid-cols-4 gap-4 mb-4">
                     {selectedServiceTypes.map((serviceType) => (
-                        <Card key={serviceType.service_id} className="flex items-center h-10 text-sm mt-1 ">
+                        <Card key={serviceType.service_id} className="flex items-center h-10 text-sm mt-1 justify-between ">
                             <span className="px-2">{serviceType.service_type_name}</span>
                             <Button className="bg-transparent hover:bg-red-500 text-red-500 hover:text-white" size="icon" onClick={() => removeServiceType(serviceType.service_id)}>
                                 <Trash className=" w-4 h-4" />
@@ -102,9 +102,9 @@ export function ServiceTypePicker({ serviceTypes, selectedServiceTypes, setSelec
             </DrawerContent>
         </Drawer></div>
 
-            <div className="flex flex-wrap  space-y-1.5">
+            <div className="grid grid-cols-4 gap-4 mb-4">
                 {selectedServiceTypes.map((serviceType) => (
-                    <div key={serviceType.service_id} className="flex items-center h-10 text-sm">
+                    <div key={serviceType.service_id} className="flex items-center h-10 text-sm justify-between">
                         <span className="px-2">{serviceType.service_type_name}</span>
                         <Button className="bg-transparent hover:bg-red-500 text-red-500 hover:text-white " size="icon" onClick={() => removeServiceType(serviceType.service_id)}>
                             <Trash className="w-4 h-4" />

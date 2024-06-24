@@ -116,8 +116,6 @@ const AdvisorProfile: React.FC<AdvisorProfileProps> = ({ advisorProfile, availab
             );
         };
 
-        console.log('Address:', address,)
-
         setFieldsChanged(hasFieldChanged());
     }, [
         firstName, lastName, phoneNumber, address, email,
@@ -127,7 +125,7 @@ const AdvisorProfile: React.FC<AdvisorProfileProps> = ({ advisorProfile, availab
     ]);
 
     const changeTab = (tab: string) => {
-        console.log('Address:', address,)
+
         setSelectedTab(tab);
     }
 
@@ -400,7 +398,7 @@ const AdvisorProfile: React.FC<AdvisorProfileProps> = ({ advisorProfile, availab
                                         <ShakeableInput
                                             type="text"
                                             placeholder="Address"
-                                            value={address}
+                                            value={address ?? ''}
                                             onChange={(e: ChangeEvent<HTMLInputElement>) => setAddress(e.target.value)}
                                             error={errors.address}
                                         />
