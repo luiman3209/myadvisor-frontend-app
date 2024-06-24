@@ -120,7 +120,7 @@ const AdvisorPublicProfilePage: React.FC = () => {
             <div className="mt-4">
               <h2 className="text-xl font-bold">What people think about {advisor.display_name}...</h2>
               {profileReviews.length === 0 ? <p>No reviews yet.</p> :
-                <div className='m-2 md:px-16 lg:px-56 2xl:px-72 justify-center'>
+                <div className='m-2   justify-center'>
 
 
                   <div className='grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-6 mt-2'>
