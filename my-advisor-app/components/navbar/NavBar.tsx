@@ -6,7 +6,7 @@ import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 
-import { Lock } from "lucide-react";
+import { Lock, LogIn } from "lucide-react";
 
 import {
   DropdownMenu,
@@ -23,6 +23,7 @@ import {
   UserCog,
 
 } from "lucide-react"
+import { Button } from '../ui/button';
 
 
 const Navbar: React.FC = () => {
@@ -51,7 +52,8 @@ const Navbar: React.FC = () => {
               height={50}
               className="flex-shrink-0"
             />
-            <span className="text-white text-2xl font-medium">MyAdvisor</span>
+            <span className="text-white text-2xl font-semibold">MyAdvisor</span>
+            <div className="bg-white p-1 rounded text-sm font-bold"> Demo </div>
 
           </div>
         </Link>
@@ -91,10 +93,13 @@ const Navbar: React.FC = () => {
               </DropdownMenu>
             */}
 
-              <Link href="/auth/login" className="nav-link">
-                <span className=' font-medium'>
-                  Login
-                </span>
+              <Link href="/auth/login" className="nav-link" onClick={closeMenu}>
+                <Button className='flex flex-row  items-center bg-cyan-600 hover:bg-cyan-400'>
+                  <LogIn className="mr-2 h-5 w-5" />
+                  <span className=' font-medium'>
+                    Login
+                  </span>
+                </Button>
               </Link>
             </>
           )}
@@ -126,14 +131,20 @@ const Navbar: React.FC = () => {
               </>
             ) : (
               <>
-                <Link href="/auth/register/investor" className="nav-link" onClick={closeMenu}>
+                {/*<Link href="/auth/register/investor" className="nav-link" onClick={closeMenu}>
                   I&apos;m an investor
                 </Link>
                 <Link href="/auth/register/advisor" className="nav-link" onClick={closeMenu}>
                   I&apos;m an advisor
-                </Link>
+                </Link>*/ }
+
                 <Link href="/auth/login" className="nav-link" onClick={closeMenu}>
-                  Login
+                  <Button className='flex flex-row  items-center bg-cyan-600 hover:bg-cyan-400'>
+                    <LogIn className="mr-2 h-5 w-5" />
+                    <span className=' font-medium'>
+                      Login
+                    </span>
+                  </Button>
                 </Link>
               </>
             )}

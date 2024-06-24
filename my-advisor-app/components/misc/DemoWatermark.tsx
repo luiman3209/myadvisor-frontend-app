@@ -1,6 +1,6 @@
 import React from 'react';
 import './DemoBanner.css';
-import { TriangleAlert } from 'lucide-react';
+import { Info, TriangleAlert } from 'lucide-react';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -26,20 +26,16 @@ const DemoBanner = () => {
                     </div>
                     <div>
                         <AlertDialog>
-                            <AlertDialogTrigger className='ml-2 underline'>Learn more...</AlertDialogTrigger>
+                            <AlertDialogTrigger className='ml-2 underline'><div className='flex flex-row items-center'><Info className='mr-1.5' />Learn more...</div></AlertDialogTrigger>
                             <AlertDialogContent>
                                 <AlertDialogHeader >
                                     <AlertDialogTitle>MyAdvisor Demo by Luigi Mangione</AlertDialogTitle>
                                     <AlertDialogDescription>
                                         <ul className="list-disc pl-4">
                                             <li>This website is a demo. All profiles are fictional, and some links may not be available.</li>
-                                            <li>In order to try private functionalities you need to be logged in.</li>
-                                            <li>You are free to register as an advisor or investor by confirming your email, but all your data will be erased after 1 hour for your privacy and security.</li>
-                                            <li>You can also log in using the public user button shown on the login page.</li>
-                                            <li>Once logged in, you are free to use the appointment booking and review systems.</li>
+                                            <li>In order to try private functionalities you need to login using the available demo accounts</li>
+                                            <li>Once logged in, you are free to try the booking and review systems.</li>
                                         </ul>
-
-
 
                                     </AlertDialogDescription>
                                 </AlertDialogHeader>

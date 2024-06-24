@@ -56,19 +56,19 @@ const ExplorerResultList: React.FC<ExplorerResultListProps> = ({
                   />
                 </div>
               </div>
-              <Tabs defaultValue="address" className="w-full text-sm">
+              <Tabs defaultValue="address" className="w-full text-sm flex flex-col h-full">
                 <TabsList className="flex space-x-2">
                   <TabsTrigger value="address" className="flex-1">Address</TabsTrigger>
                   <TabsTrigger value="online" className="flex-1"><Video className="w-4 h-4 pr-1" />Online</TabsTrigger>
                 </TabsList>
-                <TabsContent value="address" className="flex items-center space-x-2 mt-2">
+                <TabsContent value="address" className="flex p-4 justify-start items-center space-x-2 mt-2 h-full">
                   <MapPin className="w-6 h-6" />
-                  <a target="_blank" href={`https://www.google.com/maps/search/${advisor.office_address}`} className="text-blue-500 hover:underline">
+                  <Link target="_blank" href={`https://www.google.com/maps/search/${advisor.office_address}`} className=" hover:underline">
                     {advisor.office_address}
-                  </a>
+                  </Link>
                 </TabsContent>
-                <TabsContent value="online" className="mt-2">
-                  Online consultation
+                <TabsContent value="online" className=" h-full">
+                  Online consultation not available
                 </TabsContent>
               </Tabs>
             </div>

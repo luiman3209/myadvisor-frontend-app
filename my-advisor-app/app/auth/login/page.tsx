@@ -8,10 +8,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
-import { Label } from "@/components/ui/label";
-import { Card } from '@/components/ui/card';
-import ShakeableInput from '@/components/input/ShakableInput';
+
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { decodeQueryDataString, encodeQueryDataString } from '@/utils/commonUtils';
+import { Home, User, UserCog } from 'lucide-react';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -50,9 +50,57 @@ export default function Login() {
     try {
       if (!email || !password) {
         setErrors('Please enter email and password');
+        setTimeout(() => {
+          setErrors('');
+        }, 3000);
         return;
       }
       await login(email, password);
+      setLogInConfirmed(true);
+      if (redirect) {
+        router.push(redirect);
+      } else {
+        router.push('/');
+      }
+    } catch (err) {
+      setErrors('Invalid email or password');
+      // wait for 2 seconds and then remove the error message
+      setTimeout(() => {
+        setErrors('');
+      }, 3000);
+    }
+
+  };
+
+  const handleDemoInvestorLogin = async () => {
+
+    try {
+
+
+      const demoInvestorEmail = 'demo_investor_1@email.com';
+
+      await login(demoInvestorEmail, demoInvestorEmail);
+      setLogInConfirmed(true);
+      if (redirect) {
+        router.push(redirect);
+      } else {
+        router.push('/');
+      }
+    } catch (err) {
+      setErrors('Invalid email or password');
+      // wait for 2 seconds and then remove the error message
+      setTimeout(() => {
+        setErrors('');
+      }, 3000);
+    }
+
+  };
+
+  const handleDemoAdvisorLogin = async () => {
+
+    try {
+      const demoAdvisorEmail = 'demo_advisor_1@email.com';
+      await login(demoAdvisorEmail, demoAdvisorEmail);
       setLogInConfirmed(true);
       if (redirect) {
         router.push(redirect);
@@ -87,7 +135,7 @@ export default function Login() {
           </div>
           <div className='flex items-center justify-center h-3/4 '>
 
-            <Card className='p-8 border-cyan-500 hover:border-cyan-400'>
+            {/*<Card className='p-8 border-cyan-500 hover:border-cyan-400'>
               <form onSubmit={handleSubmit} className="mx-auto w-[350px] space-y-6">
                 <div className="text-center">
                   <h1 className="text-3xl font-bold">Login</h1>
@@ -126,7 +174,46 @@ export default function Login() {
                   </Link>
                 </div>
               </form>
+            </Card> */}
+
+            <Card className='p-8 border-cyan-500 hover:border-cyan-400'>
+              <div className="flex flex-col mx-auto w-[350px] space-y-6 justify-center items-center">
+
+                <CardHeader className='text-center'>
+                  <CardTitle>Login with demo account</CardTitle>
+                  <CardDescription>Login with the desired demo account type</CardDescription>
+                </CardHeader>
+                <CardContent className='flex flex-col space-y-4 justify-center items-center'>
+
+                  <div className='flex flex-row'>
+
+                    <Button onClick={() => handleDemoInvestorLogin()} className='bg-cyan-500 hover:bg-cyan-400'><User className='w-6 h-6 mr-2' />Login as Demo Investor</Button>
+                  </div>
+                  <div className='flex flex-row'>
+
+                    <Button onClick={() => handleDemoAdvisorLogin()} className='bg-cyan-500 hover:bg-cyan-400'><UserCog className='w-6 h-6 mr-2' />Login as Demo Advisor</Button>
+                  </div>
+
+                  <div>
+                    <Button className='bg-cyan-500 hover:bg-cyan-400' onClick={() => router.push("/")}>
+                      <Home />
+                    </Button>
+                  </div>
+
+                  <Link href="/privacy-policy" className="text-sm underline text-center">
+                    Privacy Policy
+                  </Link>
+
+                  {errors &&
+                    <div className='border border-red-500 bg-red-100 text-black text-sm p-2 rounded'>
+                      {errors}
+                    </div>}
+
+                </CardContent>
+
+              </div>
             </Card>
+
           </div>
 
         </div>
