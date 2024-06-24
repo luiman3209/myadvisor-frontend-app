@@ -18,7 +18,7 @@ import { Button } from '../ui/button';
 const DemoBanner = () => {
     return (
         <div className="fixed bottom-0 left-0 w-full z-50">
-            <div className="bg-gradient-to-r from-cyan-500 to-cyan-300 py-3 px-6 text-white text-center shadow-lg demo-banner md:text-xl">
+            <div className="bg-gradient-to-r from-cyan-500 to-cyan-300 py-3 px-6 text-white text-center shadow-lg demo-banner md:text-xl md:max-h-12">
                 <div className='flex items-center justify-center'>
                     <TriangleAlert className='w-7 h-7 mr-2' />
                     <div className='font-semibold'>
@@ -48,7 +48,7 @@ const DemoBanner = () => {
 
                                         <Link href="/privacy-policy" target="_blank" className='underline '>
 
-                                            Read our Privacy Policy
+                                            Privacy Policy
 
                                         </Link>
                                     </Button>

@@ -6,6 +6,8 @@ import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 
+import { Lock } from "lucide-react";
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -69,17 +71,30 @@ const Navbar: React.FC = () => {
               <button onClick={logout} className="nav-link">Logout</button>
             </>
           ) : (
-            <>
+            <> { /* 
+            
               <DropdownMenu>
-                <DropdownMenuTrigger className="nav-link">Register for free</DropdownMenuTrigger>
+                <DropdownMenuTrigger className="nav-link "><div className='flex flex-row items-center text-gray-200'>
+                  <Lock className="w-5 h-5 mr-1.5" /> Register for free
+                </div></DropdownMenuTrigger>
                 <DropdownMenuContent>
-                  <DropdownMenuItem className="nav-menu"><div className='flex'><User className="mr-2 h-5 w-5" /><Link href="/auth/register/investor">I&apos;m an investor</Link></div></DropdownMenuItem>
-                  <DropdownMenuItem className="nav-menu"><div className='flex'><UserCog className="mr-2 h-5 w-5" /><Link href="/auth/register/advisor">I&apos;m an advisor</Link></div></DropdownMenuItem>
+                  <DropdownMenuItem className="nav-menu">
+                    <div className='flex'>
+                    <User className="mr-2 h-5 w-5" />
+                    <Link href="/auth/register/investor">I&apos;m an investor</Link>
+                    </div>
+                    </DropdownMenuItem>
+                  <DropdownMenuItem className="nav-menu"><div className='flex'>
+                    <UserCog className="mr-2 h-5 w-5" /><Link href="/auth/register/advisor">I&apos;m an advisor</Link></div></DropdownMenuItem>
 
                 </DropdownMenuContent>
               </DropdownMenu>
+            */}
+
               <Link href="/auth/login" className="nav-link">
-                Login
+                <span className=' font-medium'>
+                  Login
+                </span>
               </Link>
             </>
           )}

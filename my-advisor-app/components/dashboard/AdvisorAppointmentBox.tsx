@@ -48,7 +48,9 @@ const AdvisorAppointmentBox: React.FC<AdvisorAppointmentBox> = ({ appointment, s
                 <div className="flex items-center justify-between">
 
                     {
-                        isInvestorType ? <Link className="text-sm text-gray-500 hover:underline" href={"/advisor/profile?advisor=" + appointment.advisor.advisor_id}>{appointment.advisor.display_name}</Link> :
+                        isInvestorType ?
+                            <Link className="text-sm text-gray-500 hover:underline" href={"/advisor/profile?advisor=" + appointment.advisor.advisor_id}>
+                                {appointment.advisor.display_name}</Link> :
                             <p className="text-sm text-gray-500">{appointment.user_config.profile.first_name}</p>}
 
 

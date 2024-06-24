@@ -23,7 +23,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <ServiceProvider>
           <AuthProvider>
-            <div className="">
+            <div className="pb-12">
               <DemoWatermark />
               {children}
 

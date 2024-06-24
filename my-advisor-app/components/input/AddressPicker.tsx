@@ -39,7 +39,7 @@ const AddressPicker: React.FC<AddressPickerProps> = ({ onAddressSelect }) => {
     };
 
     return (
-        <div>
+        <div >
             <Input
                 type="text"
                 value={query}

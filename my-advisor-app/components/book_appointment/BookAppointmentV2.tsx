@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/drawer";
 import TimePickerController from './TimePickerController';
 import { formatDateToUTCString } from '@/utils/dateUtils';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface BookAppointmentV2Props {
   advisorId: number;
@@ -39,6 +40,9 @@ const BookAppointmentV2: React.FC<BookAppointmentV2Props> = ({ advisorId, office
   const [availableTimes, setAvailableTimes] = useState<{ [key: string]: string[] }>({});
   const [days, setDays] = useState<string[]>(getNextDays(5));
   const [loadingTimes, setLoadingTimes] = useState<boolean>(false);
+
+  const { user } = useAuth();
+
   useEffect(() => {
     fetchAvailableTimes(days);
   }, []);
@@ -95,7 +99,8 @@ const BookAppointmentV2: React.FC<BookAppointmentV2Props> = ({ advisorId, office
     return (availableTimes1stDay && availableTimes1stDay.length > 0 &&
 
       <div className="md:hidden space-y-2">
-        <Select value={selectedService} onValueChange={setSelectedService}>
+
+        {(!user || user.role === 'investor') && <Select value={selectedService} onValueChange={setSelectedService}>
           <SelectTrigger className="w-full py-2 border border-gray-300 rounded flex items-center justify-between ">
             <SelectValue placeholder="Select a service" />
           </SelectTrigger>
@@ -108,7 +113,7 @@ const BookAppointmentV2: React.FC<BookAppointmentV2Props> = ({ advisorId, office
               ))}
             </SelectGroup>
           </SelectContent>
-        </Select>
+        </Select>}
         <div className='font-semibold'>{formatDateToUTCString(new Date(firstDay), "MMM d")}</div>
         <div className='flex flex-row space-x-1 justify-center'>
 
@@ -144,59 +149,60 @@ const BookAppointmentV2: React.FC<BookAppointmentV2Props> = ({ advisorId, office
             {availableTimes1stDay[3]}
           </Button>
 
-          <Drawer>
-            <DrawerTrigger className='bg-gray-200 p-1.5 rounded'>More</DrawerTrigger>
-            <DrawerContent className='h-full'>
-              <DrawerHeader>
-                <DrawerTitle>Select a service and a day</DrawerTitle>
+          {(!user || user.role === 'investor') &&
+            <Drawer>
+              <DrawerTrigger className='bg-gray-200 p-1.5 rounded'>More</DrawerTrigger>
+              <DrawerContent className='h-full'>
+                <DrawerHeader>
+                  <DrawerTitle>Select a service and a day</DrawerTitle>
 
-              </DrawerHeader>
+                </DrawerHeader>
 
-              <div className="m-6 flex">
-                <Select value={selectedService} onValueChange={setSelectedService}>
-                  <SelectTrigger className="w-full py-2 border border-gray-300 rounded flex items-center justify-between ">
-                    <SelectValue placeholder="Select a service" />
-                  </SelectTrigger>
-                  <SelectContent className="border border-gray-300 rounded bg-white">
-                    <SelectGroup>
-                      {services.map((service) => (
-                        <SelectItem key={service.service_id} value={service.service_type_name} className=" cursor-pointer hover:bg-gray-100">
-                          {service.service_type_name}
-                        </SelectItem>
-                      ))}
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </div>
+                <div className="m-6 flex">
+                  <Select value={selectedService} onValueChange={setSelectedService}>
+                    <SelectTrigger className="w-full py-2 border border-gray-300 rounded flex items-center justify-between ">
+                      <SelectValue placeholder="Select a service" />
+                    </SelectTrigger>
+                    <SelectContent className="border border-gray-300 rounded bg-white">
+                      <SelectGroup>
+                        {services.map((service) => (
+                          <SelectItem key={service.service_id} value={service.service_type_name} className=" cursor-pointer hover:bg-gray-100">
+                            {service.service_type_name}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </div>
 
-              <TimePickerController
-                initiallyExpanded={true}
-                advisorId={advisorId}
-                selectedDay={selectedDay}
-                selectedTime={selectedTime}
-                setSelectedDay={setSelectedDay}
-                setSelectedTime={setSelectedTime}
-              />
+                <TimePickerController
+                  initiallyExpanded={true}
+                  advisorId={advisorId}
+                  selectedDay={selectedDay}
+                  selectedTime={selectedTime}
+                  setSelectedDay={setSelectedDay}
+                  setSelectedTime={setSelectedTime}
+                />
 
-              <DrawerFooter>
-                {selectedDay && selectedTime && selectedService && (
-                  <div className='flex items-center justify-center mt-2'>
-                    <div className="w-min">
-                      <Button className="  bg-cyan-500 hover:bg-cyan-400" onClick={confirmBooking}>
-                        <div className='flex flex-row space-x-2'>
-                          <span>Confirm booking for {selectedService} on {formatDateToUTCString(new Date(selectedDay), "MMM, dd")} at {selectedTime}</span><ChevronRight className='w-5 h-5' />
-                        </div>
-                      </Button>
-                      {bookingError && <div className="mt-2 text-red-500">{bookingError}</div>}
+                <DrawerFooter>
+                  {selectedDay && selectedTime && selectedService && (
+                    <div className='flex items-center justify-center mt-2'>
+                      <div className="w-min">
+                        <Button className="  bg-cyan-500 hover:bg-cyan-400" onClick={confirmBooking}>
+                          <div className='flex flex-row space-x-2'>
+                            <span>Confirm booking for {selectedService} on {formatDateToUTCString(new Date(selectedDay), "MMM, dd")} at {selectedTime}</span><ChevronRight className='w-5 h-5' />
+                          </div>
+                        </Button>
+                        {bookingError && <div className="mt-2 text-red-500">{bookingError}</div>}
+                      </div>
                     </div>
-                  </div>
-                )}
-                <DrawerClose>
-                  <Button variant="outline">Cancel</Button>
-                </DrawerClose>
-              </DrawerFooter>
-            </DrawerContent>
-          </Drawer>
+                  )}
+                  <DrawerClose>
+                    <Button variant="outline">Cancel</Button>
+                  </DrawerClose>
+                </DrawerFooter>
+              </DrawerContent>
+            </Drawer>}
 
 
         </div>
@@ -219,23 +225,30 @@ const BookAppointmentV2: React.FC<BookAppointmentV2Props> = ({ advisorId, office
 
   return (
     <div className="p-5 flex flex-col ">
-      <div className='flex items-center space-x-1 '> <BadgeInfo className='w-6 h-6 mr-1.5' /> <Label className='text-lg'>Select service and time</Label></div>
-      <div className="my-5">
-        <Select value={selectedService} onValueChange={setSelectedService}>
-          <SelectTrigger className="w-full py-2 border border-gray-300 rounded flex items-center justify-between ">
-            <SelectValue placeholder="Select a service" />
-          </SelectTrigger>
-          <SelectContent className="border border-gray-300 rounded bg-white">
-            <SelectGroup>
-              {services.map((service) => (
-                <SelectItem key={service.service_id} value={service.service_type_name} className=" cursor-pointer hover:bg-gray-100">
-                  {service.service_type_name}
-                </SelectItem>
-              ))}
-            </SelectGroup>
-          </SelectContent>
-        </Select>
-      </div>
+      {(!user || user.role === 'investor') &&
+        <div>
+          <div className='flex items-center space-x-1 '> <BadgeInfo className='w-6 h-6 mr-1.5' /> <Label className='text-lg'>
+            Select service and time
+          </Label></div>
+
+          <div className="my-5">
+            <Select value={selectedService} onValueChange={setSelectedService}>
+              <SelectTrigger className="w-full py-2 border border-gray-300 rounded flex items-center justify-between ">
+                <SelectValue placeholder="Select a service" />
+              </SelectTrigger>
+              <SelectContent className="border border-gray-300 rounded bg-white">
+                <SelectGroup>
+                  {services.map((service) => (
+                    <SelectItem key={service.service_id} value={service.service_type_name} className=" cursor-pointer hover:bg-gray-100">
+                      {service.service_type_name}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+      }
 
       <TimePickerController
         advisorId={advisorId}

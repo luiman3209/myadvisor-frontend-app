@@ -162,7 +162,9 @@ const ConfirmBook: React.FC = () => {
                                             <div className="flex items-center space-x-4">
                                                 <Avatar ><AvatarImage src={advisor.img_url} alt={advisor.display_name} />
                                                     <AvatarFallback>CN</AvatarFallback> </Avatar>
-                                                <p className='font-semibold'>{(advisor.display_name)}</p>
+                                                <Link href={"/advisor/profile/?advisor=" + advisor.advisor_id} className="">
+                                                    <span className='font-semibold'>{(advisor.display_name)}</span>
+                                                </Link>
                                             </div>
                                         </div>
                                         <Button onClick={handleConfirm} className="w-full bg-cyan-500 hover:bg-cyan-400">
@@ -197,9 +199,13 @@ const ConfirmBook: React.FC = () => {
                                         <div className="space-y-2">
                                             <Label>Booked Advisor</Label>
                                             <div className="flex items-center space-x-4">
-                                                <Avatar ><AvatarImage src={advisor.img_url} alt={advisor.display_name} />
-                                                    <AvatarFallback>CN</AvatarFallback> </Avatar>
-                                                <p className='font-semibold'>{(advisor.display_name)}</p>
+                                                <Avatar >
+                                                    <AvatarImage src={advisor.img_url} alt={advisor.display_name} />
+                                                    <AvatarFallback>CN</AvatarFallback>
+                                                </Avatar>
+                                                <Link href={"/advisor/profile/?advisor=" + advisor.advisor_id} className="">
+                                                    <span className='font-semibold'>{(advisor.display_name)}</span>
+                                                </Link>
                                             </div>
                                         </div>
                                         <Button onClick={() => router.push('/dashboard')} className="w-full bg-cyan-500 hover:bg-cyan-400">

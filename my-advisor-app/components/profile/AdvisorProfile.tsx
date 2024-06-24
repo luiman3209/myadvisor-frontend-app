@@ -21,7 +21,7 @@ import { ServiceType } from "@/types/entity/service_type_entity";
 
 import { Label } from "../ui/label";
 import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
-import { Info, Pencil } from "lucide-react";
+import { Info, Pencil, Lock } from "lucide-react";
 import { AdvisorPrivateProfileRespDto } from "@/types/types";
 import { createOrUpdateAdvisor } from "@/services/advisorService";
 import AddressPicker from "../input/AddressPicker";
@@ -30,6 +30,7 @@ import { QualificationEntity } from "@/types/entity/qualification_entity";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { calculateEndTimes, transformTime } from "@/utils/commonUtils";
 import { allTimes } from "@/utils/constants";
+import AlertNotification from "../misc/AlertNotification";
 
 interface AdvisorProfileProps {
     advisorProfile: AdvisorPrivateProfileRespDto;
@@ -124,21 +125,27 @@ const AdvisorProfile: React.FC<AdvisorProfileProps> = ({ advisorProfile, availab
     ]);
 
     const changeTab = (tab: string) => {
-        setFieldsChanged(false);
         setSelectedTab(tab);
     }
 
     const requestUpdate = (tab: string) => {
-        if (tab === 'general') {
-            updateProfileData();
+        try {
+            if (tab === 'general') {
+                updateProfileData();
+            }
+            else if (tab === 'advisor') {
+                updateAdvisorInfo();
+            }
+            else if (tab === 'security') {
+                updateUserData();
+            }
+            setFieldsChanged(false);
+
+        } catch (err) {
+            showError('Something went wrong during update, refresh and try again');
         }
-        else if (tab === 'advisor') {
-            updateAdvisorInfo();
-        }
-        else if (tab === 'security') {
-            updateUserData();
-        }
-        setFieldsChanged(false);
+
+
     };
 
     const updateSelectedQualifications = (qualifications: QualificationEntity[]) => {
@@ -180,12 +187,11 @@ const AdvisorProfile: React.FC<AdvisorProfileProps> = ({ advisorProfile, availab
         if (!data.phone_number) {
             newErrors.phone_number = 'Phone number is required';
         }
+        if (!/^\d+$/.test(phoneNumber)) newErrors.phoneNumber = "Phone Number must contain only digits";
         if (data.phone_number.length < 10) {
             newErrors.phone_number = 'Phone number must be at least 10 characters';
         }
-        if (!data.address) {
-            newErrors.address = 'Address is required';
-        }
+
 
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
@@ -205,7 +211,7 @@ const AdvisorProfile: React.FC<AdvisorProfileProps> = ({ advisorProfile, availab
             }
         }
         catch (err) {
-            showError('Something went wrong during update, refresh and try again');
+            throw err;
         }
     }
 
@@ -262,7 +268,7 @@ const AdvisorProfile: React.FC<AdvisorProfileProps> = ({ advisorProfile, availab
             }
         }
         catch (err) {
-            showError('Something went wrong during update, refresh and try again');
+            throw err;
         }
     }
 
@@ -297,7 +303,7 @@ const AdvisorProfile: React.FC<AdvisorProfileProps> = ({ advisorProfile, availab
             }
         }
         catch (err) {
-            showError('Something went wrong during update, refresh and try again');
+            throw err;
         }
     }
 
@@ -311,45 +317,45 @@ const AdvisorProfile: React.FC<AdvisorProfileProps> = ({ advisorProfile, availab
     };
 
     return (
-        <div className="relative flex min-h-screen w-full flex-col">
+        <div className=" w-full min-h-screen bg-gray-100">
 
-            <main className="flex min-h-[calc(100vh_-_theme(spacing.16))] flex-1 flex-col gap-4 bg-muted/40 p-4 md:gap-8 md:p-10">
+            <main className="relative flex flex-col gap-4 p-4 md:gap-8 md:p-10">
                 <div className="mx-auto grid w-full max-w-6xl gap-2">
                     <h1 className="text-3xl font-semibold">Profile</h1>
                 </div>
 
                 {/** Message alert */}
                 {
-                    errorMessage && <div className="fixed bottom-0 right-0 mb-4 mr-4">
-                        <Alert className="bg-red-500 text-white">
-                            <Info className="h-4 w-4" />
-                            <AlertTitle>Error</AlertTitle>
-                            <AlertDescription>
-                                {errorMessage}
-                            </AlertDescription>
-                        </Alert>
-                    </div>
+                    errorMessage && <AlertNotification
+                        isError={true}
+                        title="Something went wrong!"
+                        message={errorMessage}
+                    />
                 }
                 {/** Success alert */}
                 {
-                    updateMessage && <div className="fixed bottom-0 right-0 mb-4 mr-4">
-                        <Alert>
-                            <Info className="h-4 w-4" />
-                            <AlertTitle>Profile Updated!</AlertTitle>
-                            <AlertDescription>
-                                Your profile is now up to date. Thanks for staying current!
-                            </AlertDescription>
-                        </Alert>
-                    </div>
+                    updateMessage &&
+                    <AlertNotification
+                        isError={false}
+                        title="Profile Updated!"
+                        message="Your profile is now up to date. Thanks for staying current!"
+                    />
+
                 }
 
-                <div className="mx-auto grid w-full max-w-6xl items-start gap-6 md:grid-cols-[180px_1fr] lg:grid-cols-[250px_1fr]">
+                <div className="mx-auto grid w-full max-w-6xl items-start gap-6 md:grid-cols-[180px_1fr] lg:grid-cols-[250px_1fr] ">
                     <nav className="grid gap-4 text-sm text-muted-foreground">
                         <Link href="#" className={selectedTab === 'general' ? "font-semibold text-primary" : ""} onClick={() => changeTab('general')}>
                             General
                         </Link>
                         <Link href="#" className={selectedTab === 'advisor' ? "font-semibold text-primary" : ""} onClick={() => changeTab('advisor')}>Advisor info</Link>
-                        <Link href="#" className={selectedTab === 'security' ? "font-semibold text-primary" : ""} onClick={() => changeTab('security')}>Security</Link>
+                        <div className="flex flex-row items-center text-gray-400">
+
+                            {/* <Link href="#" className={selectedTab === 'security' ? "font-semibold text-primary" : ""} onClick={() => changeTab('security')}> Security</Link>*/}
+                            Security
+                            <Lock className="w-3 h-3 ml-1" />
+
+                        </div>
                     </nav>
 
                     <div className="flex flex-col">

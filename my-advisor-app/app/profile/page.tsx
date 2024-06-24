@@ -96,7 +96,7 @@ const Profile: React.FC = () => {
 
 
   return (
-    <div>
+    <div className=''>
       <Navbar />
 
       {loading ? <div className="flex justify-center my-4">

@@ -10,13 +10,14 @@ import { deleteAppointment, filterAdvisorAppointments } from '@/services/appoint
 import { filterAdvisorReviews, reviewAppointment } from '@/services/reviewService';
 
 import { useAuth } from '@/contexts/AuthContext';
-import Footer from '@/components/footer/Footer';
+
 import { useServiceContext } from '@/contexts/ServicesContext';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Info } from 'lucide-react';
 import AdvisorReviewBox from '@/components/dashboard/AdvisorReviewBox';
 import AdvisorAppointmentBox from '@/components/dashboard/AdvisorAppointmentBox';
 import { Card } from '@/components/ui/card';
+import AlertNotification from '@/components/misc/AlertNotification';
 
 
 const DashboardPage: React.FC = () => {
@@ -159,27 +160,19 @@ const DashboardPage: React.FC = () => {
       <div className="h-auto mx-auto p-12 lg:w-1/2 flex flex-col min-h-screen">
         {/** Message alert */}
         {
-          errorMessage && <div className="fixed bottom-0 right-0 mb-4 mr-4">
-            <Alert className="bg-red-500 text-white">
-              <Info className="h-4 w-4" />
-              <AlertTitle>Error</AlertTitle>
-              <AlertDescription>
-                {errorMessage}
-              </AlertDescription>
-            </Alert>
-          </div>
+          errorMessage && <AlertNotification
+            isError={true}
+            title="Something went wrong!"
+            message={errorMessage}
+          />
         }
         {/** Success alert */}
         {
-          updateMessage && <div className="fixed bottom-0 right-0 mb-4 mr-4">
-            <Alert>
-              <Info className="h-4 w-4" />
-              <AlertTitle>Success!</AlertTitle>
-              <AlertDescription>
-                {updateMessage}
-              </AlertDescription>
-            </Alert>
-          </div>
+          updateMessage && <AlertNotification
+            isError={false}
+            title="Success!"
+            message={updateMessage}
+          />
         }
         <Card className="items-center p-8">
 
@@ -219,7 +212,7 @@ const DashboardPage: React.FC = () => {
 
         </Card>
       </div>
-      <Footer />
+
     </div>
   );
 };

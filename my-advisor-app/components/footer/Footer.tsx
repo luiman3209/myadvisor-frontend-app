@@ -1,5 +1,7 @@
 // components/Footer.tsx
 
+import Link from "next/link";
+
 const Footer: React.FC = () => {
   return (
     <footer className="bg-gray-800 text-gray-200 py-8">
@@ -16,7 +18,12 @@ const Footer: React.FC = () => {
               {section.links.map((link) => (
                 <li key={link} className="mb-2">
                   <div className="text-gray-400 hover:text-white">
-                    {link}
+
+                    {link !== 'Privacy policy' ? link :
+
+                      <Link href="/privacy-policy" target="_blank" className=' ' > {link} </Link>
+
+                    }
                   </div>
                 </li>
               ))}
@@ -24,10 +31,7 @@ const Footer: React.FC = () => {
           </div>
         ))}
       </div>
-      <hr className="border-gray-700 my-8" />
-      <div className="text-center">
-        www.myadvisor.com © 2024
-      </div>
+
     </footer>
   );
 };
