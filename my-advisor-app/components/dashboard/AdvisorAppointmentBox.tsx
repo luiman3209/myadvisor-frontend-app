@@ -2,7 +2,7 @@ import { AppointmentDto } from "@/types/types";
 import { formatDateToUTCString } from "@/utils/dateUtils";
 import { Card } from "../ui/card";
 import { Button } from "../ui/button";
-import { CalendarX2, Check, CircleAlert, Mail, Star, X } from "lucide-react";
+import { CalendarX2, Check, CircleAlert, Lock, Star, X } from "lucide-react";
 
 import { ServiceType } from "@/types/entity/service_type_entity";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "../ui/alert-dialog";
@@ -64,7 +64,7 @@ const AdvisorAppointmentBox: React.FC<AdvisorAppointmentBox> = ({ appointment, s
 
             </div>
             <div className="flex space-x-2 flex-wrap ">
-                <Button className="px-3 py-1 text-sm text-white bg-cyan-500 rounded-md"><Mail className="w-4 h-4 mr-1.5" />Chat</Button>
+                <Button className="px-3 py-1 text-sm text-white bg-cyan-500 rounded-md" disabled={true}><Lock className="w-4 h-4 mr-1.5" />Chat</Button>
                 <AlertDialog>
                     <AlertDialogTrigger asChild>
                         <Button variant="outline" className="hover:bg-red-500 hover:text-white"><CalendarX2 className="w-4 h-4 mr-1.5" />Cancel</Button>

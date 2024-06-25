@@ -15,9 +15,9 @@ const HomeCTAs = () => {
 
             <div className="grid grid-cols-2 xl:grid-cols-4 gap-8  justify-center lg:px-64  ">
 
-                <Card className="p-6 h-72">
+                <Card className="p-6 h-96">
 
-                    <div className="flex flex-row space-x-2 font-semibold text-lg h-1/4 mb-1.5">
+                    <div className="flex flex-row space-x-2 font-semibold text-lg h-1/4 mb-3">
                         <CalendarPlus className="text-cyan-500 mr-1 w-10 h-10" />
                         <span>Book a meeting: it&apos;s easy and free!</span>
                     </div>
@@ -27,9 +27,9 @@ const HomeCTAs = () => {
 
                     </div>
                 </Card>
-                <Card className="p-6 h-72">
+                <Card className="p-6 h-96">
 
-                    <div className="flex flex-row space-x-2 font-semibold text-lg h-1/4 mb-1.5">
+                    <div className="flex flex-row space-x-2 font-semibold text-lg h-1/4 mb-3">
                         <Search className="text-cyan-500 mr-1 w-8 h-8" />
                         <span>Find an advisor near you</span>
                     </div>
@@ -40,9 +40,9 @@ const HomeCTAs = () => {
 
                     </div>
                 </Card>
-                <Card className="p-6 h-72">
+                <Card className="p-6 h-96">
 
-                    <div className="flex flex-row space-x-2 font-semibold text-lg h-1/4 mb-1.5">
+                    <div className="flex flex-row space-x-2 font-semibold text-lg h-1/4 mb-3">
                         <MessagesSquare className="text-cyan-500 mr-1 w-8 h-8" />
                         <span>Request consultation</span>
                     </div>
@@ -52,9 +52,9 @@ const HomeCTAs = () => {
 
                     </div>
                 </Card>
-                <Card className="p-6 h-72">
+                <Card className="p-6 h-96">
 
-                    <div className="flex flex-row space-x-2 mb-1.5 font-semibold text-lg h-1/4 mb-1.5">
+                    <div className="flex flex-row space-x-2 font-semibold text-lg h-1/4 mb-3">
                         <Bell className="text-cyan-500 mr-1 w-8 h-8" />
                         <span>Email reminders</span>
                     </div>

@@ -13,6 +13,8 @@ interface TimePickerControllerProps {
     setSelectedDay: (day: string | null) => void;
     setSelectedTime: (time: string | null) => void;
     initiallyExpanded?: boolean;
+    initialAvailableTimes?: { [key: string]: string[] };
+    initialDays: string[];
 
 }
 
@@ -25,19 +27,16 @@ const TimePickerController: React.FC<TimePickerControllerProps> = ({
     selectedTime,
     setSelectedDay,
     setSelectedTime,
-    initiallyExpanded
-
+    initiallyExpanded,
+    initialAvailableTimes,
+    initialDays
 }) => {
 
     const [expanded, setExpanded] = useState<boolean>(initiallyExpanded ?? false);
     const [direction, setDirection] = useState<'left' | 'right'>('right');
-    const [days, setDays] = useState<string[]>(getNextDays(5));
+    const [days, setDays] = useState<string[]>(initialDays);
     const [loadingTimes, setLoadingTimes] = useState<boolean>(false);
-    const [availableTimes, setAvailableTimes] = useState<{ [key: string]: string[] }>({});
-
-    useEffect(() => {
-        fetchAvailableTimes(days);
-    }, []);
+    const [availableTimes, setAvailableTimes] = useState<{ [key: string]: string[] }>(initialAvailableTimes ?? {});
 
     const fetchAvailableTimes = async (newDays: string[]) => {
         setLoadingTimes(true);

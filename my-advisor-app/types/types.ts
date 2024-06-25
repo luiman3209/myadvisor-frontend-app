@@ -43,6 +43,7 @@ export interface UserFirstNameDto {
 }
 export interface AdvisorPublicProfileDto {
   advisor: AdvisorEntity;
+  freeWindows: { [key: string]: string[] };
   profileReviews: AdvisorReviewDto[];
   serviceTypes: ServiceType[];
   qualifications: QualificationEntity[];
@@ -150,7 +151,7 @@ export interface AdvisorSearchResultResp {
 
   advisor_services: number[];
 
-  free_windows: { key: string, value: string }[];
+  free_windows: { [key: string]: string[] };
 
 }
 

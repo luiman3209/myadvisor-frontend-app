@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import { AdvisorSearchResultResp } from "@/types/types";
 import { ServiceType } from "@/types/entity/service_type_entity";
 import Link from "next/link";
+import { getNextDays } from "@/utils/commonUtils";
 
 
 
@@ -74,6 +75,8 @@ const ExplorerResultList: React.FC<ExplorerResultListProps> = ({
             </div>
             <div className="md:w-2/3 mt-4 md:mt-0 md:border-l-2 md:ml-2">
               <BookAppointmentV2
+                initialDays={getNextDays(5)}
+                initialAvailableTimes={advisor.free_windows}
                 advisorId={advisor.advisor_id}
                 officeAddress={advisor.office_address}
                 services={availableServices.filter(s => advisor.advisor_services.includes(s.service_id))}

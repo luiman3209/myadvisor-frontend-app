@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { ChevronRight, BadgeInfo } from 'lucide-react';
+import React, { useState } from 'react';
+import { ChevronRight, BadgeInfo, Lock } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
-import { getFreeWindows } from '@/services/appointmentService';
 import { ServiceType } from '@/types/entity/service_type_entity';
-import { encodeQueryData, getNextDays } from '@/utils/commonUtils';
+import { encodeQueryData } from '@/utils/commonUtils';
 import { Label } from '../ui/label';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 
@@ -28,38 +27,23 @@ interface BookAppointmentV2Props {
   advisorId: number;
   officeAddress: string;
   services: ServiceType[];
+  initialDays: string[];
+  initialAvailableTimes?: { [key: string]: string[] };
 }
 
-const BookAppointmentV2: React.FC<BookAppointmentV2Props> = ({ advisorId, officeAddress, services }) => {
+const BookAppointmentV2: React.FC<BookAppointmentV2Props> = ({ advisorId, officeAddress, services, initialDays, initialAvailableTimes }) => {
 
   const router = useRouter();
   const [selectedService, setSelectedService] = useState<string | undefined>();
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [bookingError, setBookingError] = useState<string | null>(null);
-  const [availableTimes, setAvailableTimes] = useState<{ [key: string]: string[] }>({});
-  const [days, setDays] = useState<string[]>(getNextDays(5));
-  const [loadingTimes, setLoadingTimes] = useState<boolean>(false);
+  const [availableTimes, setAvailableTimes] = useState<{ [key: string]: string[] }>(initialAvailableTimes ?? {});
+  const [days, setDays] = useState<string[]>(initialDays);
 
   const { user } = useAuth();
 
-  useEffect(() => {
-    fetchAvailableTimes(days);
-  }, []);
-
-  const fetchAvailableTimes = async (newDays: string[]) => {
-    setLoadingTimes(true);
-    try {
-      const startDate = newDays[0];
-      const endDate = newDays[newDays.length - 1].concat('T23:59:59Z');
-      const times = await getFreeWindows(advisorId, startDate, endDate);
-      setAvailableTimes(times);
-    } catch (error) {
-      console.error('Failed to fetch available times:', error);
-    }
-    setLoadingTimes(false);
-  };
-
+  const inputReady = selectedDay && selectedTime && selectedService;
 
   const handleTimeSlotClick = (day: string, time: string) => {
     setSelectedDay(day);
@@ -69,7 +53,7 @@ const BookAppointmentV2: React.FC<BookAppointmentV2Props> = ({ advisorId, office
 
 
   const confirmBooking = async () => {
-    if (selectedDay && selectedTime && selectedService) {
+    if (inputReady) {
       try {
         setBookingError(null);
 
@@ -96,24 +80,25 @@ const BookAppointmentV2: React.FC<BookAppointmentV2Props> = ({ advisorId, office
     const firstDay = days[0];
     const availableTimes1stDay = availableTimes[firstDay];
 
-    return (availableTimes1stDay && availableTimes1stDay.length > 0 &&
+    return (availableTimes1stDay && availableTimes1stDay.length > 0 ?
 
       <div className="md:hidden space-y-2">
 
-        {(!user || user.role === 'investor') && <Select value={selectedService} onValueChange={setSelectedService}>
-          <SelectTrigger className="w-full py-2 border border-gray-300 rounded flex items-center justify-between ">
-            <SelectValue placeholder="Select a service" />
-          </SelectTrigger>
-          <SelectContent className="border border-gray-300 rounded bg-white">
-            <SelectGroup>
-              {services.map((service) => (
-                <SelectItem key={service.service_id} value={service.service_type_name} className=" cursor-pointer hover:bg-gray-100">
-                  {service.service_type_name}
-                </SelectItem>
-              ))}
-            </SelectGroup>
-          </SelectContent>
-        </Select>}
+        {(!user || user.role === 'investor') &&
+          <Select value={selectedService} onValueChange={setSelectedService}>
+            <SelectTrigger className="w-full py-2 border border-gray-300 rounded flex items-center justify-between ">
+              <SelectValue placeholder="Select a service" />
+            </SelectTrigger>
+            <SelectContent className="border border-gray-300 rounded bg-white">
+              <SelectGroup>
+                {services.map((service) => (
+                  <SelectItem key={service.service_id} value={service.service_type_name} className=" cursor-pointer hover:bg-gray-100">
+                    {service.service_type_name}
+                  </SelectItem>
+                ))}
+              </SelectGroup>
+            </SelectContent>
+          </Select>}
         <div className='font-semibold'>{formatDateToUTCString(new Date(firstDay), "MMM d")}</div>
         <div className='flex flex-row space-x-1 justify-center'>
 
@@ -182,21 +167,34 @@ const BookAppointmentV2: React.FC<BookAppointmentV2Props> = ({ advisorId, office
                   selectedTime={selectedTime}
                   setSelectedDay={setSelectedDay}
                   setSelectedTime={setSelectedTime}
+                  initialDays={days}
+                  initialAvailableTimes={initialAvailableTimes}
                 />
 
                 <DrawerFooter>
-                  {selectedDay && selectedTime && selectedService && (
-                    <div className='flex items-center justify-center mt-2'>
-                      <div className="w-min">
-                        <Button className="  bg-cyan-500 hover:bg-cyan-400" onClick={confirmBooking}>
-                          <div className='flex flex-row space-x-2'>
-                            <span>Confirm booking for {selectedService} on {formatDateToUTCString(new Date(selectedDay), "MMM, dd")} at {selectedTime}</span><ChevronRight className='w-5 h-5' />
-                          </div>
-                        </Button>
-                        {bookingError && <div className="mt-2 text-red-500">{bookingError}</div>}
-                      </div>
+
+                  <div className='flex items-center justify-center mt-2'>
+                    <div className="w-min">
+                      <Button className="  bg-cyan-500 hover:bg-cyan-400" disabled={!inputReady} onClick={confirmBooking}>
+                        <div className='flex flex-row space-x-2'>
+                          {inputReady ?
+                            <>
+                              <span>Confirm booking for {selectedService} on {formatDateToUTCString(new Date(selectedDay), "MMM, dd")} at {selectedTime}</span>
+                              <ChevronRight className='w-5 h-5' />
+                            </>
+                            :
+                            <><span>Select a service and time to proceed</span>
+                              <Lock className='w-5 h-5' />
+                            </>
+                          }
+
+
+                        </div>
+                      </Button>
+                      {bookingError && <div className="mt-2 text-red-500">{bookingError}</div>}
                     </div>
-                  )}
+                  </div>
+
                   <DrawerClose>
                     <Button variant="outline">Cancel</Button>
                   </DrawerClose>
@@ -207,20 +205,29 @@ const BookAppointmentV2: React.FC<BookAppointmentV2Props> = ({ advisorId, office
 
         </div>
 
-        {selectedDay && selectedTime && selectedService && (
-          <div className='flex items-center justify-center'>
-            <div className="w-min">
-              <Button className="px-4 py-2 bg-cyan-500 hover:bg-cyan-400" onClick={confirmBooking}>
-                <div className='flex flex-row space-x-2'>
-                  <span>Confirm booking  on {formatDateToUTCString(new Date(selectedDay), "MMM, dd")} at {selectedTime}</span><ChevronRight className='w-5 h-5' />
-                </div>
-              </Button>
-              {bookingError && <div className="mt-2 text-red-500">{bookingError}</div>}
-            </div>
-          </div>
-        )}
 
-      </div>);
+        <div className='flex items-center justify-center'>
+          <div className="w-min">
+            <Button className="px-4 py-2 bg-cyan-500 hover:bg-cyan-400" onClick={confirmBooking} disabled={!inputReady}>
+              <div className='flex flex-row space-x-2'>
+                {inputReady ?
+                  <>
+                    <span>Confirm booking for {selectedService} on {formatDateToUTCString(new Date(selectedDay), "MMM, dd")} at {selectedTime}</span>
+                    <ChevronRight className='w-5 h-5' />
+                  </>
+                  :
+                  <><span>Select a service and time to proceed</span>
+                    <Lock className='w-5 h-5' />
+                  </>
+                }
+              </div>
+            </Button>
+            {bookingError && <div className="mt-2 text-red-500">{bookingError}</div>}
+          </div>
+        </div>
+
+
+      </div> : <div className=''>No available times</div>);
   }
 
   return (
@@ -256,21 +263,32 @@ const BookAppointmentV2: React.FC<BookAppointmentV2Props> = ({ advisorId, office
         selectedTime={selectedTime}
         setSelectedDay={setSelectedDay}
         setSelectedTime={setSelectedTime}
+        initialDays={days}
+        initialAvailableTimes={initialAvailableTimes}
       />
 
 
-      {selectedDay && selectedTime && selectedService && (
-        <div className='flex items-center justify-center mt-2'>
-          <div className="w-min">
-            <Button className="px-4 py-2 bg-cyan-500 hover:bg-cyan-400" onClick={confirmBooking}>
-              <div className='flex flex-row space-x-2'>
-                <span>Confirm booking for {selectedService} on {formatDateToUTCString(new Date(selectedDay), "MMM, dd")} at {selectedTime}</span><ChevronRight className='w-5 h-5' />
-              </div>
-            </Button>
-            {bookingError && <div className="mt-2 text-red-500">{bookingError}</div>}
-          </div>
+
+      <div className='flex items-center justify-center mt-2'>
+        <div className="w-min">
+          <Button className="px-4 py-2 bg-cyan-500 hover:bg-cyan-400" onClick={confirmBooking} disabled={!inputReady}>
+            <div className='flex flex-row space-x-2'>
+              {inputReady ?
+                <>
+                  <span>Confirm booking for {selectedService} on {formatDateToUTCString(new Date(selectedDay), "MMM, dd")} at {selectedTime}</span>
+                  <ChevronRight className='w-5 h-5' />
+                </>
+                :
+                <><span>Select a service and time to proceed</span>
+                  <Lock className='w-5 h-5' />
+                </>
+              }
+            </div>
+          </Button>
+          {bookingError && <div className="mt-2 text-red-500">{bookingError}</div>}
         </div>
-      )}
+      </div>
+
     </div>
   );
 };

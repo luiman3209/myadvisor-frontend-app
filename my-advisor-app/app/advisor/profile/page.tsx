@@ -8,17 +8,19 @@ import CircularProgress from '@/components/misc/CircularProgress';
 import Navbar from '@/components/navbar/NavBar';
 import BookAppointmentV2 from '@/components/book_appointment/BookAppointmentV2';
 import { AdvisorEntity } from '@/types/entity/advisor_entity';
-import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, } from '@/components/ui/card';
 import { AdvisorPublicProfileDto, AdvisorReviewDto } from '@/types/types';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 import RatingStars from '@/components/misc/RatingStars';
 import BoxCollection from '@/components/misc/BoxCollection';
 import { ServiceType } from '@/types/entity/service_type_entity';
-import { Link } from 'lucide-react';
+
+import { getNextDays } from '@/utils/commonUtils';
 
 const AdvisorPublicProfilePage: React.FC = () => {
   const [advisor, setAdvisor] = useState<AdvisorEntity | null>(null);
+  const [freeWindows, setFreeWindows] = useState<{ [key: string]: string[] }>({});
   const [profileReviews, setProfileReviews] = useState<AdvisorReviewDto[]>([]);
   const [serviceTypes, setServiceTypes] = useState<ServiceType[]>([]);
   const [offices, setOffices] = useState<string[]>([]);
@@ -45,6 +47,7 @@ const AdvisorPublicProfilePage: React.FC = () => {
           setProfileReviews(data.profileReviews);
           setServiceTypes(data.serviceTypes);
           setOffices(data.offices);
+          setFreeWindows(data.freeWindows);
 
           setAverageRating(data.average_rating);
           setReviewsCount(data.review_count);
@@ -78,7 +81,7 @@ const AdvisorPublicProfilePage: React.FC = () => {
   }
 
   return (
-    <div className='bg-gray-100'>
+    <div className='bg-gray-100 min-h-screen flex flex-col'>
       <Navbar />
       <Card className=" md:my-8 mx-auto p-12 lg:w-1/2">
         {advisor ? (
@@ -115,7 +118,10 @@ const AdvisorPublicProfilePage: React.FC = () => {
             </div>
             <div className="mt-4">
               <h3 className="text-xl font-bold">Book an appointment</h3>
-              <BookAppointmentV2 advisorId={advisor.advisor_id} officeAddress={advisor.office_address} services={serviceTypes} />
+              <BookAppointmentV2 advisorId={advisor.advisor_id} officeAddress={advisor.office_address} services={serviceTypes}
+                initialDays={getNextDays(5)}
+                initialAvailableTimes={freeWindows}
+              />
             </div>
             <div className="mt-4">
               <h2 className="text-xl font-bold">What people think about {advisor.display_name}...</h2>
