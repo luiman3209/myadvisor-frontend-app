@@ -46,12 +46,7 @@ const InvestorProfile: React.FC<InvestorProfileProps> = ({ investorProfile, avai
     const [confirmPassword, setConfirmPassword] = useState<string>('');
     const [selectedServiceTypes, setSelectedServiceTypes] = useState(investorProfile.serviceTypes);
 
-    const [selectedTab, setSelectedTab] = useState<string>('general');
-    const [updateMessage, setUpdateMessage] = useState<string>('');
-    const [errorMessage, setErrorMessage] = useState<string>('');
-    const [fieldsChanged, setFieldsChanged] = useState<boolean>(false);
-
-    const initialProfileState = {
+    const [initialProfileState, setInitialProfileState] = useState<any>({
         firstName: investorProfile.userProfile.first_name,
         lastName: investorProfile.userProfile.last_name,
         phoneNumber: investorProfile.userProfile.phone_number,
@@ -61,9 +56,18 @@ const InvestorProfile: React.FC<InvestorProfileProps> = ({ investorProfile, avai
         geoPreferences: investorProfile.investor.geo_preferences,
         email: investorProfile.investor.user_config.email,
         selectedServiceTypes: investorProfile.serviceTypes
-    };
+    });
+
+    const [selectedTab, setSelectedTab] = useState<string>('general');
+    const [updateMessage, setUpdateMessage] = useState<string>('');
+    const [errorMessage, setErrorMessage] = useState<string>('');
+    const [fieldsChanged, setFieldsChanged] = useState<boolean>(false);
+
+
 
     useEffect(() => {
+
+
         const hasFieldChanged = () => {
             return (
                 firstName !== initialProfileState.firstName ||
@@ -74,14 +78,14 @@ const InvestorProfile: React.FC<InvestorProfileProps> = ({ investorProfile, avai
                 incomeRange !== initialProfileState.incomeRange ||
                 geoPreferences !== initialProfileState.geoPreferences ||
                 email !== initialProfileState.email ||
-                selectedServiceTypes.some((type) => !initialProfileState.selectedServiceTypes.map(s => s.service_id).includes(type.service_id))
+                selectedServiceTypes.some((type) => !initialProfileState.selectedServiceTypes.map((s: ServiceType) => s.service_id).includes(type.service_id))
             );
         };
 
         setFieldsChanged(hasFieldChanged());
     }, [
         firstName, lastName, phoneNumber, address, netWorth,
-        incomeRange, geoPreferences, email, selectedServiceTypes
+        incomeRange, geoPreferences, email, selectedServiceTypes, initialProfileState
     ]);
 
     const changeTab = (tab: string) => {

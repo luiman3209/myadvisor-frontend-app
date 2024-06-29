@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import CircularProgress from '@/components/misc/CircularProgress';
 import Navbar from '@/components/navbar/NavBar';
@@ -112,7 +112,7 @@ const DashboardPage: React.FC = () => {
     setAppointments(appointmentsData.appointments);
   };
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     if (user) {
       setLoading(true);
       setError(null);
@@ -132,11 +132,11 @@ const DashboardPage: React.FC = () => {
       }
     }
 
-  };
+  }, [user]);
 
   useEffect(() => {
     fetchData();
-  }, [user, router]);
+  }, [user, router, fetchData]);
 
   if (loading) {
     return (

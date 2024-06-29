@@ -1,6 +1,7 @@
 
-import React, { use, useEffect } from 'react';
-import { CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
+import React from 'react';
+
+import Image from 'next/image';
 
 
 import { ServiceType } from '@/types/entity/service_type_entity';
@@ -46,7 +47,12 @@ const HomeSearchArea: React.FC<HomeSearchAreaProps> = ({ serviceTypes }) => {
         <div className="p-12 bg-cyan-500 relative  ">
             <div className="flex flex-col items-center lg:mb-24  ">
                 <div className='w-full md:w-8/12 lg:w-1/4 md:ml-96 mt-72 md:mt-48 lg:mt-0'>
-                    <img src="/images/subjects.png" alt="Subjects" className="w-full h-auto" />
+                    <Image
+                        src="/images/subjects.png"
+                        alt="Subjects"
+                        className="w-full h-auto"
+                    />
+
                 </div>
                 <div className="absolute top-0 left-0  p-4 bg-transparent  px-12 md:px-36 lg:px-[400px] py-6 lg:py-[150px] lg:w-[1500px] ">
                     <h1 className="text-3xl font-semibold mb-4 text-white">Book your appointment online!</h1>

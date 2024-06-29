@@ -1,8 +1,9 @@
-"use client";
+'use client';
 
+import { Suspense, useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
-import { useState, useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { ProfileData, CommonProfileData, InvestorProfileData } from '@/types/auth';
 import { ServiceType } from '@/types/entity/service_type_entity';
 import { checkEmailAvailability, checkPhoneAvailability } from '@/services/authService';
@@ -12,8 +13,29 @@ import { decodeQueryDataString } from '@/utils/commonUtils';
 import { useServiceContext } from '@/contexts/ServicesContext';
 import { Card } from '@/components/ui/card';
 import RegisterFormNavigator from '@/components/input/RegisterFormNavigator';
+import { Loader } from 'lucide-react';
 
-export default function RegisterInvestor() {
+const SearchParamsHandler: React.FC = () => {
+  const searchParams = useSearchParams();
+  const [redirect, setRedirect] = useState<string>('');
+
+  useEffect(() => {
+    const queryParams = new URLSearchParams(window.location.search);
+    const encodedRedirect = queryParams.get('redirect') || '';
+    try {
+      if (encodedRedirect) {
+        const decodedRedirect = decodeQueryDataString(encodedRedirect);
+        setRedirect(decodedRedirect);
+      }
+    } catch (err) {
+      console.error('Failed to decode redirect query string', err);
+    }
+  }, [searchParams]);
+
+  return <RegisterInvestorContent redirect={redirect} />;
+};
+
+const RegisterInvestorContent: React.FC<{ redirect?: string }> = ({ redirect }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -28,35 +50,15 @@ export default function RegisterInvestor() {
   const [formStep, setFormStep] = useState(0);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
-  const [redirect, setRedirect] = useState('');
   const { user, register, error } = useAuth();
   const router = useRouter();
-  const searchParams = useSearchParams();
-
   const { availableServices } = useServiceContext();
-
-  useEffect(() => {
-
-    const queryParams = new URLSearchParams(window.location.search);
-    const encodedRedirect = queryParams.get('redirect') || '';
-    try {
-      if (encodedRedirect) {
-        const decodedRedirect = decodeQueryDataString(encodedRedirect);
-        setRedirect(decodedRedirect);
-      }
-    } catch (err) {
-      console.error('Failed to decode redirect query string', err);
-    }
-
-
-  }, [user, router, searchParams]);
-
 
   const validateStep = async () => {
     const newErrors: { [key: string]: string } = {};
     if (formStep === 0) {
       if (!email) newErrors.email = "Email is required";
-      if (! await checkEmailAvailability(email)) newErrors.email = "Email is already taken";
+      if (!await checkEmailAvailability(email)) newErrors.email = "Email is already taken";
       if (!password) newErrors.password = "Password is required";
       if (password.length < 6) newErrors.password = "Password must be at least 6 characters long";
       if (password !== confirmPassword) newErrors.password = "Passwords do not match";
@@ -68,16 +70,14 @@ export default function RegisterInvestor() {
       if (!phoneNumber) newErrors.phoneNumber = "Phone Number is required";
       if (!/^\d+$/.test(phoneNumber)) newErrors.phoneNumber = "Phone Number must contain only digits";
       if (phoneNumber.length < 10) newErrors.phoneNumber = "Phone Number must be at least 10 characters long";
-      if (! await checkPhoneAvailability(phoneNumber)) newErrors.phoneNumber = "Phone Number is already taken";
+      if (!await checkPhoneAvailability(phoneNumber)) newErrors.phoneNumber = "Phone Number is already taken";
       if (!address) newErrors.address = "Address is required";
     } else if (formStep === 2) {
-
       if (!selectedServiceTypes || selectedServiceTypes.length < 1) newErrors.expertise = "Expertise is required";
     } else if (formStep === 3) {
       if (!netWorth) newErrors.netWorth = "Net Worth is required";
       if (!incomeRange) newErrors.incomeRange = "Income Range is required";
       if (!geoPreferences) newErrors.geoPreferences = "Geographical Preferences is required";
-
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -94,8 +94,7 @@ export default function RegisterInvestor() {
   };
 
   const handleSubmit = async () => {
-
-    if (! await validateStep()) {
+    if (!await validateStep()) {
       return;
     }
 
@@ -118,8 +117,6 @@ export default function RegisterInvestor() {
       investor_data: investorData,
     };
 
-
-
     await register(email, password, profileData, false);
 
     if (redirect) {
@@ -131,15 +128,13 @@ export default function RegisterInvestor() {
 
   return (
     <main className='bg-gray-100 min-h-screen'>
-
       <RegisterNavbar />
-      <Card className='md:my-8 mx-auto md:w-1/2 '>
-        <div className='flex items-center justify-center '>
+      <Card className='md:my-8 mx-auto md:w-1/2'>
+        <div className='flex items-center justify-center'>
           <div className="relative text-center py-10 w-full md:w-1/2 space-y-8">
             <h1 className="text-3xl font-bold mb-5">Register as Investor</h1>
             <p>Will take just a minute</p>
             <div className="sm:px-8 md:px-0 mx-4">
-
               <InvestorForm
                 formStep={formStep}
                 errors={errors}
@@ -166,7 +161,6 @@ export default function RegisterInvestor() {
                 selectedServiceTypes={selectedServiceTypes}
                 setSelectedServiceTypes={setSelectedServiceTypes}
                 availableServiceTypes={availableServices}
-
               />
             </div>
             <RegisterFormNavigator
@@ -177,12 +171,21 @@ export default function RegisterInvestor() {
             />
           </div>
         </div>
-
-
       </Card>
-
     </main>
   );
-}
+};
 
+const RegisterInvestor: React.FC = () => {
+  return (
+    <Suspense fallback={
+      <div className="flex items-center justify-center min-h-screen bg-gray-100">
+        <Loader className="animate-spin w-8 h-8 text-cyan-600" />
+      </div>
+    }>
+      <SearchParamsHandler />
+    </Suspense>
+  );
+};
 
+export default RegisterInvestor;

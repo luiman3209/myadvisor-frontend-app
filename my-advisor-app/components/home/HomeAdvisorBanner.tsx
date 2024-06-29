@@ -2,6 +2,7 @@
 
 import BarChart from './HomeBannerChart';
 import { Button } from '../ui/button';
+import Image from 'next/image';
 
 import { Rocket, Star } from 'lucide-react';
 
@@ -12,7 +13,12 @@ const HomeAdvisorBanner = () => {
             <div className='m-2 rounded-md bg-cyan-100 flex flex-col md:flex-row space-x-4'>
 
                 <div className='relative lg:w-1/2 p-2'>
-                    <img src="/images/office_bg_edite_banner.webp" alt="Subjects" className="rounded-md" />
+                    <Image
+                        src="/images/office_bg_edite_banner.webp"
+                        alt="Subjects"
+                        className="object-contain rounded-md"
+                    />
+
                     <div className='absolute top-6 left-4 shadow-xl w-56 h-auto'>
 
                         <BarChart />

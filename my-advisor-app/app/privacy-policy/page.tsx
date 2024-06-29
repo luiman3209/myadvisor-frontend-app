@@ -15,7 +15,7 @@ export default function PrivacyPolicy() {
                     </h1>
                     <div className="text-left space-y-4">
                         <p>Date: June 21, 2024</p>
-                        <p>Thank you for visiting myadvisordemo.io ("the Website"). Your privacy is important to us. This Privacy Policy explains our approach to user privacy.</p>
+                        <p>Thank you for visiting myadvisordemo.io (&quot;the Website&quot;). Your privacy is important to us. This Privacy Policy explains our approach to user privacy.</p>
                         <h2 className="font-semibold text-lg">Information We Collect</h2>
                         <p>We do not collect any personal information from users. The Website is designed for demonstration purposes only, and users can log in automatically using a simple button without providing any credentials.</p>
                         <h2 className="font-semibold text-lg">Use of Information</h2>

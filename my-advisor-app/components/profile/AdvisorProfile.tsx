@@ -62,20 +62,7 @@ const AdvisorProfile: React.FC<AdvisorProfileProps> = ({ advisorProfile, availab
     const [availableEndTime1, setAvailableEndTime1] = useState<string[]>([]);
     const [availableEndTime2, setAvailableEndTime2] = useState<string[]>([]);
 
-    const [fieldsChanged, setFieldsChanged] = useState<boolean>(false);
-
-    const [selectedServiceTypes, setSelectedServiceTypes] = useState<number[]>(advisorProfile.serviceTypes);
-    const [selectedQualifications, setSelectedQualifications] = useState<number[]>(advisorProfile.qualifications);
-
-    const [selectedTab, setSelectedTab] = useState<string>('general');
-    const [updateMessage, setUpdateMessage] = useState<string>('');
-    const [errorMessage, setErrorMessage] = useState<string>('');
-
-    useEffect(() => {
-        setAvailableEndTime1(calculateEndTimes(startShift1));
-    }, [startShift1]);
-
-    const initialProfileState = {
+    const [initialProfileState, setInitialProfileState] = useState<any>({
         firstName: advisorProfile.userProfile.first_name,
         lastName: advisorProfile.userProfile.last_name,
         phoneNumber: advisorProfile.userProfile.phone_number,
@@ -92,9 +79,26 @@ const AdvisorProfile: React.FC<AdvisorProfileProps> = ({ advisorProfile, availab
         endShift2: advisorProfile.advisor.end_shift_2,
         selectedServiceTypes: advisorProfile.serviceTypes,
         selectedQualifications: advisorProfile.qualifications
-    };
+    });
+
+    const [fieldsChanged, setFieldsChanged] = useState<boolean>(false);
+
+    const [selectedServiceTypes, setSelectedServiceTypes] = useState<number[]>(advisorProfile.serviceTypes);
+    const [selectedQualifications, setSelectedQualifications] = useState<number[]>(advisorProfile.qualifications);
+
+    const [selectedTab, setSelectedTab] = useState<string>('general');
+    const [updateMessage, setUpdateMessage] = useState<string>('');
+    const [errorMessage, setErrorMessage] = useState<string>('');
 
     useEffect(() => {
+        setAvailableEndTime1(calculateEndTimes(startShift1));
+    }, [startShift1]);
+
+
+
+    useEffect(() => {
+
+
         const hasFieldChanged = () => {
             return (
                 firstName !== initialProfileState.firstName ||
@@ -121,7 +125,7 @@ const AdvisorProfile: React.FC<AdvisorProfileProps> = ({ advisorProfile, availab
         firstName, lastName, phoneNumber, address, email,
         displayName, contactInformation, officeAddress,
         operatingZipCode, operatingCountryCode, startShift1,
-        endShift1, startShift2, endShift2, selectedServiceTypes, selectedQualifications
+        endShift1, startShift2, endShift2, selectedServiceTypes, selectedQualifications, initialProfileState
     ]);
 
     const changeTab = (tab: string) => {

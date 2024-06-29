@@ -33,23 +33,7 @@ const Profile: React.FC = () => {
 
   const { availableServices } = useServiceContext();
 
-  const fetchServiceTypes = async () => {
-    try {
 
-      setAvailableServiceTypes(availableServices);
-
-    } catch (error) {
-      setError('Failed to fetch service types');
-    }
-  };
-
-  const fetchQualifications = async () => {
-    try {
-      setAvailableQualifications(await getAvailableQualifications());
-    } catch (error) {
-      setError('Failed to fetch qualifications');
-    }
-  }
 
   useEffect(() => {
     if (!user) {
@@ -58,6 +42,24 @@ const Profile: React.FC = () => {
   });
 
   useEffect(() => {
+
+    const fetchServiceTypes = async () => {
+      try {
+
+        setAvailableServiceTypes(availableServices);
+
+      } catch (error) {
+        setError('Failed to fetch service types');
+      }
+    };
+
+    const fetchQualifications = async () => {
+      try {
+        setAvailableQualifications(await getAvailableQualifications());
+      } catch (error) {
+        setError('Failed to fetch qualifications');
+      }
+    }
 
     const fetchProfile = async () => {
       setLoading(true);
@@ -91,7 +93,7 @@ const Profile: React.FC = () => {
       fetchQualifications();
 
     }
-  }, [router, user]);
+  }, [router, user, availableServices]);
 
 
   return (
