@@ -6,24 +6,12 @@ import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 
-import { Lock, LogIn } from "lucide-react";
+import { LogIn } from "lucide-react";
 
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
 
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-
-import {
-
-  Building,
-  User,
-  UserCog,
-
-} from "lucide-react"
 import { Button } from '../ui/button';
+
+
 
 
 const Navbar: React.FC = () => {
@@ -52,6 +40,7 @@ const Navbar: React.FC = () => {
               height={50}
               className="flex-shrink-0"
             />
+
             <span className="text-white text-2xl font-semibold">MyAdvisor</span>
             <div className="bg-white p-1 rounded text-sm font-bold"> Demo </div>
 

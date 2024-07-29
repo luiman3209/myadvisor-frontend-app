@@ -17,6 +17,8 @@ const HomeAdvisorBanner = () => {
                         src="/images/office_bg_edite_banner.webp"
                         alt="Subjects"
                         className="object-contain rounded-md"
+                        width={1557}
+                        height={1024}
                     />
 
                     <div className='absolute top-6 left-4 shadow-xl w-56 h-auto'>

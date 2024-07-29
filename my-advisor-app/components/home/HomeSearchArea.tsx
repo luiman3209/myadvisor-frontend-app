@@ -51,6 +51,8 @@ const HomeSearchArea: React.FC<HomeSearchAreaProps> = ({ serviceTypes }) => {
                         src="/images/subjects.png"
                         alt="Subjects"
                         className="w-full h-auto"
+                        width={1134}
+                        height={800}
                     />
 
                 </div>
